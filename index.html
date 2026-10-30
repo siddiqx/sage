@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sage — Personal Knowledge Website</title>
+  <meta name="description" content="Personal knowledge website and permanent technical reference system. Pure educational content, verified code examples, step-by-step explanations, and interactive practice.">
+  <link rel="stylesheet" href="assets/css/main.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+</head>
+<body>
+
+  <!-- Top Header Navigation -->
+  <header class="top-header">
+    <div class="brand-section" onclick="SAGE.Router.navigate('/')">
+      <div class="brand-logo">S</div>
+      <span>Sage</span>
+      <span class="brand-subtitle">Personal Knowledge Base</span>
+    </div>
+
+    <div class="header-center">
+      <button class="search-trigger-btn" aria-label="Search topics">
+        <span style="display: flex; align-items: center; gap: 0.5rem;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          Search topics, terminology, syntax...
+        </span>
+        <span class="search-shortcut">Ctrl K</span>
+      </button>
+    </div>
+
+    <div class="header-actions">
+      <button class="btn-icon" id="bookmarks-trigger-btn" title="View Bookmarked Topics">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+        <span class="count-badge bookmark-count-badge" style="display: none;">0</span>
+      </button>
+
+      <button class="btn-icon" id="theme-toggle-btn" title="Toggle Dark/Light Theme">
+        <span class="theme-toggle-icon">🌙</span>
+      </button>
+
+      <button class="btn-icon mobile-nav-toggle" id="mobile-nav-toggle" title="Toggle Navigation">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- App Body Layout -->
+  <div class="app-container">
+    <!-- Left Navigation Sidebar -->
+    <aside id="sidebar" class="sidebar">
+      <div id="sidebar-nav-container"></div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-wrapper">
+      <div class="content-container" id="main-content-area">
+        <div style="padding: 3rem; text-align: center; color: var(--text-muted);">
+          Loading Sage Knowledge Base...
+        </div>
+      </div>
+    </main>
+
+    <!-- Right-Side Table of Contents -->
+    <aside id="toc-container" class="toc-sidebar" style="display: none;"></aside>
+  </div>
+
+  <!-- Global Full-Text Search Modal -->
+  <div class="modal-backdrop" id="search-modal-backdrop">
+    <div class="search-modal">
+      <div class="search-modal-header">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-muted);"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input type="text" id="global-search-input" class="search-input" placeholder="Search across all 11 disciplines, topics, definitions, syntax..." autocomplete="off">
+        <button class="btn-icon" onclick="SAGE.Search.closeModal()" title="Close search" style="border: none;">&times;</button>
+      </div>
+      <ul class="search-results-list" id="search-results-list"></ul>
+      <div class="search-modal-footer">
+        <span>Use <strong>&uarr;</strong> <strong>&darr;</strong> to navigate &middot; <strong>Enter</strong> to select</span>
+        <span><strong>Esc</strong> to close</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bookmarks Modal -->
+  <div class="modal-backdrop" id="bookmarks-modal">
+    <div class="search-modal">
+      <div class="search-modal-header">
+        <span style="font-weight: 700; font-size: 1.05rem; color: var(--text-primary); flex: 1;">★ Saved Bookmarks</span>
+        <button class="btn-icon" onclick="document.getElementById('bookmarks-modal').classList.remove('open')" style="border: none;">&times;</button>
+      </div>
+      <div id="bookmarks-list" style="overflow-y: auto; max-height: 55vh;"></div>
+      <div class="search-modal-footer">
+        <span>Bookmarks persist in your browser's local storage.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Core Scripts -->
+  <script src="assets/js/app.js"></script>
+  <script src="assets/js/search.js"></script>
+  <script src="assets/js/render.js"></script>
+  <script src="assets/js/router.js"></script>
+
+  <!-- Data Registries -->
+  <script src="data/subjects.js"></script>
+
+  <!-- Python Topics (19 Complete Modules) -->
+  <script src="data/python/01-fundamentals.js"></script>
+  <script src="data/python/02-variables-types.js"></script>
+  <script src="data/python/03-operators.js"></script>
+  <script src="data/python/04-conditionals.js"></script>
+  <script src="data/python/05-loops.js"></script>
+  <script src="data/python/06-strings.js"></script>
+  <script src="data/python/07-lists.js"></script>
+  <script src="data/python/08-tuples.js"></script>
+  <script src="data/python/09-sets.js"></script>
+  <script src="data/python/10-dictionaries.js"></script>
+  <script src="data/python/11-functions.js"></script>
+  <script src="data/python/12-list-comprehensions.js"></script>
+  <script src="data/python/13-exception-handling.js"></script>
+  <script src="data/python/14-file-handling.js"></script>
+  <script src="data/python/15-modules-packages.js"></script>
+  <script src="data/python/16-oop.js"></script>
+  <script src="data/python/17-iterators-generators.js"></script>
+  <script src="data/python/18-decorators.js"></script>
+  <script src="data/python/19-advanced-python.js"></script>
+
+  <!-- SQL & PostgreSQL Topics (10 Complete Modules) -->
+  <script src="data/sql/01-db-concepts.js"></script>
+  <script src="data/sql/02-select-queries.js"></script>
+  <script src="data/sql/03-aggregations.js"></script>
+  <script src="data/sql/04-joins.js"></script>
+  <script src="data/sql/05-subqueries-ctes.js"></script>
+  <script src="data/sql/06-window-functions.js"></script>
+  <script src="data/sql/07-constraints.js"></script>
+  <script src="data/sql/08-indexing.js"></script>
+  <script src="data/sql/09-transactions-mvcc.js"></script>
+  <script src="data/sql/10-postgresql-internals.js"></script>
+
+  <!-- Curricula for Remaining 9 Disciplines -->
+  <script src="data/curricula.js"></script>
+
+</body>
+</html>

@@ -1,70 +1,107 @@
-# Sage — Autonomous Offline Learning & Engineering Platform
+# Sage — Personal Knowledge Website
 
-A curated, self-contained offline learning curriculum and reference library across 10 core computer science and engineering disciplines.
+> **A permanent personal knowledge website and technical reference system across 11 engineering disciplines.**
 
-Designed for deep, distraction-free study from foundational theory to production mastery.
+Sage delivers structured, accurate, and comprehensive educational content directly on the website—eliminating the need to dig through raw PDF textbooks, disjointed Markdown files, or scattered repositories.
+
+Designed for distraction-free study alongside YouTube lectures and real-world coding.
 
 ---
 
-## Quick Start
+## 🧭 Quick Start
 
-Open **[`START-HERE.html`](START-HERE.html)** in any modern web browser to access the interactive curriculum dashboard, offline documentation portals, study guides, textbooks, and practice labs.
+Open **[`index.html`](index.html)** or **[`START-HERE.html`](START-HERE.html)** in any modern web browser:
 
 ```powershell
-# Open the dashboard in your default browser
-Start-Process "START-HERE.html"
+# Open directly in your default browser (100% offline, zero dependencies)
+Start-Process "index.html"
 ```
 
----
-
-## Curriculum Structure
-
-The platform is structured into **10 core disciplines**, each organized sequentially into 4 progression phases:
-1. **Phase 1: Foundations** — Core syntax, basic mechanics, schema definitions, and conceptual foundations.
-2. **Phase 2: Core Concepts** — Data structures, relational algebra, distributed patterns, and design patterns.
-3. **Phase 3: Advanced Topics** — Performance optimization, query tuning, internals, and architecture.
-4. **Phase 4: Hands-On Mastery** — Production code, test-driven challenges, and open-source practice.
-
-| Subject | Focus Areas | Key Resources |
-|---|---|---|
-| **01. Python** | Core syntax, data models, OOP, pytest, automation | Python Documentation, Automate the Boring Stuff, Exercism Track |
-| **02. SQL & Databases** | Relational schemas, window functions, B-Trees, MVCC | PostgreSQL 16 Docs, Pagila Database Lab, SQL Optimization |
-| **03. Data Engineering** | Dimensional modeling, batch/streaming, dbt, orchestration | Zoomcamp Lab, dbt Jaffle Shop, MapReduce, Spark Guides |
-| **04. Cloud & Azure** | Medallion architecture, well-architected framework, security | Azure Architecture Guide, Enterprise Cloud Patterns |
-| **05. AI & Automation** | Deep learning, neural networks, LLMs, AI agents | Understanding Deep Learning, Mathematics for ML, ReAct Guide |
-| **06. Mathematics** | Calculus, linear algebra, discrete math, probability | Calculus Volumes 1–3, Mathematics Study Guide |
-| **07. Computer Science** | Operating systems, concurrency, virtualization, TCP/IP | OSTEP OS Guide, Computer Networks Systems Approach |
-| **08. Blockchain & Solidity** | EVM architecture, ERC standards, contract security | Mastering Ethereum, OpenZeppelin Contracts, Security Audits |
-| **09. Physics** | Classical mechanics, thermodynamics, oscillations | University Physics Volumes 1–2, Physics Study Guide |
-| **10. Software Development** | TypeScript, Git internals, UNIX environment | TypeScript Handbook, 190+ Type Challenges, Pro Git, MIT Missing Semester |
-
----
-
-## Practice Labs & Submodules
-
-The library includes 6 interactive open-source practice repositories configured as Git submodules:
-
-- **Python:** [Exercism Python Track](https://github.com/exercism/python) (140+ problem-solving exercises)
-- **SQL:** [Pagila Sample Database](https://github.com/devrimgunduz/pagila) (PostgreSQL schema and analytical dataset)
-- **Data Engineering:** [Data Engineering Zoomcamp](https://github.com/DataTalksClub/data-engineering-zoomcamp) (End-to-end data pipelines)
-- **Data Engineering:** [dbt Jaffle Shop](https://github.com/dbt-labs/jaffle_shop) (Production dbt modeling)
-- **Blockchain:** [OpenZeppelin Contracts](https://github.com/OpenZeppelin/openzeppelin-contracts) (Audited smart contract libraries)
-- **Web Development:** [TypeScript Type Challenges](https://github.com/type-challenges/type-challenges) (190+ type-level puzzles)
-
-### Initializing Practice Labs on New Clones
-
-When cloning this repository, initialize the practice repositories and synchronize their interactive portals:
+Or run via an optional lightweight local web server:
 
 ```bash
-git clone --recurse-submodules https://github.com/siddiqx/sage.git
-cd sage
-python setup_submodules.py
+python -m http.server 8000
+# Open http://localhost:8000 in your browser
 ```
 
 ---
 
-## Standards & Organization
+## 🏛️ Architecture & Content Organization
 
-- **Zero Clutter:** Unnecessary machine-readable build artifacts, redundant markdown files, and duplicate directories have been pruned.
-- **Offline Reliability:** All documentation portals, textbook chapters, and guides function completely offline without external internet dependencies.
-- **Strict Verification:** All internal cross-links and relative paths in `START-HERE.html` and documentation portals are tested and verified.
+Sage organizes knowledge into a strict, navigable hierarchy:
+
+$$\text{Subject} \longrightarrow \text{Module} \longrightarrow \text{Topic} \longrightarrow \text{Subtopic}$$
+
+### Standard Topic Knowledge Contract
+Every educational topic page is complete and self-contained, featuring:
+
+1. **A. Overview:** Concise, accurate conceptual definition and architectural mental model.
+2. **B. Key Terminology:** Technical dictionary of keywords, opcodes, algorithms, and concepts.
+3. **C. In-Depth Explanation:** Progressive pedagogical explanation from foundational mechanics to advanced internals.
+4. **D. Syntax & Structure:** Exact syntax patterns with breakdown tables of each component.
+5. **E. Code Examples:** Complete, runnable programs with real terminal outputs and line-by-line execution walkthroughs.
+6. **F. Important Notes:** Practical rules, edge cases, and performance limitations.
+7. **G. Common Mistakes:** Frequent misconceptions showing side-by-side **Incorrect vs. Correct** code diffs and why they fail.
+8. **H. Concept Comparisons:** Side-by-side evaluation tables comparing related paradigms.
+9. **I. Test Your Knowledge:** Interactive Q&A accordions testing comprehension with hidden answers and explanations.
+10. **J. Practice Exercises:** Graded problems (Beginner / Intermediate / Advanced) with hidden verified solutions.
+11. **K. Supplementary References:** Curated links to official documentation and recommended YouTube lectures.
+
+---
+
+## 📚 Core Disciplines & Priority Curricula
+
+| Subject | Modules Covered | Status |
+|---|---|---|
+| **🐍 Python** | Foundations, Data Structures, Functions & Comprehensions, Robust I/O, OOP, Advanced Python (19 Topics) | **Complete & In-Depth** |
+| **🗄️ SQL & Databases** | Foundations, Querying, Aggregations, Joins, Subqueries & CTEs, Window Functions, Constraints, Indexes, Transactions & MVCC, Postgres Internals (10 Topics) | **Complete & In-Depth** |
+| **⚡ Data Engineering** | Pipelines, ETL/ELT Paradigms, Medallion Lakehouses, Star Schemas, Columnar Storage | **Foundations Active** |
+| **☁️ Cloud Computing** | Azure Core Services, IaaS vs PaaS vs Serverless, Availability Zones, Shared Responsibility | **Foundations Active** |
+| **🧠 AI & Machine Learning** | Loss Functions, Gradient Descent Optimization, Backpropagation, Neural Networks | **Foundations Active** |
+| **🤖 AI Automation** | Autonomous Agents, ReAct Loops, Tool Calling Schemas, Model Context Protocol (MCP) | **Foundations Active** |
+| **📐 Mathematics** | Linear Algebra, Vector Spaces, Dot Products, Matrices, Eigenvalues & Eigenvectors | **Foundations Active** |
+| **💻 Computer Science** | Operating Systems, Virtual Memory Paging, Context Switches, Mutexes & Concurrency | **Foundations Active** |
+| **⛓️ Blockchain** | Ethereum Virtual Machine (EVM), Gas Mechanics, Solidity Contracts, Reentrancy Security | **Foundations Active** |
+| **⚛️ Physics** | Classical Mechanics, Newton's Laws, Work-Energy Theorem, Conservative Forces | **Foundations Active** |
+| **🛠️ Software Development** | TypeScript Generics, Generic Constraints (`extends`), Mapped Types, Clean Architecture | **Foundations Active** |
+
+---
+
+## ⚡ Learning Features
+
+- **Global Full-Text Search (`Ctrl+K` / `/`):** Instant fuzzy search across subjects, topics, definitions, and terminology.
+- **Bookmarks System:** Save any topic with 1-click for rapid revision (persisted in browser local storage).
+- **Mastery Tracking:** Checkbox tracking to monitor reading and study progress across subjects.
+- **Dark & Light Modes:** Seamless theme switching with smooth transitions and persistent state.
+- **On-This-Page Table of Contents:** Scroll-spy navigation linking to individual topic sections.
+- **Zero Build Tool Overhead:** Pure modular JavaScript with zero `npm` dependency chains, guaranteed to open cleanly via `file:///` without CORS errors.
+
+---
+
+## 📜 Repository Structure
+
+```text
+D:\Learning\
+├── index.html                  # Main application entry point
+├── START-HERE.html             # Local Windows entry point (identical mirror)
+├── README.md                   # Platform documentation
+├── MANIFEST.jsonl              # Resource catalog
+│
+├── assets/
+│   ├── css/
+│   │   ├── main.css            # Design tokens, typography, dark/light themes
+│   │   └── components.css      # Sidebar, cards, code blocks, accordions, search modal
+│   └── js/
+│       ├── app.js              # State manager (localStorage, themes, bookmarks)
+│       ├── search.js           # Client-side full-text search engine
+│       ├── render.js           # Reusable UI component renderers
+│       └── router.js           # Hash-based routing (#/subject/topic)
+│
+├── data/
+│   ├── subjects.js             # 11 subject definitions and taxonomy
+│   ├── python/                 # 19 in-depth topic modules (01 to 19)
+│   ├── sql/                    # 10 in-depth topic modules (01 to 10)
+│   └── curricula.js            # Curricula for remaining 9 disciplines
+│
+└── [Subject Archive Folders]   # Preserved reference textbooks and offline materials
+```
