@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Computer Networks: Systems Approach Study Guide — Learning Library</title>
+  <style>
+    :root {
+      --bg: #0b1120;
+      --card-bg: #1e293b;
+      --border: #334155;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-hover: #0ea5e9;
+      --code-bg: #020617;
+      --toc-bg: #131d31;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      padding: 0;
+    }
+    header.top-nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(11, 17, 32, 0.9);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+      padding: 0.85rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .back-btn {
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.35rem 0.75rem;
+      border-radius: 0.375rem;
+      background: rgba(56, 189, 248, 0.1);
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      transition: all 0.2s;
+    }
+    .back-btn:hover {
+      background: rgba(56, 189, 248, 0.2);
+    }
+    .category-badge {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      background: #1e293b;
+      padding: 0.25rem 0.6rem;
+      border-radius: 9999px;
+      border: 1px solid var(--border);
+    }
+    .nav-actions {
+      display: flex;
+      gap: 0.75rem;
+    }
+    .nav-btn {
+      background: #1e293b;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 0.35rem 0.75rem;
+      border-radius: 0.375rem;
+      font-size: 0.8rem;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: all 0.2s;
+    }
+    .nav-btn:hover {
+      background: #334155;
+      color: var(--text);
+    }
+    .layout-wrapper {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem;
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 2.5rem;
+    }
+    @media (max-width: 900px) {
+      .layout-wrapper {
+        grid-template-columns: 1fr;
+      }
+      .toc-box {
+        position: static;
+        margin-bottom: 2rem;
+      }
+    }
+    .toc-box {
+      position: sticky;
+      top: 5rem;
+      max-height: calc(100vh - 6rem);
+      overflow-y: auto;
+      background: var(--toc-bg);
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      padding: 1.25rem;
+    }
+    .toc-title {
+      font-size: 0.875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--accent);
+      margin-bottom: 0.85rem;
+    }
+    .toc-box ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    .toc-box a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: color 0.15s;
+    }
+    .toc-box a:hover {
+      color: var(--accent);
+    }
+    .toc-level-3 {
+      padding-left: 1rem;
+      font-size: 0.8rem;
+    }
+    .content-area {
+      min-width: 0;
+    }
+    h1 {
+      font-size: 2.25rem;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.75rem;
+      color: #ffffff;
+    }
+    h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-top: 2.25rem;
+      margin-bottom: 1rem;
+      color: #38bdf8;
+      border-bottom: 1px solid rgba(51, 65, 85, 0.4);
+      padding-bottom: 0.4rem;
+      position: relative;
+    }
+    h3 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin-top: 1.75rem;
+      margin-bottom: 0.75rem;
+      color: #f1f5f9;
+    }
+    h4 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-top: 1.25rem;
+      margin-bottom: 0.5rem;
+    }
+    p {
+      margin-bottom: 1rem;
+      color: #cbd5e1;
+    }
+    ul, ol {
+      margin-bottom: 1.25rem;
+      padding-left: 1.75rem;
+      color: #cbd5e1;
+    }
+    li {
+      margin-bottom: 0.4rem;
+    }
+    hr {
+      border: 0;
+      border-top: 1px solid var(--border);
+      margin: 2rem 0;
+    }
+    a {
+      color: var(--accent);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+    a:hover {
+      color: var(--accent-hover);
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.875em;
+      background: rgba(51, 65, 85, 0.6);
+      padding: 0.15em 0.4em;
+      border-radius: 0.25rem;
+      color: #38bdf8;
+    }
+    .code-wrapper {
+      margin: 1.25rem 0;
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      overflow: hidden;
+    }
+    .code-header {
+      background: #0f172a;
+      padding: 0.4rem 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-family: monospace;
+    }
+    .copy-btn {
+      background: rgba(148, 163, 184, 0.1);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      border-radius: 0.25rem;
+      padding: 0.2rem 0.5rem;
+      font-size: 0.7rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .copy-btn:hover {
+      background: var(--accent);
+      color: #0f172a;
+    }
+    pre {
+      padding: 1.25rem;
+      overflow-x: auto;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.875rem;
+      line-height: 1.6;
+    }
+    pre code {
+      background: transparent;
+      padding: 0;
+      color: #e2e8f0;
+      font-size: inherit;
+    }
+    /* Tables */
+    .table-container {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.9rem;
+    }
+    th {
+      background: #1e293b;
+      color: var(--text);
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+    td {
+      padding: 0.65rem 1rem;
+      border-bottom: 1px solid #1e293b;
+      color: #cbd5e1;
+    }
+    tr:nth-child(even) {
+      background: rgba(30, 41, 59, 0.4);
+    }
+    /* Callouts */
+    .callout {
+      margin: 1.5rem 0;
+      padding: 1rem 1.25rem;
+      border-radius: 0.5rem;
+      border-left: 4px solid var(--accent);
+      background: rgba(30, 41, 59, 0.5);
+    }
+    .callout-title {
+      font-weight: 700;
+      font-size: 0.85rem;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.35rem;
+      color: var(--accent);
+    }
+    .callout-body {
+      font-size: 0.9rem;
+      color: #cbd5e1;
+    }
+    .callout-tip { border-left-color: #10b981; }
+    .callout-tip .callout-title { color: #34d399; }
+    .callout-warning { border-left-color: #f59e0b; }
+    .callout-warning .callout-title { color: #fbbf24; }
+    .callout-caution { border-left-color: #ef4444; }
+    .callout-caution .callout-title { color: #f87171; }
+    .callout-important { border-left-color: #8b5cf6; }
+    .callout-important .callout-title { color: #a78bfa; }
+    .heading-anchor {
+      text-decoration: none;
+      color: var(--border);
+      margin-left: 0.5rem;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    h2:hover .heading-anchor, h3:hover .heading-anchor {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="top-nav">
+    <div class="nav-left">
+      <a href="../START-HERE.html" class="back-btn">&#8592; Master Dashboard</a>
+      <span class="category-badge">07-Computer-Science</span>
+    </div>
+    <div class="nav-actions">
+      <button class="nav-btn" onclick="copyCurrentPath()">&#128203; Copy Path</button>
+      <a href="Computer-Networks-Study-Guide.md" class="nav-btn" target="_blank">&#128196; Raw Markdown</a>
+    </div>
+  </header>
+
+  <div class="layout-wrapper">
+    <aside>
+      
+        <nav class="toc-box">
+          <div class="toc-title">Table of Contents</div>
+          <ul><li class="toc-level-2"><a href="#1-overview">1. Overview</a></li><li class="toc-level-2"><a href="#2-the-problem-being-addressed">2. The Problem Being Addressed</a></li><li class="toc-level-2"><a href="#3-why-the-work-matters">3. Why the Work Matters</a></li><li class="toc-level-2"><a href="#4-key-concepts-to-master">4. Key Concepts to Master</a></li><li class="toc-level-3"><a href="#a-performance-fundamentals-chapter-1">A. Performance Fundamentals (Chapter 1)</a></li><li class="toc-level-3"><a href="#b-reliable-transmission-the-sliding-window-chapter-2-5">B. Reliable Transmission &amp; The Sliding Window (Chapter 2 &amp; 5)</a></li><li class="toc-level-3"><a href="#c-congestion-control-mechanics-chapter-6">C. Congestion Control Mechanics (Chapter 6)</a></li><li class="toc-level-2"><a href="#5-recommended-reading-sequence">5. Recommended Reading Sequence</a></li><li class="toc-level-2"><a href="#6-common-difficulties-for-beginners">6. Common Difficulties for Beginners</a></li><li class="toc-level-2"><a href="#7-companion-materials-in-this-library">7. Companion Materials in this Library</a></li></ul>
+        </nav>
+        
+    </aside>
+    <main class="content-area">
+      <h1 id="computer-networks-a-systems-approach-study-reading-guide">Computer Networks: A Systems Approach — Study &amp; Reading Guide<a href="#computer-networks-a-systems-approach-study-reading-guide" class="heading-anchor">#</a></h1>
+<h2 id="1-overview">1. Overview<a href="#1-overview" class="heading-anchor">#</a></h2>
+<ul>
+<li><strong>Book Title:</strong> <em>Computer Networks: A Systems Approach</em> (6th Edition)</li>
+<li><strong>Authors:</strong> Larry Peterson and Bruce Davie</li>
+<li><strong>Host Platform:</strong> Systems Approach LLC (Open-Access Edition)</li>
+<li><strong>Local PDF Location:</strong> <a href="file:///D:/Learning/Computer-Science/PDFs/Computer-Networks-A-Systems-Approach.pdf"><code>D:\Learning\Computer-Science\PDFs\Computer-Networks-A-Systems-Approach.pdf</code></a></li>
+</ul>
+<hr>
+<h2 id="2-the-problem-being-addressed">2. The Problem Being Addressed<a href="#2-the-problem-being-addressed" class="heading-anchor">#</a></h2>
+<p>Many networking courses treat computer networks as an abstract memorization exercise centered around the rigid 7-layer OSI model. Students learn protocol acronyms without understanding the core engineering challenges:</p>
+<ul>
+<li>How to transfer data reliably across inherently noisy, lossy physical channels.</li>
+<li>How to route packets efficiently across an interconnected mesh of millions of independently operated networks without a centralized controller.</li>
+<li>How to prevent network collapse when thousands of sources send data simultaneously over shared bottleneck switches.</li>
+</ul>
+<hr>
+<h2 id="3-why-the-work-matters">3. Why the Work Matters<a href="#3-why-the-work-matters" class="heading-anchor">#</a></h2>
+<p>Peterson and Davie&#x27;s text takes a <strong>systems engineering approach</strong>: rather than merely cataloging RFC standards, it frames networking as a sequence of engineering design problems and builds practical solutions step-by-step.</p>
+<div class="code-wrapper"><div class="code-header"><span class="code-lang">code</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code>[Layer 5: Applications]  ──&gt; HTTP, DNS, gRPC, WebSockets (Ch 9)
+           │
+           ▼
+[Layer 4: Transport]     ──&gt; TCP (Reliable Byte Stream, Congestion Control), UDP (Ch 5-6)
+           │
+           ▼
+[Layer 3: Network]       ──&gt; IP (Packets, CIDR, Global BGP Routing) (Ch 3-4)
+           │
+           ▼
+[Layer 2: Link]          ──&gt; Framing, Ethernet, Switching, Error Detection CRC (Ch 2)
+           │
+           ▼
+[Layer 1: Physical]      ──&gt; Bits, Signals, Bandwidth vs. Latency (Ch 1)</code></pre></div>
+<hr>
+<h2 id="4-key-concepts-to-master">4. Key Concepts to Master<a href="#4-key-concepts-to-master" class="heading-anchor">#</a></h2>
+<h3 id="a-performance-fundamentals-chapter-1">A. Performance Fundamentals (Chapter 1)<a href="#a-performance-fundamentals-chapter-1" class="heading-anchor">#</a></h3>
+<ul>
+<li><strong>Bandwidth vs. Latency:</strong></li>
+<ul>
+<li><em>Bandwidth (Throughput):</em> Number of bits transmitted per second.</li>
+<li><em>Latency (Delay):</em> Time taken for a bit to travel from sender to receiver ($\text{Latency} = \text{Propagation} + \text{Transmit} + \text{Queuing}$).</li>
+</ul>
+<li><strong>The Bandwidth-Delay Product (BDP):</strong></li>
+</ul>
+<p>$$\text{BDP} = \text{Bandwidth} \times \text{Round-Trip Time (RTT)}$$</p>
+<p>Measures the volume of data in flight in the network pipe at any given moment. This determines the required buffer and TCP window sizes.</p>
+<h3 id="b-reliable-transmission-the-sliding-window-chapter-2-5">B. Reliable Transmission &amp; The Sliding Window (Chapter 2 &amp; 5)<a href="#b-reliable-transmission-the-sliding-window-chapter-2-5" class="heading-anchor">#</a></h3>
+<ul>
+<li><strong>Stop-and-Wait vs. Sliding Window:</strong> Why stop-and-wait starves high-latency links, and how sliding windows keep the pipe filled with unacknowledged packets.</li>
+<li><strong>TCP Three-Way Handshake:</strong> <code>SYN</code> $\rightarrow$ <code>SYN-ACK</code> $\rightarrow$ <code>ACK</code>. Establishing sequence numbers and window scaling options.</li>
+<li><strong>TCP Connection Termination:</strong> Why the <code>TIME_WAIT</code> state (2MSL) is necessary to prevent duplicate packets from lingering and corrupting subsequent connections.</li>
+</ul>
+<h3 id="c-congestion-control-mechanics-chapter-6">C. Congestion Control Mechanics (Chapter 6)<a href="#c-congestion-control-mechanics-chapter-6" class="heading-anchor">#</a></h3>
+<ul>
+<li><strong>The Tragedy of the Network Commons:</strong> If every sender transmits at maximum link capacity, intermediate switch queues overflow, causing massive packet drops, retransmissions, and congestion collapse.</li>
+<li><strong>AIMD (Additive Increase, Multiplicative Decrease):</strong></li>
+<ul>
+<li>Increase congestion window (<code>cwnd</code>) by 1 packet per RTT when no drops occur.</li>
+<li>Halve <code>cwnd</code> immediately upon detecting a dropped packet.</li>
+</ul>
+<li><strong>Slow Start &amp; Fast Recovery:</strong> Ramping up transmission exponentially upon connection setup, and using triple-duplicate ACKs to retransmit lost packets without waiting for a retransmission timer expiry.</li>
+</ul>
+<hr>
+<h2 id="5-recommended-reading-sequence">5. Recommended Reading Sequence<a href="#5-recommended-reading-sequence" class="heading-anchor">#</a></h2>
+<ol>
+<li><strong>Foundation (Week 1):</strong> Chapter 1 (<em>Foundation</em>). Focus on Section 1.5 (<em>Performance: Bandwidth and Latency</em>).</li>
+<li><strong>Reliable Links (Week 2):</strong> Chapter 2 (<em>Direct Link Networks</em>). Read Section 2.4 (<em>Error Detection</em>) and Section 2.5 (<em>Reliable Transmission</em>).</li>
+<li><strong>Internetworking (Weeks 3–4):</strong> Chapter 3 (<em>Internetworking</em>). Understand IP packet structure, CIDR subnet masks, and longest-prefix matching.</li>
+<li><strong>Transport Protocols (Weeks 5–6):</strong> Chapter 5 (<em>End-to-End Protocols: TCP and UDP</em>). Study TCP state transitions.</li>
+<li><strong>Congestion Dynamics (Weeks 7–8):</strong> Chapter 6 (<em>Congestion Control</em>). Essential for understanding web and cloud backend latency.</li>
+</ol>
+<hr>
+<h2 id="6-common-difficulties-for-beginners">6. Common Difficulties for Beginners<a href="#6-common-difficulties-for-beginners" class="heading-anchor">#</a></h2>
+<ul>
+<li><strong>Confusing Flow Control with Congestion Control:</strong></li>
+<ul>
+<li><em>Flow Control:</em> Prevents the sender from overwhelming the <strong>receiver</strong> (managed via the receiver&#x27;s Advertised Window in the TCP header).</li>
+<li><em>Congestion Control:</em> Prevents the sender from overwhelming the <strong>intermediate network switches</strong> (managed via the sender&#x27;s calculated Congestion Window <code>cwnd</code>).</li>
+</ul>
+<li><strong>Assuming Packet Order is Guaranteed:</strong> IP is connectionless and best-effort; packets can arrive out of order, duplicated, or corrupted. TCP must buffer out-of-order packets and reconstruct the byte stream.</li>
+</ul>
+<hr>
+<h2 id="7-companion-materials-in-this-library">7. Companion Materials in this Library<a href="#7-companion-materials-in-this-library" class="heading-anchor">#</a></h2>
+<ul>
+<li><a href="file:///D:/Learning/Computer-Science/Notes/OSTEP-Operating-Systems-Guide.html"><code>OSTEP-Operating-Systems-Guide.md</code></a> — Sockets, I/O devices, and network file systems.</li>
+<li><a href="file:///D:/Learning/Data-Engineering/Streaming/Notes/MapReduce-Reading-Guide.html"><code>MapReduce-Reading-Guide.md</code></a> — Network cluster shuffling and rack-awareness.</li>
+<li><a href="file:///D:/Learning/Software-Engineering/PDFs/Pro-Git-2nd-Edition.pdf"><code>Pro-Git-2nd-Edition.pdf</code></a> — Networked distributed version control.</li>
+</ul>
+    </main>
+  </div>
+
+  <script>
+    function copyCode(btn) {
+      const pre = btn.parentElement.nextElementSibling;
+      const code = pre.querySelector('code').innerText;
+      navigator.clipboard.writeText(code).then(() => {
+        const old = btn.innerText;
+        btn.innerText = 'Copied!';
+        setTimeout(() => btn.innerText = old, 1500);
+      });
+    }
+    function copyCurrentPath() {
+      navigator.clipboard.writeText(window.location.href).then(() => {
+        alert('File URL copied to clipboard!');
+      });
+    }
+  </script>
+</body>
+</html>

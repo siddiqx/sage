@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mastering Ethereum &amp; EVM Architecture Guide — Learning Library</title>
+  <style>
+    :root {
+      --bg: #0b1120;
+      --card-bg: #1e293b;
+      --border: #334155;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-hover: #0ea5e9;
+      --code-bg: #020617;
+      --toc-bg: #131d31;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      padding: 0;
+    }
+    header.top-nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(11, 17, 32, 0.9);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+      padding: 0.85rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .back-btn {
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.35rem 0.75rem;
+      border-radius: 0.375rem;
+      background: rgba(56, 189, 248, 0.1);
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      transition: all 0.2s;
+    }
+    .back-btn:hover {
+      background: rgba(56, 189, 248, 0.2);
+    }
+    .category-badge {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      background: #1e293b;
+      padding: 0.25rem 0.6rem;
+      border-radius: 9999px;
+      border: 1px solid var(--border);
+    }
+    .nav-actions {
+      display: flex;
+      gap: 0.75rem;
+    }
+    .nav-btn {
+      background: #1e293b;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 0.35rem 0.75rem;
+      border-radius: 0.375rem;
+      font-size: 0.8rem;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: all 0.2s;
+    }
+    .nav-btn:hover {
+      background: #334155;
+      color: var(--text);
+    }
+    .layout-wrapper {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem;
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 2.5rem;
+    }
+    @media (max-width: 900px) {
+      .layout-wrapper {
+        grid-template-columns: 1fr;
+      }
+      .toc-box {
+        position: static;
+        margin-bottom: 2rem;
+      }
+    }
+    .toc-box {
+      position: sticky;
+      top: 5rem;
+      max-height: calc(100vh - 6rem);
+      overflow-y: auto;
+      background: var(--toc-bg);
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      padding: 1.25rem;
+    }
+    .toc-title {
+      font-size: 0.875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--accent);
+      margin-bottom: 0.85rem;
+    }
+    .toc-box ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    .toc-box a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: color 0.15s;
+    }
+    .toc-box a:hover {
+      color: var(--accent);
+    }
+    .toc-level-3 {
+      padding-left: 1rem;
+      font-size: 0.8rem;
+    }
+    .content-area {
+      min-width: 0;
+    }
+    h1 {
+      font-size: 2.25rem;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.75rem;
+      color: #ffffff;
+    }
+    h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-top: 2.25rem;
+      margin-bottom: 1rem;
+      color: #38bdf8;
+      border-bottom: 1px solid rgba(51, 65, 85, 0.4);
+      padding-bottom: 0.4rem;
+      position: relative;
+    }
+    h3 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin-top: 1.75rem;
+      margin-bottom: 0.75rem;
+      color: #f1f5f9;
+    }
+    h4 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-top: 1.25rem;
+      margin-bottom: 0.5rem;
+    }
+    p {
+      margin-bottom: 1rem;
+      color: #cbd5e1;
+    }
+    ul, ol {
+      margin-bottom: 1.25rem;
+      padding-left: 1.75rem;
+      color: #cbd5e1;
+    }
+    li {
+      margin-bottom: 0.4rem;
+    }
+    hr {
+      border: 0;
+      border-top: 1px solid var(--border);
+      margin: 2rem 0;
+    }
+    a {
+      color: var(--accent);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+    a:hover {
+      color: var(--accent-hover);
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.875em;
+      background: rgba(51, 65, 85, 0.6);
+      padding: 0.15em 0.4em;
+      border-radius: 0.25rem;
+      color: #38bdf8;
+    }
+    .code-wrapper {
+      margin: 1.25rem 0;
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      overflow: hidden;
+    }
+    .code-header {
+      background: #0f172a;
+      padding: 0.4rem 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-family: monospace;
+    }
+    .copy-btn {
+      background: rgba(148, 163, 184, 0.1);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      border-radius: 0.25rem;
+      padding: 0.2rem 0.5rem;
+      font-size: 0.7rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .copy-btn:hover {
+      background: var(--accent);
+      color: #0f172a;
+    }
+    pre {
+      padding: 1.25rem;
+      overflow-x: auto;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.875rem;
+      line-height: 1.6;
+    }
+    pre code {
+      background: transparent;
+      padding: 0;
+      color: #e2e8f0;
+      font-size: inherit;
+    }
+    /* Tables */
+    .table-container {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.9rem;
+    }
+    th {
+      background: #1e293b;
+      color: var(--text);
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+    td {
+      padding: 0.65rem 1rem;
+      border-bottom: 1px solid #1e293b;
+      color: #cbd5e1;
+    }
+    tr:nth-child(even) {
+      background: rgba(30, 41, 59, 0.4);
+    }
+    /* Callouts */
+    .callout {
+      margin: 1.5rem 0;
+      padding: 1rem 1.25rem;
+      border-radius: 0.5rem;
+      border-left: 4px solid var(--accent);
+      background: rgba(30, 41, 59, 0.5);
+    }
+    .callout-title {
+      font-weight: 700;
+      font-size: 0.85rem;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.35rem;
+      color: var(--accent);
+    }
+    .callout-body {
+      font-size: 0.9rem;
+      color: #cbd5e1;
+    }
+    .callout-tip { border-left-color: #10b981; }
+    .callout-tip .callout-title { color: #34d399; }
+    .callout-warning { border-left-color: #f59e0b; }
+    .callout-warning .callout-title { color: #fbbf24; }
+    .callout-caution { border-left-color: #ef4444; }
+    .callout-caution .callout-title { color: #f87171; }
+    .callout-important { border-left-color: #8b5cf6; }
+    .callout-important .callout-title { color: #a78bfa; }
+    .heading-anchor {
+      text-decoration: none;
+      color: var(--border);
+      margin-left: 0.5rem;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    h2:hover .heading-anchor, h3:hover .heading-anchor {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="top-nav">
+    <div class="nav-left">
+      <a href="../START-HERE.html" class="back-btn">&#8592; Master Dashboard</a>
+      <span class="category-badge">08-Blockchain-and-Solidity</span>
+    </div>
+    <div class="nav-actions">
+      <button class="nav-btn" onclick="copyCurrentPath()">&#128203; Copy Path</button>
+      <a href="Mastering-Ethereum-Syllabus.md" class="nav-btn" target="_blank">&#128196; Raw Markdown</a>
+    </div>
+  </header>
+
+  <div class="layout-wrapper">
+    <aside>
+      
+        <nav class="toc-box">
+          <div class="toc-title">Table of Contents</div>
+          <ul><li class="toc-level-2"><a href="#1-curriculum-overview">1. Curriculum Overview</a></li><li class="toc-level-2"><a href="#2-chapter-by-chapter-syllabus">2. Chapter-by-Chapter Syllabus</a></li><li class="toc-level-3"><a href="#chapter-1-what-is-ethereum">Chapter 1 — What Is Ethereum?</a></li><li class="toc-level-3"><a href="#chapter-2-ethereum-basics">Chapter 2 — Ethereum Basics</a></li><li class="toc-level-3"><a href="#chapter-3-ethereum-clients">Chapter 3 — Ethereum Clients</a></li><li class="toc-level-3"><a href="#chapter-4-cryptography">Chapter 4 — Cryptography</a></li><li class="toc-level-3"><a href="#chapter-5-wallets">Chapter 5 — Wallets</a></li><li class="toc-level-3"><a href="#chapter-6-transactions">Chapter 6 — Transactions</a></li><li class="toc-level-3"><a href="#chapter-7-smart-contracts-and-solidity">Chapter 7 — Smart Contracts and Solidity</a></li><li class="toc-level-3"><a href="#chapter-8-smart-contract-security">Chapter 8 — Smart Contract Security</a></li><li class="toc-level-3"><a href="#chapter-9-tokens">Chapter 9 — Tokens</a></li><li class="toc-level-3"><a href="#chapter-10-oracles">Chapter 10 — Oracles</a></li><li class="toc-level-3"><a href="#chapter-11-decentralized-applications-dapps">Chapter 11 — Decentralized Applications (DApps)</a></li><li class="toc-level-3"><a href="#chapter-12-decentralized-autonomous-organizations-daos">Chapter 12 — Decentralized Autonomous Organizations (DAOs)</a></li><li class="toc-level-3"><a href="#chapter-13-the-ethereum-virtual-machine-evm">Chapter 13 — The Ethereum Virtual Machine (EVM)</a></li><li class="toc-level-3"><a href="#chapter-14-consensus">Chapter 14 — Consensus</a></li><li class="toc-level-2"><a href="#3-recommended-study-roadmap">3. Recommended Study Roadmap</a></li></ul>
+        </nav>
+        
+    </aside>
+    <main class="content-area">
+      <h1 id="mastering-ethereum-syllabus-reading-guide">Mastering Ethereum: Syllabus &amp; Reading Guide<a href="#mastering-ethereum-syllabus-reading-guide" class="heading-anchor">#</a></h1>
+<div class="callout callout-note"><div class="callout-title">NOTE</div><div class="callout-body"><strong>Reference Work:</strong> <em>Mastering Ethereum: Building Smart Contracts and DApps</em><br><strong>Authors:</strong> Andreas M. Antonopoulos and Dr. Gavin Wood<br><strong>Canonical Repository:</strong> <a href="https://github.com/ethereumbook/ethereumbook">github.com/ethereumbook/ethereumbook</a><br><strong>License:</strong> Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International (<a href="https://creativecommons.org/licenses/by-nc-nd/4.0/">CC BY-NC-ND 4.0</a>)<br><strong>Acquisition Policy Note:</strong> The authors make the complete text freely accessible for reading via GitHub Markdown. In compliance with the Non-Commercial No-Derivatives license, this library provides a structured study syllabus and canonical chapter links rather than an unauthorized derivative PDF compilation.</div></div>
+<hr>
+<h2 id="1-curriculum-overview">1. Curriculum Overview<a href="#1-curriculum-overview" class="heading-anchor">#</a></h2>
+<p><em>Mastering Ethereum</em> is the definitive technical guide to the Ethereum protocol, the Ethereum Virtual Machine (EVM), and smart contract development. Written by Andreas M. Antonopoulos and Ethereum co-founder Gavin Wood, it serves as the foundational text for engineers transitioning from traditional software systems to decentralized computation.</p>
+<div class="code-wrapper"><div class="code-header"><span class="code-lang">code</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code>+-----------------------------------------------------------------------+
+|                         APPLICATION LAYER                            |
+|          Web3 Frontends (Viem / Ethers) | DApps | Oracles            |
++-----------------------------------------------------------------------+
+|                         CONTRACT LAYER                                |
+|        Solidity / Vyper Contracts | ERC-20 / ERC-721 Standards        |
++-----------------------------------------------------------------------+
+|                        VIRTUAL MACHINE LAYER                          |
+|             EVM: Stack (1024) | Memory | Persistent Storage           |
++-----------------------------------------------------------------------+
+|                          CONSENSUS LAYER                              |
+|           Proof of Stake (Beacon Chain) | Gas Metering | State Trie   |
++-----------------------------------------------------------------------+</code></pre></div>
+<hr>
+<h2 id="2-chapter-by-chapter-syllabus">2. Chapter-by-Chapter Syllabus<a href="#2-chapter-by-chapter-syllabus" class="heading-anchor">#</a></h2>
+<h3 id="chapter-1-what-is-ethereum">Chapter 1 — What Is Ethereum?<a href="#chapter-1-what-is-ethereum" class="heading-anchor">#</a></h3>
+<ul>
+<li><strong>Source:</strong> <a href="https://github.com/ethereumbook/ethereumbook/blob/develop/01what-is.asciidoc">01what-is.asciidoc</a></li>
+<li><strong>Key Concepts:</strong></li>
+<ul>
+<li>Comparison with Bitcoin: Turing completeness vs. UTXO scripting.</li>
+<li>The World Computer abstraction: deterministic state transitions.</li>
+<li>Components of the Ethereum system: P2P network, consensus rules, transactions, EVM.</li>
+</ul>
+</ul>
+<h3 id="chapter-2-ethereum-basics">Chapter 2 — Ethereum Basics<a href="#chapter-2-ethereum-basics" class="heading-anchor">#</a></h3>
+<ul>
+<li><strong>Source:</strong> <a href="https://github.com/ethereumbook/ethereumbook/blob/develop/02intro.asciidoc">02intro.asciidoc</a></li>
+<li><strong>Key Concepts:</strong></li>
+<ul>
+<li>Ether denominations: Wei, Gwei, Ether ($10^{18}$ Wei).</li>
+<li>Externally Owned Accounts (EOAs) vs. Contract Accounts.</li>
+<li>Lifecycle of a simple smart contract: write, compile, deploy, call.</li>
+</ul>
+</ul>
+<h3 id="chapter-3-ethereum-clients">Chapter 3 — Ethereum Clients<a href="#chapter-3-ethereum-clients" class="heading-anchor">#</a></h3>
+<ul>
+<li><strong>Source:</strong> <a href="https://github.com/ethereumbook/ethereumbook/blob/develop/03clients.asciidoc">03clients.asciidoc</a></li>
+<li><strong>Key Concepts:</strong></li>
+<ul>
+<li>Execution clients: Geth (Go-Ethereum), Nethermind, Besu, Erigon.</li>
+<li>Consensus clients: Prysm, Lighthouse, Teku, Lodestar.</li>
+<li>JSON-RPC interface and engine API communication.</li>
+<li>Sync modes: Full sync, Snap sync, State sync.</li>
+</ul>
+</ul>
+<h3 id="chapter-4-cryptography">Chapter 4 — Cryptography<a href="#chapter-4-cryptography" class="heading-anchor">#</a></h3>
+<ul>
+<li><strong>Source:</strong> <a href="https://github.com/ethereumbook/ethereumbook/blob/develop/04keys-addresses.asciidoc">04keys-addresses.asciidoc</a></li>
+<li><strong>Key Concepts:</strong></li>
+<ul>
+<li>Public-key cryptography: Elliptic Curve Cryptography on <code>secp256k1</code>.</li>
+<li>Private keys ($k \in [1, n-1]$) and public keys ($K = k \times G$).</li>
+<li>Keccak-256 cryptographic hash function (distinguished from NIST SHA-3).</li>
+<li>Ethereum address derivation: rightmost 20 bytes of $\text{Keccak-256}(K_{uncompressed})$.</li>
+<li>EIP-55 checksummed hexadecimal addresses.</li>
+</ul>
+</ul>
+<h3 id="chapter-5-wallets">Chapter 5 — Wallets<a href="#chapter-5-wallets" class="heading-anchor">#</a></h3>
+<ul>
+<li><strong>Source:</strong> <a href="https://github.com/ethereumbook/ethereumbook/blob/develop/05wallets.asciidoc">05wallets.asciidoc</a></li>
+<li><strong>Key Concepts:</strong></li>
+<ul>
+<li>Non-deterministic (Type 1) vs. Deterministic (Seeded) wallets.</li>
+<li>BIP-39 mnemonic seed phrases (12–24 word dictionary encoding).</li>
+<li>BIP-32 and BIP-44 hierarchical deterministic (HD) wallet derivation paths (<code>m/44&#x27;/60&#x27;/0&#x27;/0/i</code>).</li>
+</ul>
+</ul>
+<h3 id="chapter-6-transactions">Chapter 6 — Transactions<a href="#chapter-6-transactions" class="heading-anchor">#</a></h3>
+<ul>
+<li><strong>Source:</strong> <a href="https://github.com/ethereumbook/ethereumbook/blob/develop/06transactions.asciidoc">06transactions.asciidoc</a></li>
+<li><strong>Key Concepts:</strong></li>
+<ul>
+<li>Transaction fields: Nonce, Gas Price, Gas Limit, To, Value, Data, v/r/s signatures.</li>
+<li>EIP-1559 transaction model: Base Fee (burned), Max Priority Fee (miner/validator tip), Max Fee.</li>
+<li>Nonce management: preventing replay attacks, transaction ordering, and replacement/cancellation.</li>
+</ul>
+</ul>
+<h3 id="chapter-7-smart-contracts-and-solidity">Chapter 7 — Smart Contracts and Solidity<a href="#chapter-7-smart-contracts-and-solidity" class="heading-anchor">#</a></h3>
+<ul>
+<li><strong>Source:</strong> <a href="https://github.com/ethereumbook/ethereumbook/blob/develop/07smart-contracts-solidity.asciidoc">07smart-contracts-solidity.asciidoc</a></li>
+<li><strong>Key Concepts:</strong></li>
+<ul>
+<li>Solidity contract layout: SPDX license identifier, <code>pragma</code>, state variables, functions.</li>
+<li>Visibility specifiers: <code>public</code>, <code>external</code>, <code>internal</code>, <code>private</code>.</li>
+<li>Mutability: <code>view</code>, <code>pure</code>, <code>payable</code>, non-payable.</li>
+<li>Function modifiers and custom error definitions (<code>revert CustomError()</code>).</li>
+<li>ABI (Application Binary Interface) specification and function selector calculation ($\text{Keccak-256}(\text{&quot;transfer(address,uint256)&quot;})[0..3]$).</li>
+</ul>
+</ul>
+<h3 id="chapter-8-smart-contract-security">Chapter 8 — Smart Contract Security<a href="#chapter-8-smart-contract-security" class="heading-anchor">#</a></h3>
+<ul>
+<li><strong>Source:</strong> <a href="https://github.com/ethereumbook/ethereumbook/blob/develop/08smart-contracts-security.asciidoc">08smart-contracts-security.asciidoc</a></li>
+<li><strong>Key Concepts:</strong></li>
+<ul>
+<li>Classic attack vectors: Reentrancy, arithmetic overflows/underflows, delegatecall injection.</li>
+<li>Denial of Service (DoS) via gas exhaustion or unexpected revert.</li>
+<li>Defensive design: Checks-Effects-Interactions (CEI) pattern, pull vs. push payments, circuit breakers (pausability).</li>
+</ul>
+</ul>
+<h3 id="chapter-9-tokens">Chapter 9 — Tokens<a href="#chapter-9-tokens" class="heading-anchor">#</a></h3>
+<ul>
+<li><strong>Source:</strong> <a href="https://github.com/ethereumbook/ethereumbook/blob/develop/09tokens.asciidoc">09tokens.asciidoc</a></li>
+<li><strong>Key Concepts:</strong></li>
+<ul>
+<li>ERC-20: Fungible token standard (<code>totalSupply</code>, <code>balanceOf</code>, <code>transfer</code>, <code>approve</code>, <code>transferFrom</code>).</li>
+<li>ERC-721: Non-fungible token (NFT) standard (<code>ownerOf</code>, <code>safeTransferFrom</code>, token URIs).</li>
+<li>ERC-1155: Multi-token standard (batch transfers, gas efficiency).</li>
+</ul>
+</ul>
+<h3 id="chapter-10-oracles">Chapter 10 — Oracles<a href="#chapter-10-oracles" class="heading-anchor">#</a></h3>
+<ul>
+<li><strong>Source:</strong> <a href="https://github.com/ethereumbook/ethereumbook/blob/develop/10oracles.asciidoc">10oracles.asciidoc</a></li>
+<li><strong>Key Concepts:</strong></li>
+<ul>
+<li>The Oracle Problem: why blockchains cannot access off-chain data deterministically.</li>
+<li>Oracle architectures: centralized, multi-sig consensus, decentralized networks (Chainlink).</li>
+<li>Spot price manipulation vs. TWAP (Time-Weighted Average Price) oracles.</li>
+</ul>
+</ul>
+<h3 id="chapter-11-decentralized-applications-dapps">Chapter 11 — Decentralized Applications (DApps)<a href="#chapter-11-decentralized-applications-dapps" class="heading-anchor">#</a></h3>
+<ul>
+<li><strong>Source:</strong> <a href="https://github.com/ethereumbook/ethereumbook/blob/develop/11dapps.asciidoc">11dapps.asciidoc</a></li>
+<li><strong>Key Concepts:</strong></li>
+<ul>
+<li>DApp stack: frontend UI, Web3 provider (MetaMask, Rabby), decentralized storage (IPFS, Arweave).</li>
+<li>Contract events and indexing (The Graph, subgraphs).</li>
+</ul>
+</ul>
+<h3 id="chapter-12-decentralized-autonomous-organizations-daos">Chapter 12 — Decentralized Autonomous Organizations (DAOs)<a href="#chapter-12-decentralized-autonomous-organizations-daos" class="heading-anchor">#</a></h3>
+<ul>
+<li><strong>Source:</strong> <a href="https://github.com/ethereumbook/ethereumbook/blob/develop/12daos.asciidoc">12daos.asciidoc</a></li>
+<li><strong>Key Concepts:</strong></li>
+<ul>
+<li>Governance mechanisms: token-weighted voting, quadratic voting, optimistic governance.</li>
+<li>Time-locks, multi-signature execution (Safe), and the lesson of The DAO hack (2016).</li>
+</ul>
+</ul>
+<h3 id="chapter-13-the-ethereum-virtual-machine-evm">Chapter 13 — The Ethereum Virtual Machine (EVM)<a href="#chapter-13-the-ethereum-virtual-machine-evm" class="heading-anchor">#</a></h3>
+<ul>
+<li><strong>Source:</strong> <a href="https://github.com/ethereumbook/ethereumbook/blob/develop/13evm.asciidoc">13evm.asciidoc</a></li>
+<li><strong>Key Concepts:</strong></li>
+<ul>
+<li>EVM architecture: quasi-Turing complete, word size (256-bit / 32 bytes).</li>
+<li>Data locations:</li>
+<ul>
+<li>Stack: 1,024 elements max, 256 bits each. Only top 16 elements accessible (<code>dup1</code>–<code>dup16</code>, <code>swap1</code>–<code>swap16</code>).</li>
+<li>Memory: volatile byte array, quadratic gas expansion cost.</li>
+<li>Storage: persistent key-value store ($2^{256}$ 32-byte slots), highest gas cost (<code>sstore</code> / <code>sload</code>).</li>
+<li>Calldata: non-modifiable, read-only transaction payload.</li>
+</ul>
+<li>Gas schedule: opcode metering, out-of-gas reverts, state refund changes.</li>
+</ul>
+</ul>
+<h3 id="chapter-14-consensus">Chapter 14 — Consensus<a href="#chapter-14-consensus" class="heading-anchor">#</a></h3>
+<ul>
+<li><strong>Source:</strong> <a href="https://github.com/ethereumbook/ethereumbook/blob/develop/14consensus.asciidoc">14consensus.asciidoc</a></li>
+<li><strong>Key Concepts:</strong></li>
+<ul>
+<li>Transition from Ethash Proof-of-Work to Proof-of-Stake (The Merge, September 2022).</li>
+<li>Beacon Chain consensus: Validators (32 ETH stake), epochs (32 slots of 12 seconds), attestation.</li>
+<li>Finality: Casper FFG (Friendly Finality Gadget) and LMD-GHOST fork-choice rule.</li>
+<li>Slashing conditions: double signing, surround voting.</li>
+</ul>
+</ul>
+<hr>
+<h2 id="3-recommended-study-roadmap">3. Recommended Study Roadmap<a href="#3-recommended-study-roadmap" class="heading-anchor">#</a></h2>
+<ol>
+<li><strong>Foundations (Weeks 1–2):</strong> Chapters 1, 2, 4, 6. Focus on cryptography, address generation, transactions, and gas accounting.</li>
+<li><strong>Contract Engineering (Weeks 3–4):</strong> Chapters 7, 9. Implement ERC-20 and ERC-721 token patterns using the OpenZeppelin contracts in <code>D:\Learning\Blockchain\Solidity\Programs\OpenZeppelin-Contracts\</code>.</li>
+<li><strong>Security &amp; Auditing (Weeks 5–6):</strong> Chapters 8, 10. Study vulnerability post-mortems and read <code>D:\Learning\Blockchain\Solidity\Notes\Smart-Contract-Security-Practices.md</code>.</li>
+<li><strong>EVM Internals (Weeks 7–8):</strong> Chapters 13, 14. Understand storage layout (slot packing), opcode execution costs, and modern PoS consensus mechanics.</li>
+</ol>
+    </main>
+  </div>
+
+  <script>
+    function copyCode(btn) {
+      const pre = btn.parentElement.nextElementSibling;
+      const code = pre.querySelector('code').innerText;
+      navigator.clipboard.writeText(code).then(() => {
+        const old = btn.innerText;
+        btn.innerText = 'Copied!';
+        setTimeout(() => btn.innerText = old, 1500);
+      });
+    }
+    function copyCurrentPath() {
+      navigator.clipboard.writeText(window.location.href).then(() => {
+        alert('File URL copied to clipboard!');
+      });
+    }
+  </script>
+</body>
+</html>

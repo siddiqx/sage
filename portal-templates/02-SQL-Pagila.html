@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pagila Sample Database • Learning Portal</title>
+  <style>
+    :root {
+      --bg: #090d16;
+      --card-bg: #0f172a;
+      --card-hover: #1e293b;
+      --border: #1e293b;
+      --border-accent: rgba(56, 189, 248, 0.3);
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --accent: #38bdf8;
+      --accent-soft: rgba(56, 189, 248, 0.1);
+      --green: #10b981;
+      --green-soft: rgba(16, 185, 129, 0.1);
+      --amber: #f59e0b;
+      --amber-soft: rgba(245, 158, 11, 0.1);
+      --purple: #a855f7;
+      --purple-soft: rgba(168, 85, 247, 0.1);
+      --code-bg: #020617;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.65;
+      padding-bottom: 5rem;
+    }
+    .top-nav {
+      background: rgba(15, 23, 42, 0.9);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      padding: 0.85rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .breadcrumbs {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+    }
+    .breadcrumbs a {
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .breadcrumbs a:hover {
+      color: var(--accent);
+    }
+    .breadcrumbs .sep { color: var(--text-dim); }
+    .breadcrumbs .current { color: var(--text); font-weight: 600; }
+    .btn-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.45rem 0.9rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.15s;
+    }
+    .btn-back:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem;
+    }
+    .hero {
+      margin-bottom: 2.5rem;
+    }
+    .hero-badge-row {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.25rem 0.65rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+    .badge-cyan { background: var(--accent-soft); color: var(--accent); border: 1px solid rgba(56, 189, 248, 0.25); }
+    .badge-green { background: var(--green-soft); color: var(--green); border: 1px solid rgba(16, 185, 129, 0.25); }
+    .badge-purple { background: var(--purple-soft); color: var(--purple); border: 1px solid rgba(168, 85, 247, 0.25); }
+    .badge-amber { background: var(--amber-soft); color: var(--amber); border: 1px solid rgba(245, 158, 11, 0.25); }
+    .hero-title {
+      font-size: 2.25rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.75rem;
+      color: #fff;
+    }
+    .hero-desc {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      max-width: 800px;
+      line-height: 1.6;
+    }
+    .section-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin: 2.5rem 0 1rem;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .cli-box {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.875rem;
+      color: #38bdf8;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      cursor: pointer;
+      transition: border-color 0.15s;
+    }
+    .cli-box:hover {
+      border-color: var(--accent);
+    }
+    .cli-copy-btn {
+      background: rgba(56, 189, 248, 0.1);
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      color: var(--accent);
+      padding: 0.25rem 0.6rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.25rem;
+      margin-top: 1rem;
+    }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem;
+      transition: all 0.2s;
+    }
+    .card:hover {
+      border-color: rgba(56, 189, 248, 0.4);
+      transform: translateY(-2px);
+    }
+    .card h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 0.4rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .card p {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+    .card-footer {
+      margin-top: 1rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.8rem;
+    }
+    .card-footer a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .card-footer a:hover {
+      text-decoration: underline;
+    }
+    .card-footer code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      color: #38bdf8;
+      background: #020617;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      border: 1px solid #1e293b;
+    }
+    .list-group {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-top: 1rem;
+    }
+    .list-item {
+      padding: 0.9rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background 0.15s;
+    }
+    .list-item:last-child {
+      border-bottom: none;
+    }
+    .list-item:hover {
+      background: var(--card-hover);
+    }
+    .item-left {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .item-icon {
+      font-size: 1.1rem;
+    }
+    .item-title {
+      font-size: 0.925rem;
+      font-weight: 600;
+      color: #fff;
+    }
+    .item-desc {
+      font-size: 0.825rem;
+      color: var(--text-muted);
+    }
+    .pill-tag {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      color: var(--text-dim);
+    }
+    #toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: #10b981;
+      color: #fff;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.875rem;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+      display: none;
+      z-index: 100;
+    }
+</style>
+</head>
+<body>
+  <header class="top-nav">
+    <div class="breadcrumbs">
+      <a href="../../../START-HERE.html">D:\Learning</a> <span class="sep">/</span> <a href="../../Guides/Pagila-Database-Guide.html">02-SQL-and-Databases</a> <span class="sep">/</span> <span class="current">Practice</span> <span class="sep">/</span> <span class="current">Pagila DB</span>
+    </div>
+    <a href="../../../START-HERE.html" class="btn-back">← Back to Master Hub</a>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <div class="hero-badge-row">
+        <span class="badge badge-cyan">PostgreSQL 16</span><span class="badge badge-green">Docker Ready</span><span class="badge badge-purple">15+ Normalized Tables</span><span class="badge badge-amber">pgAdmin Included</span>
+      </div>
+      <h1 class="hero-title">Pagila Sample Database</h1>
+      <p class="hero-desc">The industry-standard relational database environment for PostgreSQL query optimization, B-Tree and GIN indexing, partition tuning, and SQL analytics.</p>
+    </section>
+
+    <div class="cli-box" onclick="copyText('D:\\Learning\\02-SQL-and-Databases\\Practice\\Pagila-Sample-Database')" title="Click to copy PowerShell navigation command">
+      <span>$ cd "D:\Learning\02-SQL-and-Databases\Practice\Pagila-Sample-Database"</span>
+      <span class="cli-copy-btn">📋 Copy Command</span>
+    </div>
+
+    
+    <h2 class="section-title">⚡ Quickstart: Launching Postgres with Docker</h2>
+    <div class="cards-grid">
+      <div class="card">
+        <h3>1. Start Postgres &amp; pgAdmin</h3>
+        <p>Launch the pre-configured PostgreSQL 16 container with the Pagila dataset loaded automatically.</p>
+        <div class="card-footer">
+          <code>docker compose up -d</code>
+        </div>
+      </div>
+      <div class="card">
+        <h3>2. Connect via psql CLI</h3>
+        <p>Connect directly into the running Postgres instance inside the container or from your local terminal.</p>
+        <div class="card-footer">
+          <code>psql -h localhost -U postgres -d pagila</code>
+        </div>
+      </div>
+      <div class="card">
+        <h3>3. Open Web UI (pgAdmin)</h3>
+        <p>Access the browser-based pgAdmin interface at <code>http://localhost:5050</code> (admin@pagila.local / pagila).</p>
+        <div class="card-footer">
+          <a href="http://localhost:5050" target="_blank">Open pgAdmin ↗</a>
+        </div>
+      </div>
+    </div>
+
+    <h2 class="section-title">📐 Relational Schema Architecture</h2>
+    <p style="color:var(--text-muted); margin-bottom:1rem;">Pagila is the canonical PostgreSQL DVD rental store database schema designed for practicing complex joins, aggregations, window functions, and query optimization.</p>
+    
+    <div style="background:var(--card-bg); border:1px solid var(--border); border-radius:10px; padding:1.25rem; margin-bottom:1.5rem;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+        <span style="font-weight:600; color:#fff;">Interactive Schema Diagram</span>
+        <a href="pagila-schema-diagram.png" target="_blank" style="color:var(--accent); font-size:0.875rem; text-decoration:none;">View Full PNG Image ↗</a>
+      </div>
+      <img src="pagila-schema-diagram.png" alt="Pagila Schema Diagram" style="width:100%; max-height:450px; object-fit:contain; border-radius:6px; background:#020617; padding:1rem;">
+    </div>
+
+    <h2 class="section-title">📊 Key Tables &amp; Practice Workflows</h2>
+    <div class="list-group">
+      <div class="list-item">
+        <div class="item-left">
+          <span class="item-icon">🎬</span>
+          <div>
+            <div class="item-title">film, film_actor, actor, category, film_category</div>
+            <div class="item-desc">Product catalog data with many-to-many relationship tables and full-text search vectors.</div>
+          </div>
+        </div>
+        <span class="pill-tag">Catalog Domain</span>
+      </div>
+      <div class="list-item">
+        <div class="item-left">
+          <span class="item-icon">👥</span>
+          <div>
+            <div class="item-title">customer, address, city, country, staff, store</div>
+            <div class="item-desc">Normalized geographic and user hierarchy for location-based analytical aggregations.</div>
+          </div>
+        </div>
+        <span class="pill-tag">Entities Domain</span>
+      </div>
+      <div class="list-item">
+        <div class="item-left">
+          <span class="item-icon">💳</span>
+          <div>
+            <div class="item-title">rental, payment</div>
+            <div class="item-desc">High-volume transactional event tables ideal for indexing, temporal queries, and window metrics.</div>
+          </div>
+        </div>
+        <span class="pill-tag">Transactional Domain</span>
+      </div>
+    </div>
+
+  </main>
+
+  <div id="toast">Copied command to clipboard!</div>
+
+  <script>
+    function copyText(txt) {
+      navigator.clipboard.writeText(txt).then(() => {
+        const toast = document.getElementById('toast');
+        toast.style.display = 'block';
+        setTimeout(() => toast.style.display = 'none', 2000);
+      });
+    }
+  </script>
+</body>
+</html>

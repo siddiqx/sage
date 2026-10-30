@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pagila Sample Database Exploration Guide — Learning Library</title>
+  <style>
+    :root {
+      --bg: #0b1120;
+      --card-bg: #1e293b;
+      --border: #334155;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-hover: #0ea5e9;
+      --code-bg: #020617;
+      --toc-bg: #131d31;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      padding: 0;
+    }
+    header.top-nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(11, 17, 32, 0.9);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+      padding: 0.85rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .back-btn {
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.35rem 0.75rem;
+      border-radius: 0.375rem;
+      background: rgba(56, 189, 248, 0.1);
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      transition: all 0.2s;
+    }
+    .back-btn:hover {
+      background: rgba(56, 189, 248, 0.2);
+    }
+    .category-badge {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      background: #1e293b;
+      padding: 0.25rem 0.6rem;
+      border-radius: 9999px;
+      border: 1px solid var(--border);
+    }
+    .nav-actions {
+      display: flex;
+      gap: 0.75rem;
+    }
+    .nav-btn {
+      background: #1e293b;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 0.35rem 0.75rem;
+      border-radius: 0.375rem;
+      font-size: 0.8rem;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: all 0.2s;
+    }
+    .nav-btn:hover {
+      background: #334155;
+      color: var(--text);
+    }
+    .layout-wrapper {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem;
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 2.5rem;
+    }
+    @media (max-width: 900px) {
+      .layout-wrapper {
+        grid-template-columns: 1fr;
+      }
+      .toc-box {
+        position: static;
+        margin-bottom: 2rem;
+      }
+    }
+    .toc-box {
+      position: sticky;
+      top: 5rem;
+      max-height: calc(100vh - 6rem);
+      overflow-y: auto;
+      background: var(--toc-bg);
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      padding: 1.25rem;
+    }
+    .toc-title {
+      font-size: 0.875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--accent);
+      margin-bottom: 0.85rem;
+    }
+    .toc-box ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    .toc-box a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: color 0.15s;
+    }
+    .toc-box a:hover {
+      color: var(--accent);
+    }
+    .toc-level-3 {
+      padding-left: 1rem;
+      font-size: 0.8rem;
+    }
+    .content-area {
+      min-width: 0;
+    }
+    h1 {
+      font-size: 2.25rem;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.75rem;
+      color: #ffffff;
+    }
+    h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-top: 2.25rem;
+      margin-bottom: 1rem;
+      color: #38bdf8;
+      border-bottom: 1px solid rgba(51, 65, 85, 0.4);
+      padding-bottom: 0.4rem;
+      position: relative;
+    }
+    h3 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin-top: 1.75rem;
+      margin-bottom: 0.75rem;
+      color: #f1f5f9;
+    }
+    h4 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-top: 1.25rem;
+      margin-bottom: 0.5rem;
+    }
+    p {
+      margin-bottom: 1rem;
+      color: #cbd5e1;
+    }
+    ul, ol {
+      margin-bottom: 1.25rem;
+      padding-left: 1.75rem;
+      color: #cbd5e1;
+    }
+    li {
+      margin-bottom: 0.4rem;
+    }
+    hr {
+      border: 0;
+      border-top: 1px solid var(--border);
+      margin: 2rem 0;
+    }
+    a {
+      color: var(--accent);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+    a:hover {
+      color: var(--accent-hover);
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.875em;
+      background: rgba(51, 65, 85, 0.6);
+      padding: 0.15em 0.4em;
+      border-radius: 0.25rem;
+      color: #38bdf8;
+    }
+    .code-wrapper {
+      margin: 1.25rem 0;
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      overflow: hidden;
+    }
+    .code-header {
+      background: #0f172a;
+      padding: 0.4rem 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-family: monospace;
+    }
+    .copy-btn {
+      background: rgba(148, 163, 184, 0.1);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      border-radius: 0.25rem;
+      padding: 0.2rem 0.5rem;
+      font-size: 0.7rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .copy-btn:hover {
+      background: var(--accent);
+      color: #0f172a;
+    }
+    pre {
+      padding: 1.25rem;
+      overflow-x: auto;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.875rem;
+      line-height: 1.6;
+    }
+    pre code {
+      background: transparent;
+      padding: 0;
+      color: #e2e8f0;
+      font-size: inherit;
+    }
+    /* Tables */
+    .table-container {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.9rem;
+    }
+    th {
+      background: #1e293b;
+      color: var(--text);
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+    td {
+      padding: 0.65rem 1rem;
+      border-bottom: 1px solid #1e293b;
+      color: #cbd5e1;
+    }
+    tr:nth-child(even) {
+      background: rgba(30, 41, 59, 0.4);
+    }
+    /* Callouts */
+    .callout {
+      margin: 1.5rem 0;
+      padding: 1rem 1.25rem;
+      border-radius: 0.5rem;
+      border-left: 4px solid var(--accent);
+      background: rgba(30, 41, 59, 0.5);
+    }
+    .callout-title {
+      font-weight: 700;
+      font-size: 0.85rem;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.35rem;
+      color: var(--accent);
+    }
+    .callout-body {
+      font-size: 0.9rem;
+      color: #cbd5e1;
+    }
+    .callout-tip { border-left-color: #10b981; }
+    .callout-tip .callout-title { color: #34d399; }
+    .callout-warning { border-left-color: #f59e0b; }
+    .callout-warning .callout-title { color: #fbbf24; }
+    .callout-caution { border-left-color: #ef4444; }
+    .callout-caution .callout-title { color: #f87171; }
+    .callout-important { border-left-color: #8b5cf6; }
+    .callout-important .callout-title { color: #a78bfa; }
+    .heading-anchor {
+      text-decoration: none;
+      color: var(--border);
+      margin-left: 0.5rem;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    h2:hover .heading-anchor, h3:hover .heading-anchor {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="top-nav">
+    <div class="nav-left">
+      <a href="../START-HERE.html" class="back-btn">&#8592; Master Dashboard</a>
+      <span class="category-badge">02-SQL-and-Databases</span>
+    </div>
+    <div class="nav-actions">
+      <button class="nav-btn" onclick="copyCurrentPath()">&#128203; Copy Path</button>
+      <a href="Pagila-Database-Guide.md" class="nav-btn" target="_blank">&#128196; Raw Markdown</a>
+    </div>
+  </header>
+
+  <div class="layout-wrapper">
+    <aside>
+      
+        <nav class="toc-box">
+          <div class="toc-title">Table of Contents</div>
+          <ul><li class="toc-level-2"><a href="#1-purpose">1. Purpose</a></li><li class="toc-level-2"><a href="#2-prerequisites">2. Prerequisites</a></li><li class="toc-level-2"><a href="#3-what-you-will-learn">3. What You Will Learn</a></li><li class="toc-level-2"><a href="#4-repository-structure-key-files-vs-infrastructure">4. Repository Structure: Key Files vs. Infrastructure</a></li><li class="toc-level-3"><a href="#which-files-matter-to-a-learner">Which Files Matter to a Learner</a></li><li class="toc-level-2"><a href="#5-entity-relationship-overview">5. Entity Relationship Overview</a></li><li class="toc-level-3"><a href="#core-business-entities">Core Business Entities</a></li><li class="toc-level-2"><a href="#6-progressive-sql-practice-exercises">6. Progressive SQL Practice Exercises</a></li><li class="toc-level-3"><a href="#level-1-basic-filtering-and-inner-joins">Level 1: Basic Filtering and Inner Joins</a></li><li class="toc-level-3"><a href="#level-2-grouping-and-aggregations">Level 2: Grouping and Aggregations</a></li><li class="toc-level-3"><a href="#level-3-advanced-analytic-window-functions">Level 3: Advanced Analytic Window Functions</a></li><li class="toc-level-2"><a href="#7-common-pitfalls-when-studying-schemas">7. Common Pitfalls When Studying Schemas</a></li><li class="toc-level-2"><a href="#8-companion-materials-in-this-library">8. Companion Materials in this Library</a></li></ul>
+        </nav>
+        
+    </aside>
+    <main class="content-area">
+      <h1 id="pagila-sample-database-schema-practice-guide">Pagila Sample Database: Schema &amp; Practice Guide<a href="#pagila-sample-database-schema-practice-guide" class="heading-anchor">#</a></h1>
+<h2 id="1-purpose">1. Purpose<a href="#1-purpose" class="heading-anchor">#</a></h2>
+<p>The Pagila sample database is a comprehensive relational database model representing a DVD rental business. It provides a realistic, highly normalized schema (3NF) populated with realistic data, making it the standard resource for learning SQL, query optimization, and relational database administration.</p>
+<ul>
+<li><strong>Repository Location:</strong> <a href="file:///D:/Learning/Databases/PostgreSQL/Resources/Pagila-Sample-Database/"><code>D:\Learning\Databases\PostgreSQL\Resources\Pagila-Sample-Database\</code></a></li>
+<li><strong>License:</strong> PostgreSQL License</li>
+</ul>
+<hr>
+<h2 id="2-prerequisites">2. Prerequisites<a href="#2-prerequisites" class="heading-anchor">#</a></h2>
+<ul>
+<li>Basic understanding of relational concepts (tables, primary keys, foreign keys, one-to-many relationships).</li>
+<li>Basic SQL syntax (<code>SELECT</code>, <code>WHERE</code>, <code>JOIN</code>, <code>GROUP BY</code>).</li>
+</ul>
+<hr>
+<h2 id="3-what-you-will-learn">3. What You Will Learn<a href="#3-what-you-will-learn" class="heading-anchor">#</a></h2>
+<ul>
+<li>Real-world relational schema architecture: table normalization, surrogate keys, composite keys, and foreign key constraints.</li>
+<li>Multi-table JOIN operations connecting customers, rentals, payments, inventory, and film metadata.</li>
+<li>Query optimization concepts: indexes, foreign key lookup efficiency, and B-Tree mechanics.</li>
+<li>View and trigger design: materialized views, stored procedures, and audit columns (<code>last_update</code>).</li>
+</ul>
+<hr>
+<h2 id="4-repository-structure-key-files-vs-infrastructure">4. Repository Structure: Key Files vs. Infrastructure<a href="#4-repository-structure-key-files-vs-infrastructure" class="heading-anchor">#</a></h2>
+<div class="code-wrapper"><div class="code-header"><span class="code-lang">code</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code>Pagila-Sample-Database/
+├── pagila-schema.sql         &lt;-- ESSENTIAL: Complete DDL (tables, constraints, views, indexes)
+├── pagila-data.sql           &lt;-- ESSENTIAL: Complete dataset (~45 MB of INSERT statements)
+├── pagila-insert-data.sql    &lt;-- ALTERNATIVE: Single large transaction variant
+├── README.md                 &lt;-- Upstream overview and release history
+└── .git/                     &lt;-- IGNORE: Git history metadata</code></pre></div>
+<h3 id="which-files-matter-to-a-learner">Which Files Matter to a Learner<a href="#which-files-matter-to-a-learner" class="heading-anchor">#</a></h3>
+<ol>
+<li><strong><code>pagila-schema.sql</code>:</strong> Read this file first. It contains every <code>CREATE TABLE</code>, <code>CREATE INDEX</code>, <code>ALTER TABLE ... ADD CONSTRAINT</code>, and view definition. Studying this file teaches you how a production-grade relational database is designed.</li>
+<li><strong><code>pagila-data.sql</code>:</strong> Contains realistic test records (thousands of films, actors, customers, rentals, and payments).</li>
+</ol>
+<hr>
+<h2 id="5-entity-relationship-overview">5. Entity Relationship Overview<a href="#5-entity-relationship-overview" class="heading-anchor">#</a></h2>
+<p>The Pagila schema is organized into three major business subsystems:</p>
+<div class="code-wrapper"><div class="code-header"><span class="code-lang">code</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code>+-----------------------------------------------------------------------------------+
+| 1. FILM CATALOG                                                                   |
+|    actor &lt;---(film_actor)---&gt; film &lt;---(film_category)---&gt; category               |
+|                                 |                                                 |
+|                                 v                                                 |
+| 2. INVENTORY &amp; STORES       inventory                                             |
+|                                 |                                                 |
+|                                 v                                                 |
+| 3. RENTAL TRANSACTIONS        rental &lt;-------- customer                           |
+|                                 |                 |                               |
+|                                 v                 v                               |
+|                              payment ---------&gt; staff                             |
++-----------------------------------------------------------------------------------+</code></pre></div>
+<h3 id="core-business-entities">Core Business Entities<a href="#core-business-entities" class="heading-anchor">#</a></h3>
+<ul>
+<li><strong><code>film</code>:</strong> Core movie catalog (title, description, release year, rental rate, replacement cost, rating).</li>
+<li><strong><code>inventory</code>:</strong> Physical copies of a film stocked at a specific store (<code>film_id</code>, <code>store_id</code>).</li>
+<li><strong><code>customer</code>:</strong> Registered users eligible to rent movies (<code>customer_id</code>, <code>store_id</code>, <code>email</code>, <code>active</code>).</li>
+<li><strong><code>rental</code>:</strong> The transaction of a customer taking out a copy of a film (<code>rental_date</code>, <code>return_date</code>).</li>
+<li><strong><code>payment</code>:</strong> Financial transactions recorded for each rental (<code>amount</code>, <code>payment_date</code>).</li>
+</ul>
+<hr>
+<h2 id="6-progressive-sql-practice-exercises">6. Progressive SQL Practice Exercises<a href="#6-progressive-sql-practice-exercises" class="heading-anchor">#</a></h2>
+<p>You can write and test these queries mentally against <code>pagila-schema.sql</code> or against a local PostgreSQL database:</p>
+<h3 id="level-1-basic-filtering-and-inner-joins">Level 1: Basic Filtering and Inner Joins<a href="#level-1-basic-filtering-and-inner-joins" class="heading-anchor">#</a></h3>
+<ul>
+<li><strong>Task:</strong> Find the top 10 longest films in the catalog rated &#x27;PG-13&#x27;.</li>
+</ul>
+<div class="code-wrapper"><div class="code-header"><span class="code-lang">sql</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code>  SELECT title, length, rating, rental_rate
+  FROM film
+  WHERE rating = &#x27;PG-13&#x27;
+  ORDER BY length DESC
+  LIMIT 10;</code></pre></div>
+<ul>
+<li><strong>Task:</strong> List all movies rented by customer &#x27;MARY SMITH&#x27; along with the rental dates.</li>
+</ul>
+<div class="code-wrapper"><div class="code-header"><span class="code-lang">sql</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code>  SELECT f.title, r.rental_date, r.return_date
+  FROM customer c
+  JOIN rental r ON c.customer_id = r.customer_id
+  JOIN inventory i ON r.inventory_id = i.inventory_id
+  JOIN film f ON i.film_id = f.film_id
+  WHERE c.first_name = &#x27;MARY&#x27; AND c.last_name = &#x27;SMITH&#x27;
+  ORDER BY r.rental_date DESC;</code></pre></div>
+<h3 id="level-2-grouping-and-aggregations">Level 2: Grouping and Aggregations<a href="#level-2-grouping-and-aggregations" class="heading-anchor">#</a></h3>
+<ul>
+<li><strong>Task:</strong> Calculate total revenue generated per film category.</li>
+</ul>
+<div class="code-wrapper"><div class="code-header"><span class="code-lang">sql</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code>  SELECT c.name AS category_name, SUM(p.amount) AS total_revenue
+  FROM category c
+  JOIN film_category fc ON c.category_id = fc.category_id
+  JOIN film f ON fc.film_id = f.film_id
+  JOIN inventory i ON f.film_id = i.film_id
+  JOIN rental r ON i.inventory_id = r.inventory_id
+  JOIN payment p ON r.rental_id = p.rental_id
+  GROUP BY c.name
+  ORDER BY total_revenue DESC;</code></pre></div>
+<h3 id="level-3-advanced-analytic-window-functions">Level 3: Advanced Analytic Window Functions<a href="#level-3-advanced-analytic-window-functions" class="heading-anchor">#</a></h3>
+<ul>
+<li><strong>Task:</strong> Rank the top 3 highest-spending customers within each store.</li>
+</ul>
+<div class="code-wrapper"><div class="code-header"><span class="code-lang">sql</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code>  WITH customer_spend AS (
+      SELECT c.store_id, c.customer_id, c.first_name, c.last_name,
+             SUM(p.amount) AS total_spent
+      FROM customer c
+      JOIN payment p ON c.customer_id = p.customer_id
+      GROUP BY c.store_id, c.customer_id, c.first_name, c.last_name
+  ),
+  ranked_spend AS (
+      SELECT store_id, customer_id, first_name, last_name, total_spent,
+             DENSE_RANK() OVER (PARTITION BY store_id ORDER BY total_spent DESC) AS rnk
+      FROM customer_spend
+  )
+  SELECT store_id, customer_id, first_name, last_name, total_spent, rnk
+  FROM ranked_spend
+  WHERE rnk &lt;= 3;</code></pre></div>
+<hr>
+<h2 id="7-common-pitfalls-when-studying-schemas">7. Common Pitfalls When Studying Schemas<a href="#7-common-pitfalls-when-studying-schemas" class="heading-anchor">#</a></h2>
+<ul>
+<li><strong>Confusing <code>film</code> with <code>inventory</code>:</strong> A customer does not rent a <code>film</code> record; they rent an <code>inventory</code> item (a specific physical copy owned by a specific store).</li>
+<li><strong>Cartesian Product (Missing JOIN Predicates):</strong> Joining 5 tables without explicit <code>ON</code> conditions results in massive cross joins. Always specify the foreign key relationship.</li>
+<li><strong>Ignoring Indexes:</strong> When examining <code>pagila-schema.sql</code>, notice which columns have indexes (<code>CREATE INDEX idx_fk_customer_id ON payment(customer_id);</code>). Without this index, calculating customer revenue requires a full sequential scan of the payment table.</li>
+</ul>
+<hr>
+<h2 id="8-companion-materials-in-this-library">8. Companion Materials in this Library<a href="#8-companion-materials-in-this-library" class="heading-anchor">#</a></h2>
+<ul>
+<li><a href="file:///D:/Learning/Databases/SQL/Notes/Use-The-Index-Luke.html"><code>Use-The-Index-Luke.md</code></a> — How PostgreSQL uses B-Trees and execution plans on tables like <code>payment</code>.</li>
+<li><a href="file:///D:/Learning/Databases/PostgreSQL/PDFs/PostgreSQL-16-Documentation.pdf"><code>PostgreSQL-16-Documentation.pdf</code></a> — Official PostgreSQL reference manual.</li>
+<li><a href="file:///D:/Learning/Databases/SQL/Resources/PGExercises-Index.html"><code>PGExercises-Index.md</code></a> — Step-by-step query practice problems.</li>
+</ul>
+    </main>
+  </div>
+
+  <script>
+    function copyCode(btn) {
+      const pre = btn.parentElement.nextElementSibling;
+      const code = pre.querySelector('code').innerText;
+      navigator.clipboard.writeText(code).then(() => {
+        const old = btn.innerText;
+        btn.innerText = 'Copied!';
+        setTimeout(() => btn.innerText = old, 1500);
+      });
+    }
+    function copyCurrentPath() {
+      navigator.clipboard.writeText(window.location.href).then(() => {
+        alert('File URL copied to clipboard!');
+      });
+    }
+  </script>
+</body>
+</html>

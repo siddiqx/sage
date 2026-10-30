@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Azure Cloud &amp; Modern Data Architecture Guide — Learning Library</title>
+  <style>
+    :root {
+      --bg: #0b1120;
+      --card-bg: #1e293b;
+      --border: #334155;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-hover: #0ea5e9;
+      --code-bg: #020617;
+      --toc-bg: #131d31;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      padding: 0;
+    }
+    header.top-nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(11, 17, 32, 0.9);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+      padding: 0.85rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .back-btn {
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.35rem 0.75rem;
+      border-radius: 0.375rem;
+      background: rgba(56, 189, 248, 0.1);
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      transition: all 0.2s;
+    }
+    .back-btn:hover {
+      background: rgba(56, 189, 248, 0.2);
+    }
+    .category-badge {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      background: #1e293b;
+      padding: 0.25rem 0.6rem;
+      border-radius: 9999px;
+      border: 1px solid var(--border);
+    }
+    .nav-actions {
+      display: flex;
+      gap: 0.75rem;
+    }
+    .nav-btn {
+      background: #1e293b;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 0.35rem 0.75rem;
+      border-radius: 0.375rem;
+      font-size: 0.8rem;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: all 0.2s;
+    }
+    .nav-btn:hover {
+      background: #334155;
+      color: var(--text);
+    }
+    .layout-wrapper {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem;
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 2.5rem;
+    }
+    @media (max-width: 900px) {
+      .layout-wrapper {
+        grid-template-columns: 1fr;
+      }
+      .toc-box {
+        position: static;
+        margin-bottom: 2rem;
+      }
+    }
+    .toc-box {
+      position: sticky;
+      top: 5rem;
+      max-height: calc(100vh - 6rem);
+      overflow-y: auto;
+      background: var(--toc-bg);
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      padding: 1.25rem;
+    }
+    .toc-title {
+      font-size: 0.875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--accent);
+      margin-bottom: 0.85rem;
+    }
+    .toc-box ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    .toc-box a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: color 0.15s;
+    }
+    .toc-box a:hover {
+      color: var(--accent);
+    }
+    .toc-level-3 {
+      padding-left: 1rem;
+      font-size: 0.8rem;
+    }
+    .content-area {
+      min-width: 0;
+    }
+    h1 {
+      font-size: 2.25rem;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.75rem;
+      color: #ffffff;
+    }
+    h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-top: 2.25rem;
+      margin-bottom: 1rem;
+      color: #38bdf8;
+      border-bottom: 1px solid rgba(51, 65, 85, 0.4);
+      padding-bottom: 0.4rem;
+      position: relative;
+    }
+    h3 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin-top: 1.75rem;
+      margin-bottom: 0.75rem;
+      color: #f1f5f9;
+    }
+    h4 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-top: 1.25rem;
+      margin-bottom: 0.5rem;
+    }
+    p {
+      margin-bottom: 1rem;
+      color: #cbd5e1;
+    }
+    ul, ol {
+      margin-bottom: 1.25rem;
+      padding-left: 1.75rem;
+      color: #cbd5e1;
+    }
+    li {
+      margin-bottom: 0.4rem;
+    }
+    hr {
+      border: 0;
+      border-top: 1px solid var(--border);
+      margin: 2rem 0;
+    }
+    a {
+      color: var(--accent);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+    a:hover {
+      color: var(--accent-hover);
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.875em;
+      background: rgba(51, 65, 85, 0.6);
+      padding: 0.15em 0.4em;
+      border-radius: 0.25rem;
+      color: #38bdf8;
+    }
+    .code-wrapper {
+      margin: 1.25rem 0;
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      overflow: hidden;
+    }
+    .code-header {
+      background: #0f172a;
+      padding: 0.4rem 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-family: monospace;
+    }
+    .copy-btn {
+      background: rgba(148, 163, 184, 0.1);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      border-radius: 0.25rem;
+      padding: 0.2rem 0.5rem;
+      font-size: 0.7rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .copy-btn:hover {
+      background: var(--accent);
+      color: #0f172a;
+    }
+    pre {
+      padding: 1.25rem;
+      overflow-x: auto;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.875rem;
+      line-height: 1.6;
+    }
+    pre code {
+      background: transparent;
+      padding: 0;
+      color: #e2e8f0;
+      font-size: inherit;
+    }
+    /* Tables */
+    .table-container {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.9rem;
+    }
+    th {
+      background: #1e293b;
+      color: var(--text);
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+    td {
+      padding: 0.65rem 1rem;
+      border-bottom: 1px solid #1e293b;
+      color: #cbd5e1;
+    }
+    tr:nth-child(even) {
+      background: rgba(30, 41, 59, 0.4);
+    }
+    /* Callouts */
+    .callout {
+      margin: 1.5rem 0;
+      padding: 1rem 1.25rem;
+      border-radius: 0.5rem;
+      border-left: 4px solid var(--accent);
+      background: rgba(30, 41, 59, 0.5);
+    }
+    .callout-title {
+      font-weight: 700;
+      font-size: 0.85rem;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.35rem;
+      color: var(--accent);
+    }
+    .callout-body {
+      font-size: 0.9rem;
+      color: #cbd5e1;
+    }
+    .callout-tip { border-left-color: #10b981; }
+    .callout-tip .callout-title { color: #34d399; }
+    .callout-warning { border-left-color: #f59e0b; }
+    .callout-warning .callout-title { color: #fbbf24; }
+    .callout-caution { border-left-color: #ef4444; }
+    .callout-caution .callout-title { color: #f87171; }
+    .callout-important { border-left-color: #8b5cf6; }
+    .callout-important .callout-title { color: #a78bfa; }
+    .heading-anchor {
+      text-decoration: none;
+      color: var(--border);
+      margin-left: 0.5rem;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    h2:hover .heading-anchor, h3:hover .heading-anchor {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="top-nav">
+    <div class="nav-left">
+      <a href="../START-HERE.html" class="back-btn">&#8592; Master Dashboard</a>
+      <span class="category-badge">04-Cloud-and-Azure</span>
+    </div>
+    <div class="nav-actions">
+      <button class="nav-btn" onclick="copyCurrentPath()">&#128203; Copy Path</button>
+      <a href="Azure-and-Cloud-Architecture-Guide.md" class="nav-btn" target="_blank">&#128196; Raw Markdown</a>
+    </div>
+  </header>
+
+  <div class="layout-wrapper">
+    <aside>
+      
+        <nav class="toc-box">
+          <div class="toc-title">Table of Contents</div>
+          <ul><li class="toc-level-2"><a href="#1-cloud-infrastructure-foundations-az-900">1. Cloud Infrastructure Foundations (AZ-900)</a></li><li class="toc-level-3"><a href="#cloud-service-models">Cloud Service Models</a></li><li class="toc-level-3"><a href="#resiliency-availability-hierarchy">Resiliency &amp; Availability Hierarchy</a></li><li class="toc-level-2"><a href="#2-modern-enterprise-cloud-data-architecture-microsoft-fabric">2. Modern Enterprise Cloud Data Architecture: Microsoft Fabric</a></li><li class="toc-level-3"><a href="#evolution-beyond-legacy-cloud-data-retired-dp-203-rightarrow-modern-fabric-dp-600">Evolution Beyond Legacy Cloud Data (Retired DP-203 $\rightarrow$ Modern Fabric DP-600)</a></li><li class="toc-level-3"><a href="#the-unified-onelake-paradigm">The Unified OneLake Paradigm</a></li><li class="toc-level-2"><a href="#3-the-medallion-architecture-bronze-rightarrow-silver-rightarrow-gold">3. The Medallion Architecture (Bronze $\rightarrow$ Silver $\rightarrow$ Gold)</a></li><li class="toc-level-2"><a href="#4-recommended-study-sequence">4. Recommended Study Sequence</a></li></ul>
+        </nav>
+        
+    </aside>
+    <main class="content-area">
+      <h1 id="azure-modern-cloud-architecture-guide">Azure &amp; Modern Cloud Architecture Guide<a href="#azure-modern-cloud-architecture-guide" class="heading-anchor">#</a></h1>
+<p>This guide covers cloud infrastructure fundamentals (AZ-900 baseline) and the modern evolution of enterprise cloud data platforms (Microsoft Fabric, OneLake, and the Medallion Architecture).</p>
+<hr>
+<h2 id="1-cloud-infrastructure-foundations-az-900">1. Cloud Infrastructure Foundations (AZ-900)<a href="#1-cloud-infrastructure-foundations-az-900" class="heading-anchor">#</a></h2>
+<h3 id="cloud-service-models">Cloud Service Models<a href="#cloud-service-models" class="heading-anchor">#</a></h3>
+<ul>
+<li><strong>IaaS (Infrastructure as a Service):</strong> Cloud provider manages physical hardware, cooling, and virtualization. You manage OS, patches, networking, and applications (e.g., Azure Virtual Machines).</li>
+<li><strong>PaaS (Platform as a Service):</strong> Cloud provider manages OS, patching, and runtime environment. You manage application code and data (e.g., Azure App Service, Azure SQL Database).</li>
+<li><strong>SaaS (Software as a Service):</strong> Cloud provider manages everything. You consume the software via browser or API (e.g., Microsoft 365, Power BI).</li>
+</ul>
+<h3 id="resiliency-availability-hierarchy">Resiliency &amp; Availability Hierarchy<a href="#resiliency-availability-hierarchy" class="heading-anchor">#</a></h3>
+<div class="code-wrapper"><div class="code-header"><span class="code-lang">code</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code>Azure Geography (e.g., United States)
+  └── Regional Pair (e.g., East US &lt;--&gt; West US: 300+ miles apart for disaster recovery)
+        └── Region (Latency-defined perimeter with interconnected datacenters)
+              └── Availability Zones (Physically separate datacenters with independent power/cooling)</code></pre></div>
+<ul>
+<li><strong>Service Level Agreements (SLAs):</strong> Financial guarantees of uptime (e.g., 99.9% = 8.76 hours downtime/year; 99.99% = 52.6 minutes downtime/year). Combining services in series multiplies their availabilities ($0.999 \times 0.999 = 0.998$).</li>
+</ul>
+<hr>
+<h2 id="2-modern-enterprise-cloud-data-architecture-microsoft-fabric">2. Modern Enterprise Cloud Data Architecture: Microsoft Fabric<a href="#2-modern-enterprise-cloud-data-architecture-microsoft-fabric" class="heading-anchor">#</a></h2>
+<h3 id="evolution-beyond-legacy-cloud-data-retired-dp-203-rightarrow-modern-fabric-dp-600">Evolution Beyond Legacy Cloud Data (Retired DP-203 $\rightarrow$ Modern Fabric DP-600)<a href="#evolution-beyond-legacy-cloud-data-retired-dp-203-rightarrow-modern-fabric-dp-600" class="heading-anchor">#</a></h3>
+<p>Traditional cloud data architectures required provisioning multiple disjoint services:</p>
+<ul>
+<li>Azure Synapse Analytics (Dedicated SQL Pools)</li>
+<li>Azure Data Factory (Pipelines &amp; Integration Runtimes)</li>
+<li>Azure Databricks (Spark compute clusters)</li>
+<li>Azure Data Lake Storage Gen2 (Hierarchical object storage)</li>
+</ul>
+<p>This created duplicate storage, siloed security models, and high operational overhead.</p>
+<h3 id="the-unified-onelake-paradigm">The Unified OneLake Paradigm<a href="#the-unified-onelake-paradigm" class="heading-anchor">#</a></h3>
+<p>Microsoft Fabric introduces <strong>OneLake</strong>—a single, unified SaaS data lake for an entire organization (&quot;the OneDrive for data&quot;):</p>
+<ol>
+<li><strong>Single Copy of Data:</strong> All compute engines (Fabric Spark, Fabric SQL Analytics Endpoint, Power BI Direct Lake) query the exact same files stored in OneLake without copying or moving data.</li>
+<li><strong>Open Format (Delta Parquet):</strong> All tables in OneLake are stored in open <strong>Delta Lake</strong> (columnar Parquet files accompanied by a JSON transaction log providing ACID guarantees).</li>
+<li><strong>Direct Lake Mode:</strong> Power BI queries OneLake Delta Parquet files directly in memory without importing data or translating DAX to slow SQL queries.</li>
+</ol>
+<hr>
+<h2 id="3-the-medallion-architecture-bronze-rightarrow-silver-rightarrow-gold">3. The Medallion Architecture (Bronze $\rightarrow$ Silver $\rightarrow$ Gold)<a href="#3-the-medallion-architecture-bronze-rightarrow-silver-rightarrow-gold" class="heading-anchor">#</a></h2>
+<div class="code-wrapper"><div class="code-header"><span class="code-lang">code</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code>[Raw Sources: APIs, DBs] ──&gt; [Bronze Layer (Raw Ingestion)]
+                                        │
+                                        ▼ (Clean, Deduplicate, Standardize)
+                             [Silver Layer (Enriched &amp; Conformed)]
+                                        │
+                                        ▼ (Aggregate, Star Schema, Business KPIs)
+                             [Gold Layer (Marts &amp; Power BI Direct Lake)]</code></pre></div>
+<ol>
+<li><strong>Bronze (Raw Zone):</strong> Exact append-only replica of raw source data preserved in its original format with ingestion timestamps.</li>
+<li><strong>Silver (Cleansed Zone):</strong> Cleaned, filtered, deduplicated, and conformed data. Schema validation is enforced, types are cast, and nulls are handled.</li>
+<li><strong>Gold (Curated Business Zone):</strong> Dimensional star schemas (Fact and Dimension tables) ready for business intelligence consumption and reporting.</li>
+</ol>
+<hr>
+<h2 id="4-recommended-study-sequence">4. Recommended Study Sequence<a href="#4-recommended-study-sequence" class="heading-anchor">#</a></h2>
+<ol>
+<li><strong>Infrastructure Fundamentals:</strong> Master Azure regions, Availability Zones, RBAC (Role-Based Access Control), and cost governance (Tags, Budgets, Reservations).</li>
+<li><strong>Analytical Storage:</strong> Study Parquet and Delta Lake transaction logs.</li>
+<li><strong>Unified Pipelines:</strong> Learn how OneLake shortcuts connect external data (AWS S3, Google Cloud Storage) into unified analytical workspaces.</li>
+</ol>
+    </main>
+  </div>
+
+  <script>
+    function copyCode(btn) {
+      const pre = btn.parentElement.nextElementSibling;
+      const code = pre.querySelector('code').innerText;
+      navigator.clipboard.writeText(code).then(() => {
+        const old = btn.innerText;
+        btn.innerText = 'Copied!';
+        setTimeout(() => btn.innerText = old, 1500);
+      });
+    }
+    function copyCurrentPath() {
+      navigator.clipboard.writeText(window.location.href).then(() => {
+        alert('File URL copied to clipboard!');
+      });
+    }
+  </script>
+</body>
+</html>

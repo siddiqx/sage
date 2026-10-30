@@ -1,0 +1,1281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Learning Forge</title>
+  <style>
+    :root {
+      --bg: #090e17;
+      --panel: #0f172a;
+      --panel-hover: #162035;
+      --card: #131c31;
+      --card-hover: #192540;
+      --border: #1e293b;
+      --border-accent: rgba(56, 189, 248, 0.4);
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --cyan: #38bdf8;
+      --cyan-soft: rgba(56, 189, 248, 0.1);
+      --green: #10b981;
+      --green-soft: rgba(16, 185, 129, 0.1);
+      --amber: #f59e0b;
+      --amber-soft: rgba(245, 158, 11, 0.1);
+      --purple: #a855f7;
+      --purple-soft: rgba(168, 85, 247, 0.1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Top Master Navigation Bar */
+    header.master-bar {
+      height: 60px;
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 1.75rem;
+      z-index: 100;
+      flex-shrink: 0;
+    }
+
+    .master-left {
+      display: flex;
+      align-items: center;
+      gap: 1.75rem;
+    }
+
+    .brand-box {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .brand-icon {
+      width: 30px;
+      height: 30px;
+      background: linear-gradient(135deg, #0284c7, #38bdf8);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+    }
+
+    .brand-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.01em;
+    }
+
+    /* Mode Navigation Tabs */
+    .mode-nav {
+      display: flex;
+      background: rgba(9, 14, 23, 0.7);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 3px;
+      gap: 2px;
+    }
+
+    .mode-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 0.4rem 0.95rem;
+      border-radius: 6px;
+      font-size: 0.825rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .mode-btn:hover {
+      color: #fff;
+    }
+
+    .mode-btn.active {
+      color: #fff;
+      background: var(--card);
+      border: 1px solid var(--border-accent);
+    }
+
+    /* Master Right Actions */
+    .master-right {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+    }
+
+    .search-box {
+      position: relative;
+      width: 250px;
+    }
+
+    .search-input {
+      width: 100%;
+      background: rgba(9, 14, 23, 0.8);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.4rem 2rem 0.4rem 2.2rem;
+      color: var(--text);
+      font-size: 0.825rem;
+      outline: none;
+      transition: all 0.15s ease;
+    }
+
+    .search-input:focus {
+      border-color: var(--cyan);
+      background: var(--card);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 0.75rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.8rem;
+      color: var(--text-dim);
+      pointer-events: none;
+    }
+
+    .search-hotkey {
+      position: absolute;
+      right: 0.6rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: var(--border);
+      color: var(--text-dim);
+      font-family: ui-monospace, monospace;
+      font-size: 0.7rem;
+      padding: 0.1rem 0.35rem;
+      border-radius: 3px;
+      pointer-events: none;
+    }
+
+    .progress-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      background: rgba(9, 14, 23, 0.6);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.35rem 0.75rem;
+      font-size: 0.775rem;
+    }
+
+    .progress-bar-bg {
+      width: 50px;
+      height: 5px;
+      background: #1e293b;
+      border-radius: 9999px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--green);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    .btn-copy-root {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 0.4rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.775rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .btn-copy-root:hover {
+      border-color: var(--cyan);
+      color: #fff;
+    }
+
+    /* Main Application Body */
+    .app-body {
+      display: flex;
+      flex: 1;
+      height: calc(100vh - 60px);
+      overflow: hidden;
+    }
+
+    /* Left Sidebar */
+    aside.sidebar {
+      width: 250px;
+      background-color: var(--panel);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      overflow-y: auto;
+      user-select: none;
+    }
+
+    .sidebar-title {
+      padding: 1.25rem 1.25rem 0.6rem;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-dim);
+    }
+
+    .subject-menu {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+      padding: 0 0.6rem 1.5rem;
+    }
+
+    .subject-item {
+      display: flex;
+      align-items: center;
+      padding: 0.6rem 0.85rem;
+      border-radius: 6px;
+      color: var(--text-muted);
+      background: transparent;
+      border: 1px solid transparent;
+      cursor: pointer;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: all 0.15s ease;
+      text-align: left;
+      gap: 0.6rem;
+    }
+
+    .subject-item:hover {
+      background: var(--panel-hover);
+      color: #fff;
+    }
+
+    .subject-item.active {
+      background: var(--card);
+      color: #fff;
+      font-weight: 600;
+      border: 1px solid var(--border-accent);
+    }
+
+    .sidebar-footer {
+      margin-top: auto;
+      padding: 0.85rem 1.25rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      background: rgba(9, 14, 23, 0.4);
+    }
+
+    .btn-reset {
+      background: transparent;
+      border: none;
+      color: var(--text-dim);
+      cursor: pointer;
+      font-size: 0.75rem;
+      text-decoration: underline;
+    }
+
+    .btn-reset:hover {
+      color: #f87171;
+    }
+
+    /* Content Stage */
+    main.stage {
+      flex: 1;
+      overflow-y: auto;
+      padding: 2.25rem 3.5rem 5rem;
+      background: var(--bg);
+    }
+
+    .stage-container {
+      max-width: 1040px;
+      margin: 0 auto;
+    }
+
+    /* Subject Header */
+    .subject-header {
+      margin-bottom: 2rem;
+    }
+
+    .subject-title {
+      font-size: 2.2rem;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      color: #fff;
+      margin-bottom: 0.4rem;
+    }
+
+    .subject-summary {
+      font-size: 1.05rem;
+      color: var(--text-muted);
+      line-height: 1.55;
+      max-width: 850px;
+    }
+
+    /* Inner Subject Navigation Tabs */
+    .subject-tabs {
+      display: flex;
+      gap: 0.4rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .sub-tab-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      padding: 0.45rem 0.95rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .sub-tab-btn:hover {
+      color: #fff;
+      background: var(--panel);
+    }
+
+    .sub-tab-btn.active {
+      color: #fff;
+      background: var(--panel);
+      border: 1px solid var(--border-accent);
+    }
+
+    /* Phase-by-Phase Learning Path */
+    .phase-block {
+      margin-bottom: 2.5rem;
+    }
+
+    .phase-heading {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--cyan);
+      margin-bottom: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .phase-heading::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--cyan);
+      display: inline-block;
+    }
+
+    .step-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1rem;
+      transition: all 0.2s ease;
+    }
+
+    .step-card:hover {
+      border-color: rgba(56, 189, 248, 0.3);
+      background: var(--card-hover);
+    }
+
+    .step-card.done {
+      border-color: rgba(16, 185, 129, 0.3);
+      background: rgba(16, 185, 129, 0.02);
+    }
+
+    .step-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 0.4rem;
+    }
+
+    .step-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .step-desc {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin-bottom: 1rem;
+    }
+
+    .step-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 0.75rem;
+      border-top: 1px solid rgba(30, 41, 59, 0.5);
+    }
+
+    .step-links {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.35rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.15s;
+    }
+
+    .btn-link:hover {
+      border-color: var(--cyan);
+      color: var(--cyan);
+    }
+
+    .btn-check {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+      padding: 0.35rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.775rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .btn-check:hover {
+      border-color: var(--green);
+      color: var(--green);
+    }
+
+    .btn-check.checked {
+      background: var(--green-soft);
+      border-color: rgba(16, 185, 129, 0.35);
+      color: var(--green);
+    }
+
+    /* Grid for Books, Repos & Guides */
+    .items-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .grid-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.35rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.2s ease;
+    }
+
+    .grid-card:hover {
+      border-color: var(--border-accent);
+      transform: translateY(-2px);
+    }
+
+    .grid-card h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 0.35rem;
+    }
+
+    .grid-card p {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin-bottom: 1.25rem;
+    }
+
+    .grid-card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 0.75rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      background: var(--cyan-soft);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      color: var(--cyan);
+      padding: 0.35rem 0.8rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.15s;
+    }
+
+    .btn-primary:hover {
+      background: var(--cyan);
+      color: #040812;
+    }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 0.35rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.775rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--cyan);
+      color: #fff;
+    }
+
+    /* Textbook Accordion */
+    .book-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+      overflow: hidden;
+    }
+
+    .book-header {
+      padding: 1.15rem 1.35rem;
+      background: var(--panel);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .book-header h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .book-header span {
+      font-size: 0.825rem;
+      color: var(--text-dim);
+    }
+
+    .chapters-stack {
+      padding: 0.25rem 0;
+    }
+
+    .chapter-item {
+      padding: 0.7rem 1.35rem;
+      border-bottom: 1px solid rgba(30, 41, 59, 0.4);
+      display: flex;
+      align-items: baseline;
+      gap: 0.85rem;
+      font-size: 0.875rem;
+    }
+
+    .chapter-item:last-child {
+      border-bottom: none;
+    }
+
+    .ch-num {
+      font-family: ui-monospace, monospace;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--cyan);
+      min-width: 28px;
+    }
+
+    .ch-title {
+      font-weight: 600;
+      color: #f1f5f9;
+      flex: 1;
+    }
+
+    .ch-sections {
+      font-size: 0.775rem;
+      color: var(--text-dim);
+    }
+
+    /* Toast */
+    #toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: #10b981;
+      color: #fff;
+      padding: 0.7rem 1.35rem;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+      display: none;
+      z-index: 1000;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Master Bar -->
+  <header class="master-bar">
+    <div class="master-left">
+      <div class="brand-box" onclick="switchMode('curriculum')">
+        <div class="brand-icon">⚡</div>
+        <div class="brand-title">Learning Forge</div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <nav class="mode-nav">
+        <button class="mode-btn active" id="modeCurriculum" onclick="switchMode('curriculum')">
+          Curriculum
+        </button>
+        <button class="mode-btn" id="modeBooks" onclick="switchMode('books')">
+          Textbooks
+        </button>
+        <button class="mode-btn" id="modeLabs" onclick="switchMode('labs')">
+          Practice Labs
+        </button>
+        <button class="mode-btn" id="modeGuides" onclick="switchMode('guides')">
+          Study Guides
+        </button>
+      </nav>
+    </div>
+
+    <div class="master-right">
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="globalSearch" class="search-input" placeholder="Search topics, books...">
+        <span class="search-hotkey">/</span>
+      </div>
+
+      <div class="progress-wrap">
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="progressFill"></div>
+        </div>
+        <span id="progressText" style="font-weight:600; color:var(--green);">0%</span>
+      </div>
+
+      <button class="btn-copy-root" onclick="copyText('D:\\Learning')">
+        Copy Root Path
+      </button>
+    </div>
+  </header>
+
+  <!-- Body -->
+  <div class="app-body">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-title" id="sidebarTitle">Subjects</div>
+      <div class="subject-menu" id="sidebarMenu">
+        <!-- Rendered via JS -->
+      </div>
+      <div class="sidebar-footer">
+        <span>Done: <strong id="statsDone" style="color:var(--green);">0</strong> / 46</span>
+        <button class="btn-reset" onclick="resetProgress()">Reset</button>
+      </div>
+    </aside>
+
+    <!-- Main Stage -->
+    <main class="stage" id="stage">
+      <div class="stage-container" id="stageContent">
+        <!-- Rendered via JS -->
+      </div>
+    </main>
+  </div>
+
+  <div id="toast">Copied to clipboard!</div>
+
+  <script>
+    const DATA = {"subjects": [{"id": "python", "name": "Python", "title": "Python Programming", "folder": "01-Python", "summary": "Core syntax, data structures, object-oriented design, scripting, and test-driven practice.", "phases": [{"phase_name": "Phase 1: Foundations", "steps": [{"id": "py-1", "title": "Syntax & Control Flow", "desc": "Variables, numeric types, strings, operators, conditionals, and functions.", "reading_label": "Python Tutorial: Language Basics", "reading_url": "01-Python/Documentation-Portal.html", "practice_label": "Exercism Basics", "practice_url": "01-Python/Practice/Exercism-Python-Track/index.html"}]}, {"phase_name": "Phase 2: Core Concepts", "steps": [{"id": "py-2", "title": "Data Structures & Iteration", "desc": "Lists, dictionaries, sets, tuples, list comprehensions, and generators.", "reading_label": "Python Tutorial: Data Structures", "reading_url": "01-Python/Documentation-Portal.html", "practice_label": "Exercism Collections", "practice_url": "01-Python/Practice/Exercism-Python-Track/index.html"}, {"id": "py-3", "title": "Object-Oriented Programming", "desc": "Classes, inheritance, encapsulation, and special dunder methods.", "reading_label": "Python Study Guide: OOP", "reading_url": "01-Python/Python-Study-Guide.html", "practice_label": "Exercism OOP", "practice_url": "01-Python/Practice/Exercism-Python-Track/index.html"}]}, {"phase_name": "Phase 3: Advanced Topics", "steps": [{"id": "py-4", "title": "Automation & Scripting", "desc": "Filesystem operations with pathlib, regular expressions, and system automation.", "reading_label": "Automate the Boring Stuff", "reading_url": "01-Python/Automate-the-Boring-Stuff.html", "practice_label": "Exercism Practice", "practice_url": "01-Python/Practice/Exercism-Python-Track/index.html"}]}, {"phase_name": "Phase 4: Hands-On Mastery", "steps": [{"id": "py-5", "title": "Deliberate Practice & Testing", "desc": "Test-driven development with pytest and 140+ problem-solving exercises.", "reading_label": "Python Study Guide: Testing", "reading_url": "01-Python/Python-Study-Guide.html", "practice_label": "Exercism 140+ Exercises", "practice_url": "01-Python/Practice/Exercism-Python-Track/index.html"}]}], "books": [{"title": "Python Tutorial", "url": "01-Python/Documentation-Portal.html"}], "repo": {"name": "Exercism Python Track", "desc": "140+ structured problem-solving exercises with automated test suites.", "url": "01-Python/Practice/Exercism-Python-Track/index.html", "cmd": "cd \"01-Python/Practice/Exercism-Python-Track\""}, "guides": [{"title": "Python Documentation Hub", "url": "01-Python/Documentation-Portal.html", "desc": "16-chapter tutorial and standard library reference"}, {"title": "Python Study Guide", "url": "01-Python/Python-Study-Guide.html", "desc": "Language reference, typing, and data model notes"}, {"title": "Automate the Boring Stuff Guide", "url": "01-Python/Automate-the-Boring-Stuff.html", "desc": "Filesystem tasks, automation, and regular expressions"}]}, {"id": "sql", "name": "SQL & Databases", "title": "SQL & Relational Databases", "folder": "02-SQL-and-Databases", "summary": "Relational data modeling, SQL queries, B-Tree and GIN indexing, and query optimization.", "phases": [{"phase_name": "Phase 1: Foundations", "steps": [{"id": "sql-1", "title": "Database Design & Schema Modeling", "desc": "Tables, keys, relational integrity, normal forms, and constraints.", "reading_label": "Pagila Database Guide", "reading_url": "02-SQL-and-Databases/Pagila-Database-Guide.html", "practice_label": "Pagila Database", "practice_url": "02-SQL-and-Databases/Practice/Pagila-Sample-Database/index.html"}]}, {"phase_name": "Phase 2: Core Concepts", "steps": [{"id": "sql-2", "title": "Analytical Queries & Window Functions", "desc": "Complex joins, aggregations, subqueries, CTEs, and window functions.", "reading_label": "SQL Optimization Guide", "reading_url": "02-SQL-and-Databases/SQL-Indexing-and-Optimization.html", "practice_label": "Pagila Queries", "practice_url": "02-SQL-and-Databases/Practice/Pagila-Sample-Database/index.html"}]}, {"phase_name": "Phase 3: Advanced Topics", "steps": [{"id": "sql-3", "title": "Indexing Internals & Query Tuning", "desc": "B-Tree, GIN, and BRIN indexes, execution plans, and EXPLAIN ANALYZE.", "reading_label": "SQL Optimization Guide: Indexing", "reading_url": "02-SQL-and-Databases/SQL-Indexing-and-Optimization.html", "practice_label": "Index Optimization Lab", "practice_url": "02-SQL-and-Databases/Practice/Pagila-Sample-Database/index.html"}, {"id": "sql-4", "title": "Transactions & Concurrency (MVCC)", "desc": "ACID properties, isolation levels, multi-version concurrency control, and locks.", "reading_label": "PostgreSQL Manual: Concurrency", "reading_url": "02-SQL-and-Databases/PostgreSQL-16-Documentation.pdf", "practice_label": "Pagila Database Lab", "practice_url": "02-SQL-and-Databases/Practice/Pagila-Sample-Database/index.html"}]}], "books": [{"title": "PostgreSQL Manual", "url": "02-SQL-and-Databases/PostgreSQL-16-Documentation.pdf"}], "repo": {"name": "Pagila Sample Database", "desc": "PostgreSQL DVD rental schema with 15+ normalized tables and Docker Compose setup.", "url": "02-SQL-and-Databases/Practice/Pagila-Sample-Database/index.html", "cmd": "cd \"02-SQL-and-Databases/Practice/Pagila-Sample-Database\""}, "guides": [{"title": "Pagila Database Guide", "url": "02-SQL-and-Databases/Pagila-Database-Guide.html", "desc": "Schema architecture, table relationships, and query examples"}, {"title": "SQL Indexing & Optimization Guide", "url": "02-SQL-and-Databases/SQL-Indexing-and-Optimization.html", "desc": "B-Tree, GIN, BRIN indexes, EXPLAIN ANALYZE, and tuning"}]}, {"id": "data-eng", "name": "Data Engineering", "title": "Data Engineering & Pipelines", "folder": "03-Data-Engineering", "summary": "Containerized data pipelines, workflow orchestration, data warehousing, dbt, Spark, and Kafka streaming.", "phases": [{"phase_name": "Phase 1: Foundations", "steps": [{"id": "de-1", "title": "Containerization & Infrastructure", "desc": "Dockerizing pipelines, Postgres in Docker, and infrastructure provisioning with Terraform.", "reading_label": "Zoomcamp Guide: Module 1", "reading_url": "03-Data-Engineering/Data-Engineering-Zoomcamp-Guide.html", "practice_label": "Zoomcamp Module 1", "practice_url": "03-Data-Engineering/Practice/Data-Engineering-Zoomcamp/index.html"}]}, {"phase_name": "Phase 2: Core Pipelines", "steps": [{"id": "de-2", "title": "Workflow Orchestration", "desc": "Building automated DAGs, scheduling, and backfilling with Kestra and Mage.", "reading_label": "Distributed Compute Guide: Orchestration", "reading_url": "03-Data-Engineering/Distributed-Compute-and-Orchestration.html", "practice_label": "Zoomcamp Module 2", "practice_url": "03-Data-Engineering/Practice/Data-Engineering-Zoomcamp/index.html"}, {"id": "de-3", "title": "Data Warehousing & Partitioning", "desc": "OLAP architecture, BigQuery internals, partition strategies, and clustering.", "reading_label": "Distributed Compute Guide: Warehousing", "reading_url": "03-Data-Engineering/Distributed-Compute-and-Orchestration.html", "practice_label": "Zoomcamp Module 3", "practice_url": "03-Data-Engineering/Practice/Data-Engineering-Zoomcamp/index.html"}, {"id": "de-4", "title": "Analytics Engineering with dbt", "desc": "Dimensional modeling, staging models, seeds, schema tests, and marts.", "reading_label": "dbt Jaffle Shop Guide", "reading_url": "03-Data-Engineering/dbt-Jaffle-Shop-Guide.html", "practice_label": "dbt Jaffle Shop Lab", "practice_url": "03-Data-Engineering/Practice/dbt-Jaffle-Shop/index.html"}]}, {"phase_name": "Phase 3: Advanced Compute", "steps": [{"id": "de-5", "title": "Distributed Batch Processing with Spark", "desc": "PySpark DataFrames, distributed memory, shuffle partitions, and batch transformations.", "reading_label": "MapReduce Guide", "reading_url": "03-Data-Engineering/MapReduce-Reading-Guide.html", "practice_label": "Zoomcamp Module 6: Spark", "practice_url": "03-Data-Engineering/Practice/Data-Engineering-Zoomcamp/index.html"}, {"id": "de-6", "title": "Real-Time Event Streaming with Kafka", "desc": "Distributed logs, topic partitions, producer/consumer patterns, and stream processing.", "reading_label": "Distributed Compute Guide: Streaming", "reading_url": "03-Data-Engineering/Distributed-Compute-and-Orchestration.html", "practice_label": "Zoomcamp Module 7: Kafka", "practice_url": "03-Data-Engineering/Practice/Data-Engineering-Zoomcamp/index.html"}]}], "books": [{"title": "MapReduce Paper", "url": "03-Data-Engineering/MapReduce-Simplified-Data-Processing.pdf"}], "repo": {"name": "Data Engineering Zoomcamp & dbt Jaffle Shop", "desc": "Complete 9-week data engineering course repository and canonical dbt modeling project.", "url": "03-Data-Engineering/Practice/Data-Engineering-Zoomcamp/index.html", "cmd": "cd \"03-Data-Engineering/Practice/Data-Engineering-Zoomcamp\""}, "guides": [{"title": "Zoomcamp Guide", "url": "03-Data-Engineering/Data-Engineering-Zoomcamp-Guide.html", "desc": "Curriculum overview and environment walkthroughs"}, {"title": "dbt Jaffle Shop Guide", "url": "03-Data-Engineering/dbt-Jaffle-Shop-Guide.html", "desc": "Dimensional modeling and dbt commands"}, {"title": "Distributed Compute Guide", "url": "03-Data-Engineering/Distributed-Compute-and-Orchestration.html", "desc": "BigQuery, Spark, Kafka, and Kestra architecture"}, {"title": "MapReduce Reading Guide", "url": "03-Data-Engineering/MapReduce-Reading-Guide.html", "desc": "Google MapReduce distributed processing paper review"}]}, {"id": "cloud", "name": "Cloud & Azure", "title": "Cloud Architecture & Azure", "folder": "04-Cloud-and-Azure", "summary": "Cloud fundamentals, Azure core services, medallion lakehouses, security, and governance.", "phases": [{"phase_name": "Phase 1: Foundations", "steps": [{"id": "cloud-1", "title": "Cloud Fundamentals & Core Services", "desc": "IaaS, PaaS, SaaS models, resource groups, virtual networks, and blob storage tiers.", "reading_label": "Azure Architecture Guide: Core Services", "reading_url": "04-Cloud-and-Azure/Azure-and-Cloud-Architecture-Guide.html", "practice_label": "Azure Architecture Guide", "practice_url": "04-Cloud-and-Azure/Azure-and-Cloud-Architecture-Guide.html"}]}, {"phase_name": "Phase 2: Architecture", "steps": [{"id": "cloud-2", "title": "Enterprise Medallion Lakehouses", "desc": "Bronze, Silver, and Gold data layers on Azure Data Lake Storage Gen2.", "reading_label": "Azure Architecture Guide: Medallion Design", "reading_url": "04-Cloud-and-Azure/Azure-and-Cloud-Architecture-Guide.html", "practice_label": "Azure Architecture Guide", "practice_url": "04-Cloud-and-Azure/Azure-and-Cloud-Architecture-Guide.html"}]}, {"phase_name": "Phase 3: Advanced Governance", "steps": [{"id": "cloud-3", "title": "Security, Identity & Governance", "desc": "Microsoft Entra ID, Role-Based Access Control (RBAC), and Key Vault.", "reading_label": "Azure Architecture Guide: Governance", "reading_url": "04-Cloud-and-Azure/Azure-and-Cloud-Architecture-Guide.html", "practice_label": "Azure Architecture Guide", "practice_url": "04-Cloud-and-Azure/Azure-and-Cloud-Architecture-Guide.html"}]}], "books": [], "repo": null, "guides": [{"title": "Azure & Cloud Architecture Guide", "url": "04-Cloud-and-Azure/Azure-and-Cloud-Architecture-Guide.html", "desc": "Cloud patterns, Azure services, medallion lakehouses, and governance"}]}, {"id": "ai", "name": "Machine Learning & AI", "title": "Machine Learning & AI", "folder": "05-AI-and-Automation", "summary": "Neural networks, deep architectures, transformer attention, LLMs, RAG, and AI agent workflows.", "phases": [{"phase_name": "Phase 1: Foundations", "steps": [{"id": "ai-1", "title": "Math for Machine Learning", "desc": "Linear algebra, matrix decompositions, vector calculus, and probability.", "reading_label": "Mathematics for Machine Learning", "reading_url": "05-AI-and-Automation/Mathematics-for-Machine-Learning.pdf", "practice_label": "Deep Learning Guide", "practice_url": "05-AI-and-Automation/Deep-Learning-and-LLM-Reading-Guide.html"}, {"id": "ai-2", "title": "Neural Networks & Backpropagation", "desc": "Linear layers, activation functions, loss surfaces, and gradient descent.", "reading_label": "Understanding Deep Learning (Chapters 1-7)", "reading_url": "05-AI-and-Automation/Understanding-Deep-Learning.pdf", "practice_label": "Deep Learning Guide", "practice_url": "05-AI-and-Automation/Deep-Learning-and-LLM-Reading-Guide.html"}]}, {"phase_name": "Phase 2: Deep Architectures", "steps": [{"id": "ai-3", "title": "CNNs, Residuals & Normalization", "desc": "Convolutions, residual connections, and batch/layer normalization.", "reading_label": "Understanding Deep Learning (Chapters 10-11)", "reading_url": "05-AI-and-Automation/Understanding-Deep-Learning.pdf", "practice_label": "Deep Learning Guide", "practice_url": "05-AI-and-Automation/Deep-Learning-and-LLM-Reading-Guide.html"}]}, {"phase_name": "Phase 3: Modern Generative AI", "steps": [{"id": "ai-4", "title": "Self-Attention & Transformers", "desc": "Scaled dot-product attention, multi-head layers, and sequence models.", "reading_label": "The Transformer Architecture (Attention)", "reading_url": "05-AI-and-Automation/Attention-Is-All-You-Need.pdf", "practice_label": "Deep Learning Guide", "practice_url": "05-AI-and-Automation/Deep-Learning-and-LLM-Reading-Guide.html"}, {"id": "ai-5", "title": "RAG & Autonomous AI Agents", "desc": "Vector retrieval, embeddings, chunking, and tool-calling agent loops.", "reading_label": "AI Agents & Workflows Guide", "reading_url": "05-AI-and-Automation/AI-Agents-and-Workflows-Guide.html", "practice_label": "AI Agents Guide", "practice_url": "05-AI-and-Automation/AI-Agents-and-Workflows-Guide.html"}]}], "books": [{"title": "Understanding Deep Learning", "url": "05-AI-and-Automation/Understanding-Deep-Learning.pdf"}, {"title": "Mathematics for Machine Learning", "url": "05-AI-and-Automation/Mathematics-for-Machine-Learning.pdf"}, {"title": "The Transformer Architecture (Attention)", "url": "05-AI-and-Automation/Attention-Is-All-You-Need.pdf"}, {"title": "Retrieval-Augmented Generation (RAG)", "url": "05-AI-and-Automation/Retrieval-Augmented-Generation.pdf"}], "repo": null, "guides": [{"title": "Deep Learning & LLM Reading Guide", "url": "05-AI-and-Automation/Deep-Learning-and-LLM-Reading-Guide.html", "desc": "Notes on deep learning, transformers, and RAG architectures"}, {"title": "AI Agents & Workflows Guide", "url": "05-AI-and-Automation/AI-Agents-and-Workflows-Guide.html", "desc": "Autonomous agents, ReAct frameworks, and tool execution"}]}, {"id": "math", "name": "Mathematics", "title": "Mathematics for Computing", "folder": "06-Mathematics", "summary": "Calculus, linear algebra, discrete structures, mathematical proofs, and probability.", "phases": [{"phase_name": "Phase 1: Calculus Foundations", "steps": [{"id": "math-1", "title": "Single-Variable Calculus", "desc": "Limits, derivatives, integrals, and fundamental integration techniques.", "reading_label": "Calculus 1 & 2", "reading_url": "06-Mathematics/Calculus-Volume-1.pdf", "practice_label": "Mathematics Study Guide", "practice_url": "06-Mathematics/Mathematics-Study-Guide.html"}]}, {"phase_name": "Phase 2: Multivariable & Linear Systems", "steps": [{"id": "math-2", "title": "Multivariable Calculus", "desc": "Partial derivatives, gradient vectors, and multiple integrals.", "reading_label": "Calculus 3", "reading_url": "06-Mathematics/Calculus-Volume-3.pdf", "practice_label": "Mathematics Study Guide", "practice_url": "06-Mathematics/Mathematics-Study-Guide.html"}, {"id": "math-3", "title": "Linear Algebra & Vector Spaces", "desc": "Vector spaces, linear maps, eigenvalues, and matrix transformations.", "reading_label": "Linear Algebra Done Right", "reading_url": "06-Mathematics/Axler-Linear-Algebra-Done-Right.pdf", "practice_label": "Mathematics Study Guide", "practice_url": "06-Mathematics/Mathematics-Study-Guide.html"}]}, {"phase_name": "Phase 3: Discrete Mathematics & Probability", "steps": [{"id": "math-4", "title": "Discrete Structures & Proofs", "desc": "Mathematical induction, modular arithmetic, state machines, and graph theory.", "reading_label": "Mathematics for Computer Science", "reading_url": "06-Mathematics/MIT-Mathematics-for-Computer-Science.pdf", "practice_label": "Mathematics Study Guide", "practice_url": "06-Mathematics/Mathematics-Study-Guide.html"}, {"id": "math-5", "title": "Discrete Probability & Expectation", "desc": "Probability spaces, random variables, expectation, variance, and concentration bounds.", "reading_label": "Mathematics for Computer Science: Probability", "reading_url": "06-Mathematics/MIT-Mathematics-for-Computer-Science.pdf", "practice_label": "Mathematics Study Guide", "practice_url": "06-Mathematics/Mathematics-Study-Guide.html"}]}], "books": [{"title": "Calculus 1", "url": "06-Mathematics/Calculus-Volume-1.pdf"}, {"title": "Calculus 2", "url": "06-Mathematics/Calculus-Volume-2.pdf"}, {"title": "Calculus 3", "url": "06-Mathematics/Calculus-Volume-3.pdf"}, {"title": "Linear Algebra Done Right", "url": "06-Mathematics/Axler-Linear-Algebra-Done-Right.pdf"}, {"title": "Linear Algebra (Hefferon)", "url": "06-Mathematics/Hefferon-Linear-Algebra.pdf"}, {"title": "Mathematics for Computer Science", "url": "06-Mathematics/MIT-Mathematics-for-Computer-Science.pdf"}], "repo": null, "guides": [{"title": "Mathematics Study Guide", "url": "06-Mathematics/Mathematics-Study-Guide.html", "desc": "Calculus, linear algebra, discrete math, and probability problems"}]}, {"id": "systems", "name": "Computer Systems", "title": "Computer Systems & Networks", "folder": "07-Computer-Science", "summary": "Operating system virtualization, concurrency, file systems, and computer networking protocols.", "phases": [{"phase_name": "Phase 1: Virtualization", "steps": [{"id": "sys-1", "title": "CPU Scheduling & Processes", "desc": "Process abstraction, context switching, system calls, and scheduling policies.", "reading_label": "Operating Systems: Virtualization", "reading_url": "07-Computer-Science/OSTEP-Operating-Systems-Guide.html", "practice_label": "Operating Systems Guide", "practice_url": "07-Computer-Science/OSTEP-Operating-Systems-Guide.html"}, {"id": "sys-2", "title": "Memory Virtualization & Paging", "desc": "Address translation, multi-level page tables, TLBs, and page replacement.", "reading_label": "Operating Systems: Memory", "reading_url": "07-Computer-Science/OSTEP-Operating-Systems-Guide.html", "practice_label": "Operating Systems Guide", "practice_url": "07-Computer-Science/OSTEP-Operating-Systems-Guide.html"}]}, {"phase_name": "Phase 2: Concurrency & Persistence", "steps": [{"id": "sys-3", "title": "Concurrency Primitives", "desc": "Threads, mutex locks, condition variables, semaphores, and deadlock prevention.", "reading_label": "Operating Systems: Concurrency", "reading_url": "07-Computer-Science/OSTEP-Operating-Systems-Guide.html", "practice_label": "Operating Systems Guide", "practice_url": "07-Computer-Science/OSTEP-Operating-Systems-Guide.html"}, {"id": "sys-4", "title": "Persistence & File Systems", "desc": "Disk I/O, RAID arrays, inodes, crash consistency, and journaling.", "reading_label": "Operating Systems: Persistence", "reading_url": "07-Computer-Science/OSTEP-Operating-Systems-Guide.html", "practice_label": "Operating Systems Guide", "practice_url": "07-Computer-Science/OSTEP-Operating-Systems-Guide.html"}]}, {"phase_name": "Phase 3: Computer Networks", "steps": [{"id": "sys-5", "title": "Network Protocols & Architecture", "desc": "Packet switching, IP routing, TCP/UDP transport, and congestion control.", "reading_label": "Computer Networks Textbook", "reading_url": "07-Computer-Science/Computer-Networks-A-Systems-Approach.pdf", "practice_label": "Computer Networks Guide", "practice_url": "07-Computer-Science/Computer-Networks-Study-Guide.html"}]}], "books": [{"title": "Operating Systems (OSTEP)", "url": "07-Computer-Science/OSTEP-Operating-Systems-Guide.html"}, {"title": "Computer Networks", "url": "07-Computer-Science/Computer-Networks-A-Systems-Approach.pdf"}], "repo": null, "guides": [{"title": "Operating Systems Guide", "url": "07-Computer-Science/OSTEP-Operating-Systems-Guide.html", "desc": "Virtualization, concurrency, persistence, and file systems"}, {"title": "Computer Networks Guide", "url": "07-Computer-Science/Computer-Networks-Study-Guide.html", "desc": "TCP/IP layers, routing, and network protocol architecture"}]}, {"id": "blockchain", "name": "Blockchain", "title": "Blockchain & Smart Contracts", "folder": "08-Blockchain-and-Solidity", "summary": "Ethereum Virtual Machine, Solidity language mechanics, OpenZeppelin standard contracts, and security.", "phases": [{"phase_name": "Phase 1: Foundations", "steps": [{"id": "bc-1", "title": "Blockchain & EVM Fundamentals", "desc": "Cryptographic hashing, accounts, transactions, gas mechanics, and EVM execution.", "reading_label": "Mastering Ethereum", "reading_url": "08-Blockchain-and-Solidity/Mastering-Ethereum-Syllabus.html", "practice_label": "OpenZeppelin Contracts", "practice_url": "08-Blockchain-and-Solidity/Practice/OpenZeppelin-Contracts/index.html"}]}, {"phase_name": "Phase 2: Contract Engineering", "steps": [{"id": "bc-2", "title": "Solidity Syntax & Structure", "desc": "State variables, modifiers, memory vs storage, custom errors, and events.", "reading_label": "Solidity Reference", "reading_url": "08-Blockchain-and-Solidity/Solidity-Documentation.pdf", "practice_label": "OpenZeppelin Compilation", "practice_url": "08-Blockchain-and-Solidity/Practice/OpenZeppelin-Contracts/index.html"}, {"id": "bc-3", "title": "Standard Token Contracts", "desc": "ERC20, ERC721, ERC1155, AccessControl, and upgradeable proxies.", "reading_label": "OpenZeppelin Contracts Guide", "reading_url": "08-Blockchain-and-Solidity/OpenZeppelin-Contracts-Guide.html", "practice_label": "OpenZeppelin Test Suite", "practice_url": "08-Blockchain-and-Solidity/Practice/OpenZeppelin-Contracts/index.html"}]}, {"phase_name": "Phase 3: Security & Auditing", "steps": [{"id": "bc-4", "title": "Smart Contract Security", "desc": "Reentrancy patterns, flash loans, front-running, and security audit reports.", "reading_label": "Smart Contract Security Guide", "reading_url": "08-Blockchain-and-Solidity/Smart-Contract-Security-Guide.html", "practice_label": "Security Audits Review", "practice_url": "08-Blockchain-and-Solidity/Smart-Contract-Security-Guide.html"}]}], "books": [{"title": "Mastering Ethereum", "url": "08-Blockchain-and-Solidity/Mastering-Ethereum-Syllabus.html"}, {"title": "Solidity Reference", "url": "08-Blockchain-and-Solidity/Solidity-Documentation.pdf"}], "repo": {"name": "OpenZeppelin Contracts", "desc": "Audited smart contract library featuring ERC20, ERC721, AccessControl, and Hardhat tests.", "url": "08-Blockchain-and-Solidity/Practice/OpenZeppelin-Contracts/index.html", "cmd": "cd \"08-Blockchain-and-Solidity/Practice/OpenZeppelin-Contracts\""}, "guides": [{"title": "Mastering Ethereum Syllabus", "url": "08-Blockchain-and-Solidity/Mastering-Ethereum-Syllabus.html", "desc": "EVM architecture, transaction mechanics, and smart contracts"}, {"title": "OpenZeppelin Contracts Guide", "url": "08-Blockchain-and-Solidity/OpenZeppelin-Contracts-Guide.html", "desc": "Audited token standards, access control, and proxies"}, {"title": "Smart Contract Security Guide", "url": "08-Blockchain-and-Solidity/Smart-Contract-Security-Guide.html", "desc": "Reentrancy, oracle attacks, and formal security audits"}]}, {"id": "physics", "name": "Physics", "title": "Physics for Engineers", "folder": "09-Physics", "summary": "Classical mechanics, energy conservation, oscillations, waves, and thermodynamics.", "phases": [{"phase_name": "Phase 1: Mechanics", "steps": [{"id": "phys-1", "title": "Kinematics & Newton's Laws", "desc": "1D/2D motion vectors, projectile motion, Newton's laws, and friction.", "reading_label": "Physics 1: Mechanics", "reading_url": "09-Physics/University-Physics-Volume-1.pdf", "practice_label": "Physics Study Guide", "practice_url": "09-Physics/Physics-Study-Guide.html"}, {"id": "phys-2", "title": "Work, Energy & Momentum", "desc": "Work-energy theorem, potential energy, momentum, and collisions.", "reading_label": "Physics 1: Energy & Momentum", "reading_url": "09-Physics/University-Physics-Volume-1.pdf", "practice_label": "Physics Study Guide", "practice_url": "09-Physics/Physics-Study-Guide.html"}]}, {"phase_name": "Phase 2: Waves & Oscillations", "steps": [{"id": "phys-3", "title": "Harmonic Motion & Waves", "desc": "Simple harmonic motion, resonance, mechanical waves, and sound.", "reading_label": "Physics 1: Oscillations & Waves", "reading_url": "09-Physics/University-Physics-Volume-1.pdf", "practice_label": "Physics Study Guide", "practice_url": "09-Physics/Physics-Study-Guide.html"}]}, {"phase_name": "Phase 3: Thermodynamics", "steps": [{"id": "phys-4", "title": "Heat & Thermodynamics", "desc": "Temperature, ideal gas law, first and second laws, heat engines, and entropy.", "reading_label": "Physics 2: Thermodynamics", "reading_url": "09-Physics/University-Physics-Volume-2.pdf", "practice_label": "Physics Study Guide", "practice_url": "09-Physics/Physics-Study-Guide.html"}]}], "books": [{"title": "Physics 1", "url": "09-Physics/University-Physics-Volume-1.pdf"}, {"title": "Physics 2", "url": "09-Physics/University-Physics-Volume-2.pdf"}], "repo": null, "guides": [{"title": "Physics Study Guide", "url": "09-Physics/Physics-Study-Guide.html", "desc": "Mechanics, energy conservation, oscillations, waves, and thermodynamics"}]}, {"id": "web-dev", "name": "Web Development", "title": "Modern Web Development", "folder": "10-Software-and-Web-Development", "summary": "Modern JavaScript, asynchronous event loops, TypeScript type challenges, and Git tooling.", "phases": [{"phase_name": "Phase 1: Language Foundations", "steps": [{"id": "web-1", "title": "Modern JavaScript", "desc": "Lexical scoping, closures, prototype chain, ES modules, and higher-order functions.", "reading_label": "Eloquent JavaScript", "reading_url": "10-Software-and-Web-Development/Eloquent-JavaScript.pdf", "practice_label": "Type Challenges", "practice_url": "10-Software-and-Web-Development/Practice/Type-Challenges-Repository/index.html"}, {"id": "web-2", "title": "Asynchronous JavaScript", "desc": "Call stack, event loop, Promises, and async/await error handling.", "reading_label": "Eloquent JavaScript: Async", "reading_url": "10-Software-and-Web-Development/Eloquent-JavaScript.pdf", "practice_label": "Type Challenges", "practice_url": "10-Software-and-Web-Development/Practice/Type-Challenges-Repository/index.html"}]}, {"phase_name": "Phase 2: Type Systems", "steps": [{"id": "web-3", "title": "TypeScript Foundations", "desc": "Generics, interfaces, union types, and easy type challenges.", "reading_label": "TypeScript Handbook", "reading_url": "10-Software-and-Web-Development/TypeScript-Handbook.html", "practice_label": "Type Challenges: Easy", "practice_url": "10-Software-and-Web-Development/Practice/Type-Challenges-Repository/index.html"}, {"id": "web-4", "title": "Advanced TypeScript", "desc": "Conditional types, mapped types, template literal types, and type inference.", "reading_label": "Type Challenges Guide", "reading_url": "10-Software-and-Web-Development/Type-Challenges-Guide.html", "practice_label": "Type Challenges: Medium", "practice_url": "10-Software-and-Web-Development/Practice/Type-Challenges-Repository/index.html"}]}, {"phase_name": "Phase 3: Tooling & Git", "steps": [{"id": "web-5", "title": "Command-Line & Git Internals", "desc": "Shell scripting, pipes, Git object database, branching, and interactive rebase.", "reading_label": "The Missing Semester Guide", "reading_url": "10-Software-and-Web-Development/MIT-Missing-Semester-Guide.html", "practice_label": "Pro Git", "practice_url": "10-Software-and-Web-Development/Pro-Git-2nd-Edition.pdf"}]}], "books": [{"title": "Eloquent JavaScript", "url": "10-Software-and-Web-Development/Eloquent-JavaScript.pdf"}, {"title": "Pro Git", "url": "10-Software-and-Web-Development/Pro-Git-2nd-Edition.pdf"}], "repo": {"name": "TypeScript Type Challenges", "desc": "190 interactive type-level challenges across 4 difficulty tiers.", "url": "10-Software-and-Web-Development/Practice/Type-Challenges-Repository/index.html", "cmd": "cd \"10-Software-and-Web-Development/Practice/Type-Challenges-Repository\""}, "guides": [{"title": "TypeScript Handbook", "url": "10-Software-and-Web-Development/TypeScript-Handbook.html", "desc": "Type primitives, generics, interfaces, and unions"}, {"title": "Type Challenges Guide", "url": "10-Software-and-Web-Development/Type-Challenges-Guide.html", "desc": "Walkthroughs and solutions for core TypeScript challenges"}, {"title": "The Missing Semester Guide", "url": "10-Software-and-Web-Development/MIT-Missing-Semester-Guide.html", "desc": "Command-line tools, shell scripting, vim, and Git internals"}]}], "books": [{"id": "b-py-tut", "title": "Python Tutorial", "author": "Python Software Foundation", "category": "01-Python", "url": "01-Python/Documentation-Portal.html", "chapters": [{"num": "1", "title": "Whetting Your Appetite", "sections": []}, {"num": "2", "title": "Using the Python Interpreter", "sections": []}, {"num": "3", "title": "An Informal Introduction to Python", "sections": []}, {"num": "4", "title": "More Control Flow Tools", "sections": []}, {"num": "5", "title": "Data Structures", "sections": []}, {"num": "6", "title": "Modules & Packages", "sections": []}, {"num": "7", "title": "Input and Output", "sections": []}, {"num": "8", "title": "Errors and Exceptions", "sections": []}, {"num": "9", "title": "Classes & OOP", "sections": []}, {"num": "10", "title": "Brief Tour of the Standard Library", "sections": []}, {"num": "11", "title": "Brief Tour of the Standard Library — Part II", "sections": []}, {"num": "12", "title": "Virtual Environments and Packages", "sections": []}, {"num": "13", "title": "What Now?", "sections": []}, {"num": "14", "title": "Interactive Input Editing & History", "sections": []}, {"num": "15", "title": "Floating Point Arithmetic: Issues and Limitations", "sections": []}, {"num": "16", "title": "Appendix: Encodings & Scripts", "sections": []}]}, {"id": "b-calc1", "title": "Calculus Volume 1", "author": "Edwin Herman, Gilbert Strang et al.", "category": "06-Mathematics", "url": "06-Mathematics/Calculus-Volume-1.pdf", "chapters": [{"num": "1", "title": "Functions and Graphs (Review of Functions, Basic Classes, Trigonometry, Inverse Functions)", "sections": []}, {"num": "2", "title": "Limits (Limit of a Function, Limit Laws, Continuity, Defining Limits with Epsilon-Delta)", "sections": []}, {"num": "3", "title": "Derivatives (Defining the Derivative, Derivative as a Function, Differentiation Rules, Rates of Change)", "sections": []}, {"num": "4", "title": "Applications of Derivatives (Related Rates, Linear Approximations, Maxima/Minima, Mean Value Theorem, L'Hôpital's Rule)", "sections": []}, {"num": "5", "title": "Integration (Approximating Areas, Definite Integral, Fundamental Theorem of Calculus, Substitution)", "sections": []}, {"num": "6", "title": "Applications of Integration (Areas Between Curves, Volumes by Slicing/Cylindrical Shells, Arc Length, Work)", "sections": []}]}, {"id": "b-calc2", "title": "Calculus Volume 2", "author": "Edwin Herman, Gilbert Strang et al.", "category": "06-Mathematics", "url": "06-Mathematics/Calculus-Volume-2.pdf", "chapters": [{"num": "1", "title": "Integration Techniques (Integration by Parts, Trigonometric Integrals, Partial Fractions, Tables/CAS, Improper Integrals)", "sections": []}, {"num": "2", "title": "Differential Equations (Basics, Direction Fields, Euler's Method, Separable Equations, Logistic Equation, First-Order Linear)", "sections": []}, {"num": "3", "title": "Sequences and Series (Infinite Sequences, Infinite Series, Divergence & Integral Tests, Comparison Tests, Alternating Series)", "sections": []}, {"num": "4", "title": "Power Series (Power Series & Functions, Properties of Power Series, Taylor & Maclaurin Series, Working with Taylor Series)", "sections": []}, {"num": "5", "title": "Parametric Equations and Polar Coordinates (Parametric Curves, Calculus of Parametric Curves, Polar Coordinates, Conic Sections)", "sections": []}, {"num": "6", "title": "Vectors in Space (Vectors in the Plane, Vectors in Three Dimensions, Dot Product, Cross Product, Equations of Lines & Planes)", "sections": []}, {"num": "7", "title": "Vector-Valued Functions (Vector-Valued Functions & Space Curves, Calculus of Vector-Valued Functions, Arc Length & Curvature, Motion in Space)", "sections": []}]}, {"id": "b-calc3", "title": "Calculus Volume 3", "author": "Edwin Herman, Gilbert Strang et al.", "category": "06-Mathematics", "url": "06-Mathematics/Calculus-Volume-3.pdf", "chapters": [{"num": "1", "title": "Parametric Equations & Polar Coordinates (Curves, Calculus, Polar Graphs)", "sections": []}, {"num": "2", "title": "Vectors in Space (3D Coordinate Systems, Dot & Cross Products, Quadric Surfaces)", "sections": []}, {"num": "3", "title": "Vector-Valued Functions (Curves in Space, Motion, Arc Length, Curvature)", "sections": []}, {"num": "4", "title": "Differentiation of Multivariable Functions (Limits & Continuity, Partial Derivatives, Tangent Planes, Chain Rule, Directional Derivatives & Gradient, Extrema, Lagrange Multipliers)", "sections": []}, {"num": "5", "title": "Multiple Integration (Double Integrals over Rectangular/General Regions, Polar Form, Triple Integrals in Cylindrical & Spherical Coordinates, Change of Variables & Jacobians)", "sections": []}, {"num": "6", "title": "Vector Calculus (Vector Fields, Line Integrals, Conservative Vector Fields, Green's Theorem, Divergence and Curl, Surface Integrals, Stokes' Theorem, The Divergence Theorem)", "sections": []}, {"num": "7", "title": "Second-Order Differential Equations (Linear Homogeneous & Nonhomogeneous Equations, Applications, Series Solutions)", "sections": []}]}, {"id": "b-heff", "title": "Linear Algebra", "author": "Jim Hefferon", "category": "06-Mathematics", "url": "06-Mathematics/Hefferon-Linear-Algebra.pdf", "chapters": [{"num": "1", "title": "Linear Systems (Solving Linear Systems, Describing the Solution Set, General = Particular + Homogeneous)", "sections": []}, {"num": "2", "title": "Vector Spaces (Definition & Examples, Subspaces & Spanning Sets, Linear Independence, Basis & Dimension)", "sections": []}, {"num": "3", "title": "Maps Between Spaces (Isomorphism, Homomorphism, Matrix Representations, Matrix Multiplication, Inverses, Change of Basis)", "sections": []}, {"num": "4", "title": "Determinants (Definition & Geometric Meaning, Properties of Determinants, Formulas & Minors, Laplace Expansion)", "sections": []}, {"num": "5", "title": "Similarity, Eigenvalues & Eigenvectors (Complex Vector Spaces, Similarity Transformations, Diagonalization, Nilpotence, Jordan Canonical Form)", "sections": []}]}, {"id": "b-axler", "title": "Linear Algebra Done Right", "author": "Sheldon Axler", "category": "06-Mathematics", "url": "06-Mathematics/Axler-Linear-Algebra-Done-Right.pdf", "chapters": [{"num": "1", "title": "Vector Spaces (R^n and C^n, Definition of Vector Space, Subspaces, Sums of Subspaces, Direct Sums)", "sections": []}, {"num": "2", "title": "Finite-Dimensional Vector Spaces (Span & Linear Independence, Bases, Dimension)", "sections": []}, {"num": "3", "title": "Linear Maps (Vector Space of Linear Maps, Null Spaces & Ranges, Matrices, Invertibility & Isomorphisms, Product & Quotient Spaces, Duality)", "sections": []}, {"num": "4", "title": "Polynomials (Degree, Complex & Real Coefficients, Zeros of Polynomials, Factorization)", "sections": []}, {"num": "5", "title": "Eigenvalues, Eigenvectors & Invariant Subspaces (Invariant Subspaces, Eigenvectors & Upper-Triangular Matrices, Eigenspaces & Diagonal Matrices)", "sections": []}, {"num": "6", "title": "Inner Product Spaces (Inner Products & Norms, Orthonormal Bases, Orthogonal Complements & Minimization Problems)", "sections": []}, {"num": "7", "title": "Operators on Inner Product Spaces (Self-Adjoint & Normal Operators, The Spectral Theorem, Positive Operators, Isometries, Polar & Singular Value Decomposition)", "sections": []}, {"num": "8", "title": "Operators on Complex Vector Spaces (Generalized Eigenvectors & Nilpotent Operators, Decomposition of an Operator, Characteristic Polynomial & Cayley-Hamilton, Jordan Form)", "sections": []}, {"num": "9", "title": "Multilinear Algebra & Determinants (Bilinear & Multilinear Forms, Alternating Forms, Determinant of an Operator, Volume & Change of Variables)", "sections": []}, {"num": "10", "title": "Trace and Determinant (Trace of an Operator, Determinant of an Operator, Characteristic Polynomial)", "sections": []}]}, {"id": "b-mit-mcs", "title": "Mathematics for Computer Science", "author": "Eric Lehman, F. Thomson Leighton, Albert R. Meyer (MIT)", "category": "06-Mathematics", "url": "06-Mathematics/MIT-Mathematics-for-Computer-Science.pdf", "chapters": [{"num": "1", "title": "What is a Proof? (Propositions & Axioms)", "sections": ["Propositions, predicates", "Axiomatic method", "Proof by contradiction"]}, {"num": "2", "title": "The Well Ordering Principle", "sections": ["WOP formulation", "Proving termination", "Applications to algorithms"]}, {"num": "3", "title": "Logical Formulas & Truth Tables", "sections": ["Equivalence, validity, satisfiability", "CNF and DNF", "Quantifiers"]}, {"num": "4", "title": "Mathematical Induction & Strong Induction", "sections": ["Base case, induction step", "Strong induction formulation", "Faulty induction pitfalls"]}, {"num": "5", "title": "State Machines & Invariants", "sections": ["Execution traces", "Invariant method", "Partial correctness & termination"]}, {"num": "6", "title": "Recursive Data Types & Structural Induction", "sections": ["Recursive definitions", "Structural induction on trees/lists", "Game trees"]}, {"num": "7", "title": "Number Theory: Divisibility & GCD", "sections": ["Euclidean algorithm", "Pulverizer (Bézout coefficients)", "Fundamental Theorem of Arithmetic"]}, {"num": "8", "title": "Modular Arithmetic & Cryptography", "sections": ["Congruences, multiplicative inverses", "Euler's totient function", "RSA public-key cryptosystem"]}, {"num": "9", "title": "Relations and Partial Orders", "sections": ["Equivalence relations & partitions", "Strict and weak partial orders", "Topological sorting & scheduling"]}, {"num": "10", "title": "Graph Theory: Fundamentals", "sections": ["Vertices, edges, degrees", "Handshake lemma", "Paths, cycles, connected components"]}, {"num": "11", "title": "Trees & Graph Coloring", "sections": ["Tree properties & characterizations", "Spanning trees", "Vertex coloring & chromatic number"]}, {"num": "12", "title": "Bipartite Matching & Hall's Marriage Theorem", "sections": ["Bipartite graphs", "Maximum matchings", "Hall's condition & bottlenecks"]}, {"num": "13", "title": "Asymptotic Notation: Big-O, Omega, Theta", "sections": ["Asymptotic growth rates", "Bounding sums & integrals", "Stirling's approximation"]}, {"num": "14", "title": "Counting Rules: Permutations & Combinations", "sections": ["Product rule, generalized product rule", "Combinations: n choose k", "Binomial theorem"]}, {"num": "15", "title": "Pigeonhole Principle & Inclusion-Exclusion", "sections": ["Generalized pigeonhole", "Union bounds", "Inclusion-exclusion formula"]}, {"num": "16", "title": "Discrete Probability: Sample Spaces & Events", "sections": ["Tree diagrams, probability spaces", "Conditional probability, Bayes' rule", "Independence"]}, {"num": "17", "title": "Random Variables & Probability Distributions", "sections": ["Probability density functions (PDF)", "Cumulative distribution functions (CDF)", "Bernoulli, Binomial, Geometric"]}, {"num": "18", "title": "Expectation & Linearity of Expectation", "sections": ["Expected value definition", "Linearity property for arbitrary variables", "Expected value of indicators"]}, {"num": "19", "title": "Variance & Standard Deviation", "sections": ["Variance formula", "Independent variables property", "Markov's inequality"]}, {"num": "20", "title": "Chebyshev & Chernoff Bounds", "sections": ["Chebyshev's inequality", "Weak Law of Large Numbers", "Chernoff concentration bounds"]}, {"num": "21", "title": "Random Walks & Markov Chains", "sections": ["Gambler's ruin", "Transition probability matrices", "Stationary distributions"]}]}, {"id": "b-mml", "title": "Mathematics for Machine Learning", "author": "Marc Peter Deisenroth, A. Aldo Faisal, Cheng Soon Ong", "category": "05-AI-and-Automation", "url": "05-AI-and-Automation/Mathematics-for-Machine-Learning.pdf", "chapters": [{"num": "1", "title": "Introduction and Motivation", "sections": []}, {"num": "2", "title": "Linear Algebra (Systems of Equations, Matrices, Vector Spaces, Basis, Rank, Inner Products)", "sections": []}, {"num": "3", "title": "Analytic Geometry (Norms, Inner Products, Lengths and Distances, Angles and Orthogonality, Orthogonal Projections)", "sections": []}, {"num": "4", "title": "Matrix Decompositions (Determinant & Trace, Eigenvalues & Eigenvectors, Cholesky, Eigendecomposition, Singular Value Decomposition SVD)", "sections": []}, {"num": "5", "title": "Vector Calculus (Differentiation of Univariate/Multivariate Functions, Gradients, Jacobians, Hessians, Chain Rule, Backpropagation)", "sections": []}, {"num": "6", "title": "Probability and Distributions (Probability Space, Conditional Probability, Bayes' Theorem, Gaussian Distributions, Transformation of Variables)", "sections": []}, {"num": "7", "title": "Continuous Optimization (Optimization with Gradients, Constrained Optimization, Lagrange Multipliers, Convex Optimization)", "sections": []}, {"num": "8", "title": "When Models Meet Data (Data, Models, Learning, Empirical Risk Minimization, Maximum Likelihood Estimation, MAP Estimation)", "sections": []}, {"num": "9", "title": "Linear Regression (Problem Formulation, Maximum Likelihood, Bayesian Linear Regression)", "sections": []}, {"num": "10", "title": "Dimensionality Reduction with PCA (Problem Setting, Maximum Variance Formulation, Projection Perspective, PCA Algorithm)", "sections": []}, {"num": "11", "title": "Density Estimation with Gaussian Mixture Models (Gaussian Mixtures, Latent Variables, Expectation-Maximization EM Algorithm)", "sections": []}, {"num": "12", "title": "Classification with Support Vector Machines (Separating Hyperplanes, Primal & Dual SVM Formulations, Soft-Margin, Kernel Trick)", "sections": []}]}, {"id": "b-udl", "title": "Understanding Deep Learning", "author": "Simon J.D. Prince", "category": "05-AI-and-Automation", "url": "05-AI-and-Automation/Understanding-Deep-Learning.pdf", "chapters": [{"num": "1", "title": "Introduction to Deep Learning", "sections": []}, {"num": "2", "title": "Supervised Learning Fundamentals", "sections": []}, {"num": "3", "title": "Shallow Neural Networks (Activation Functions, Hyperplane Partitions)", "sections": []}, {"num": "4", "title": "Deep Neural Networks (Composing Layers, Expressive Power)", "sections": []}, {"num": "5", "title": "Loss Functions (Maximum Likelihood, Cross-Entropy, MSE)", "sections": []}, {"num": "6", "title": "Training Models (Gradient Descent, Stochastic Gradient Descent, Momentum, Adam)", "sections": []}, {"num": "7", "title": "Gradients & Initialization (Backpropagation Algorithms, He/Xavier Weight Initialization)", "sections": []}, {"num": "8", "title": "Measuring Performance (Overfitting, Cross-Validation, Bias-Variance Tradeoff)", "sections": []}, {"num": "9", "title": "Regularization (L1/L2 Penalties, Dropout, Early Stopping, Data Augmentation)", "sections": []}, {"num": "10", "title": "Convolutional Networks (Convolutions, Pooling, Padding, Strides, Invariance)", "sections": []}, {"num": "11", "title": "Residual Networks (Skip Connections, Vanishing Gradients, ResNet Variants)", "sections": []}, {"num": "12", "title": "Transformers (Self-Attention, Multi-Head Attention, Scaled Dot-Product, Positional Encodings)", "sections": []}, {"num": "13", "title": "Graph Neural Networks (Message Passing, Graph Convolutional Networks)", "sections": []}, {"num": "14", "title": "Generative Adversarial Networks (Minimax Objective, Discriminator vs Generator)", "sections": []}, {"num": "15", "title": "Variational Autoencoders (Latent Variable Models, ELBO, Reparameterization Trick)", "sections": []}, {"num": "16", "title": "Normalizing Flows (Invertible Layers, Change of Variables)", "sections": []}, {"num": "17", "title": "Diffusion Models (Forward Process, Reverse Denoising Process, Score Matching, DDPM)", "sections": []}, {"num": "18", "title": "Deep Reinforcement Learning (Markov Decision Processes, Q-Learning, Policy Gradients)", "sections": []}, {"num": "19", "title": "Why Deep Learning Works (Loss Landscapes, Generalization in Overparameterized Models)", "sections": []}, {"num": "20", "title": "Linear Algebra and Calculus Mathematical Review", "sections": []}, {"num": "21", "title": "Ethics, Bias and Responsible AI Development", "sections": []}]}, {"id": "b-uphys1", "title": "University Physics Volume 1", "author": "Samuel J. Ling, Jeff Sanny, William Moebs", "category": "09-Physics", "url": "09-Physics/University-Physics-Volume-1.pdf", "chapters": [{"num": "1", "title": "Units and Measurement", "sections": []}, {"num": "2", "title": "Vectors (Scalars, Vector Addition, Components, Coordinate Systems)", "sections": []}, {"num": "3", "title": "Motion Along a Straight Line (Position, Velocity, Acceleration, Constant Acceleration)", "sections": []}, {"num": "4", "title": "Motion in Two and Three Dimensions (Displacement, Velocity, Projectile Motion, Circular Motion)", "sections": []}, {"num": "5", "title": "Newton's Laws of Motion (Forces, Newton's Three Laws, Drawing Free-Body Diagrams)", "sections": []}, {"num": "6", "title": "Applications of Newton's Laws (Friction, Centripetal Force, Drag)", "sections": []}, {"num": "7", "title": "Work and Kinetic Energy (Work Done by Constant & Variable Forces, Work-Energy Theorem)", "sections": []}, {"num": "8", "title": "Potential Energy and Conservation of Energy (Conservative Forces, Energy Diagrams)", "sections": []}, {"num": "9", "title": "Linear Momentum and Collisions (Momentum, Impulse, Collisions, Center of Mass)", "sections": []}, {"num": "10", "title": "Fixed-Axis Rotation (Rotational Kinematics, Moment of Inertia, Torque, Rotational Kinetic Energy)", "sections": []}, {"num": "11", "title": "Angular Momentum (Rolling Motion, Conservation of Angular Momentum, Gyroscopic Precession)", "sections": []}, {"num": "12", "title": "Static Equilibrium and Elasticity (Conditions for Equilibrium, Stress, Strain, Elastic Moduli)", "sections": []}, {"num": "13", "title": "Gravitation (Newton's Law of Universal Gravitation, Gravitational Potential, Kepler's Laws)", "sections": []}, {"num": "14", "title": "Fluid Mechanics (Fluids, Density, Pressure, Pascal's Principle, Archimedes' Principle, Bernoulli's Equation)", "sections": []}, {"num": "15", "title": "Oscillations (Simple Harmonic Motion, Pendulums, Damped & Driven Oscillations, Resonance)", "sections": []}, {"num": "16", "title": "Waves (Traveling Waves, Wave Speed, Energy & Power of Waves, Interference, Standing Waves)", "sections": []}, {"num": "17", "title": "Sound (Sound Waves, Speed of Sound, Sound Intensity, Normal Modes, Doppler Effect, Shock Waves)", "sections": []}]}, {"id": "b-uphys2", "title": "University Physics Volume 2", "author": "Samuel J. Ling, Jeff Sanny, William Moebs", "category": "09-Physics", "url": "09-Physics/University-Physics-Volume-2.pdf", "chapters": [{"num": "1", "title": "Temperature and Heat (Thermal Equilibrium, Thermal Expansion, Heat Capacity, Phase Changes)", "sections": []}, {"num": "2", "title": "The Kinetic Theory of Gases (Ideal Gas Model, Pressure, Temperature, Heat Capacities)", "sections": []}, {"num": "3", "title": "The First Law of Thermodynamics (Work, Heat, Internal Energy, Thermodynamic Processes)", "sections": []}, {"num": "4", "title": "The Second Law of Thermodynamics (Reversible & Irreversible Processes, Heat Engines, Carnot Cycle, Entropy)", "sections": []}, {"num": "5", "title": "Electric Charges and Fields (Coulomb's Law, Electric Field Lines, Electric Dipoles)", "sections": []}, {"num": "6", "title": "Gauss's Law (Electric Flux, Calculating Electric Fields with Gauss's Law, Conductors in Equilibrium)", "sections": []}, {"num": "7", "title": "Electric Potential (Potential Energy, Potential Difference, Equipotential Surfaces, Gradient)", "sections": []}, {"num": "8", "title": "Capacitance (Capacitors in Series/Parallel, Energy Stored in Electric Fields, Dielectrics)", "sections": []}, {"num": "9", "title": "Current and Resistance (Current, Resistivity, Ohm's Law, Electrical Energy and Power)", "sections": []}, {"num": "10", "title": "Direct-Current Circuits (Electromotive Force, Resistors in Series/Parallel, Kirchhoff's Rules, RC Circuits)", "sections": []}, {"num": "11", "title": "Magnetic Forces and Fields (Magnetic Fields, Motion of Charged Particles, Hall Effect, Ampère's Law)", "sections": []}, {"num": "12", "title": "Sources of Magnetic Fields (Biot-Savart Law, Field of Solenoids and Toroids, Magnetic Materials)", "sections": []}, {"num": "13", "title": "Electromagnetic Induction (Faraday's Law, Lenz's Law, Motional EMF, Eddy Currents)", "sections": []}, {"num": "14", "title": "Inductance (Mutual & Self-Inductance, Energy in Magnetic Fields, RL & RLC Circuits)", "sections": []}, {"num": "15", "title": "Alternating-Current Circuits (AC Sources, Reactance, Resonance in AC Circuits, Transformers)", "sections": []}, {"num": "16", "title": "Electromagnetic Waves (Maxwell's Equations, Plane Waves, Energy Transport & Poynting Vector, Spectrum)", "sections": []}]}, {"id": "b-net", "title": "Computer Networks: A Systems Approach", "author": "Larry L. Peterson, Bruce S. Davie", "category": "07-Computer-Science", "url": "07-Computer-Science/Computer-Networks-A-Systems-Approach.pdf", "chapters": [{"num": "1", "title": "Foundation (Requirements, Connectivity, Architecture, Performance Metrics)", "sections": []}, {"num": "2", "title": "Direct Link Networks (Hardware Building Blocks, Encoding, Framing, Error Detection, Reliable Transmission, Wireless)", "sections": []}, {"num": "3", "title": "Packet Switching (Switching and Forwarding, Bridges and LAN Switches, Cell Switching, Implementation)", "sections": []}, {"num": "4", "title": "Internetworking (Simple Internetworking IP, Global Internet Routing BGP/OSPF, IPv6, Multicast, Multiprotocol Label Switching)", "sections": []}, {"num": "5", "title": "End-to-End Protocols (Simple Demultiplexer UDP, Reliable Byte Stream TCP, Remote Procedure Call RPC, Transport for Real-Time RTP)", "sections": []}, {"num": "6", "title": "Congestion Control & Resource Allocation (Queuing Disciplines, TCP Congestion Control AIMD, Congestion Avoidance Mechanisms)", "sections": []}, {"num": "7", "title": "End-to-End Data (Presentation Formatting, Data Compression, Streaming Multimedia)", "sections": []}, {"num": "8", "title": "Network Security (Cryptographic Building Blocks, Key Pre-distribution, Authentication Protocols, Example Systems TLS/IPsec)", "sections": []}, {"num": "9", "title": "Applications (Traditional Applications DNS/SMTP/HTTP, Web Infrastructure CDN, Peer-to-Peer Networks)", "sections": []}]}, {"id": "b-ostep", "title": "Operating Systems: Three Easy Pieces", "author": "Remzi H. Arpaci-Dusseau, Andrea C. Arpaci-Dusseau", "category": "07-Computer-Science", "url": "07-Computer-Science/OSTEP-Operating-Systems-Guide.html", "chapters": [{"num": "1", "title": "A Dialogue on Virtualization & The Abstraction: The Process", "sections": ["Process creation", "Process states", "Data structures"]}, {"num": "2", "title": "Process API: fork, exec, and wait", "sections": ["Process control", "Redirecting standard I/O", "Signals"]}, {"num": "3", "title": "Mechanism: Limited Direct Execution", "sections": ["User vs Kernel mode", "System calls", "Trap table", "Context switches"]}, {"num": "4", "title": "Scheduling: Introduction (FIFO, SJF, STCF, Round Robin)", "sections": ["Workload assumptions", "Turnaround time", "Response time"]}, {"num": "5", "title": "Scheduling: The Multi-Level Feedback Queue (MLFQ)", "sections": ["Priority rules", "Priority boost", "Gaming tolerance"]}, {"num": "6", "title": "Scheduling: Proportional Share & Lottery Scheduling", "sections": ["Lottery tickets", "Deterministic stride scheduling"]}, {"num": "7", "title": "Multiprocessor Scheduling", "sections": ["Cache affinity", "Single-queue vs multi-queue scheduling"]}, {"num": "8", "title": "The Abstraction: Address Spaces", "sections": ["Virtual address space", "Goals: transparency, protection, efficiency"]}, {"num": "9", "title": "Memory API: malloc and free", "sections": ["Common memory errors", "Buffer overflow", "Memory leaks"]}, {"num": "10", "title": "Mechanism: Address Translation & Base/Bounds", "sections": ["Hardware-based relocation", "Operating system role", "Protection"]}, {"num": "11", "title": "Segmentation: Generalized Base/Bounds", "sections": ["Segment registers", "Sharing", "External fragmentation"]}, {"num": "12", "title": "Free-Space Management", "sections": ["Splitting and coalescing", "Best-fit, worst-fit, first-fit", "Segregated lists"]}, {"num": "13", "title": "Introduction to Paging", "sections": ["Page frames", "Page tables", "Virtual page numbers", "Address translation"]}, {"num": "14", "title": "Translation Lookaside Buffers (TLBs)", "sections": ["Hardware-managed vs software-managed TLB", "TLB miss handling", "ASIDs"]}, {"num": "15", "title": "Paging: Smaller Tables (Multi-Level Paging)", "sections": ["Page directories", "Multi-level address translation", "Inverted tables"]}, {"num": "16", "title": "Paging: Beyond Physical Memory (Mechanisms)", "sections": ["Swap space", "Present bit", "Page fault handling"]}, {"num": "17", "title": "Paging: Replacement Policies", "sections": ["Optimal policy", "FIFO", "Random", "LRU", "Clock algorithm"]}, {"num": "18", "title": "Concurrency: An Introduction & Shared State", "sections": ["Threads vs processes", "Shared memory", "Race conditions", "Critical sections"]}, {"num": "19", "title": "Thread API: pthread_create and pthread_join", "sections": ["Thread creation", "Thread completion", "Locks and condition variables"]}, {"num": "20", "title": "Locks: Basic Mechanisms & Hardware Primitives", "sections": ["Test-and-set", "Compare-and-swap", "Fetch-and-add", "Spinlocks vs sleeping locks"]}, {"num": "21", "title": "Lock-Based Concurrent Data Structures", "sections": ["Concurrent counters", "Concurrent linked lists", "Concurrent queues & hash tables"]}, {"num": "22", "title": "Condition Variables (wait and signal)", "sections": ["Producer/Consumer problem", "Mesa semantics", "Covering conditions"]}, {"num": "23", "title": "Semaphores: Definition & Implementation", "sections": ["Binary semaphores (mutexes)", "Counting semaphores", "Producer/Consumer with semaphores"]}, {"num": "24", "title": "Common Concurrency Bugs", "sections": ["Non-deadlock bugs (atomicity, order)", "Deadlock prevention & avoidance (Banker's algorithm)"]}, {"num": "25", "title": "Event-Based Concurrency", "sections": ["Event loops", "select() and epoll()", "Asynchronous I/O", "State management"]}, {"num": "26", "title": "I/O Devices & Canonical Hardware Protocols", "sections": ["Device registers", "Polling vs interrupts", "DMA (Direct Memory Access)"]}, {"num": "27", "title": "Hard Disk Drives & Geometry", "sections": ["Platters, tracks, sectors", "Seek time, rotational latency", "I/O scheduling (SSTF, SCAN)"]}, {"num": "28", "title": "Redundant Arrays of Inexpensive Disks (RAID)", "sections": ["RAID 0 (striping)", "RAID 1 (mirroring)", "RAID 4/5 (parity)"]}, {"num": "29", "title": "Files and Directories", "sections": ["Inodes", "File descriptors", "Hard links vs symbolic links", "Directory traversal"]}, {"num": "30", "title": "File System Implementation: Very Simple File System", "sections": ["Superblock", "Inode bitmap", "Data bitmap", "Multi-level index"]}, {"num": "31", "title": "Fast File System (FFS)", "sections": ["Cylinder groups", "Locality optimization", "Internal fragmentation mitigation"]}, {"num": "32", "title": "Crash Consistency: FSCK and Journaling", "sections": ["Crash consistency problem", "FSCK checker", "Write-Ahead Logging (WAL)"]}, {"num": "33", "title": "Log-Structured File Systems (LFS)", "sections": ["Writing sequentially to disk", "Segment cleaning", "Checkpoint regions"]}, {"num": "34", "title": "Flash-Based SSDs", "sections": ["NAND flash memory", "Flash Translation Layer (FTL)", "Wear leveling & garbage collection"]}, {"num": "35", "title": "Distributed Systems & Network File System (NFS)", "sections": ["Stateless protocol", "Idempotent operations", "Client-side caching"]}]}, {"id": "b-git", "title": "Pro Git", "author": "Scott Chacon, Ben Straub", "category": "10-Software-and-Web-Development", "url": "10-Software-and-Web-Development/Pro-Git-2nd-Edition.pdf", "chapters": [{"num": "1", "title": "Getting Started (About Version Control, What is Git?, Installing Git, First-Time Setup)", "sections": []}, {"num": "2", "title": "Git Basics (Getting a Git Repository, Recording Changes, Viewing Commit History, Undoing Things, Working with Remotes, Tagging)", "sections": []}, {"num": "3", "title": "Git Branching (Branches in a Nutshell, Basic Branching and Merging, Branch Management, Branching Workflows, Remote Branches, Rebasing)", "sections": []}, {"num": "4", "title": "Git on the Server (The Protocols, Getting Git on a Server, Generating SSH Public Keys, Git Daemon, Smart HTTP, Gitolite)", "sections": []}, {"num": "5", "title": "Distributed Git (Distributed Workflows, Contributing to a Project, Maintaining a Project)", "sections": []}, {"num": "6", "title": "GitHub (Account Setup, Contributing to Projects, Maintaining a Project, Managing an Organization, GitHub Scripting via API)", "sections": []}, {"num": "7", "title": "Git Tools (Revision Selection, Interactive Staging, Stashing and Cleaning, Signing Your Work, Searching, Rewriting History, Reset Demystified, Advanced Merging, Rerere, Debugging with Bisect, Submodules)", "sections": []}, {"num": "8", "title": "Customizing Git (Git Configuration, Git Attributes, Git Hooks, An Example Git-Enforced Policy)", "sections": []}, {"num": "9", "title": "Git and Other Systems (Git as a Client for Subversion/Mercurial/Perforce, Migrating to Git)", "sections": []}, {"num": "10", "title": "Git Internals (Plumbing and Porcelain, Git Objects: Blobs, Trees, Commits, Tags, Git References, Packfiles, The Refspec, Transfer Protocols, Maintenance and Data Recovery, Environment Variables)", "sections": []}]}, {"id": "b-ejs", "title": "Eloquent JavaScript", "author": "Marijn Haverbeke", "category": "10-Software-and-Web-Development", "url": "10-Software-and-Web-Development/Eloquent-JavaScript.pdf", "chapters": [{"num": "1", "title": "Values, Types, and Operators", "sections": ["Numbers, strings, booleans", "Null and undefined", "Type coercion"]}, {"num": "2", "title": "Program Structure", "sections": ["Bindings, environment", "Control flow: if, while, for", "Switch and dispatch"]}, {"num": "3", "title": "Functions", "sections": ["Defining functions", "Scope, closures", "Optional arguments, rest parameters"]}, {"num": "4", "title": "Data Structures: Objects and Arrays", "sections": ["Properties, methods", "Mutability, JSON", "Rest and spread syntax"]}, {"num": "5", "title": "Higher-Order Functions", "sections": ["Abstracting repetition", "filter, map, reduce", "Function composition"]}, {"num": "6", "title": "The Secret Life of Objects", "sections": ["Prototypes, Object.create", "Classes, inheritance", "Polymorphism, symbols, getters/setters"]}, {"num": "7", "title": "Project: A Robot", "sections": ["Automaton simulation", "Graph routing", "Virtual village mail delivery"]}, {"num": "8", "title": "Bugs and Errors", "sections": ["Strict mode", "Types and linting", "Exceptions, try/catch", "Assertions"]}, {"num": "9", "title": "Regular Expressions", "sections": ["Patterns, match, exec", "Dynamic regex", "Backreferences and replace"]}, {"num": "10", "title": "Modules", "sections": ["Packages, npm", "CommonJS vs ES modules", "Module design"]}, {"num": "11", "title": "Asynchronous Programming", "sections": ["Callbacks", "Promises, Promise.all", "async/await, event loops"]}, {"num": "12", "title": "Project: A Programming Language", "sections": ["Parsing Egg", "Syntax tree evaluator", "Scope and closure environment"]}, {"num": "13", "title": "JavaScript and the Browser", "sections": ["Network protocols", "The Web, sandboxes", "Script tags"]}, {"num": "14", "title": "The Document Object Model (DOM)", "sections": ["Document tree", "Finding and modifying elements", "Layout and reflow"]}, {"num": "15", "title": "Handling Events", "sections": ["Event listeners, propagation", "Key & mouse events", "Debouncing, requestAnimationFrame"]}, {"num": "16", "title": "Project: A Platform Game", "sections": ["Canvas drawing", "Physics simulation", "Collision detection, level editor"]}, {"num": "17", "title": "Drawing on Canvas", "sections": ["2D context", "Paths, transformations", "Pixel manipulation"]}, {"num": "18", "title": "HTTP and Forms", "sections": ["Fetch API, headers", "Form controls, validation", "File API, local storage"]}, {"num": "19", "title": "Project: A Pixel Art Editor", "sections": ["Component architecture", "Undo history", "Canvas export"]}, {"num": "20", "title": "Node.js", "sections": ["V8 engine, fs module", "HTTP server streams", "Asynchronous file I/O"]}, {"num": "21", "title": "Project: Skill-Sharing Website", "sections": ["RESTful API", "Long polling", "Frontend SPA state"]}, {"num": "22", "title": "JavaScript and Performance", "sections": ["V8 JIT compilation", "Garbage collection pauses", "Profiling with DevTools"]}]}, {"id": "b-pg16", "title": "PostgreSQL Documentation", "author": "PostgreSQL Global Development Group", "category": "02-SQL-and-Databases", "url": "02-SQL-and-Databases/PostgreSQL-16-Documentation.pdf", "chapters": [{"num": "1", "title": "SQL Syntax, Lexical Structure & Constants", "sections": ["Identifiers, literals", "Type casting syntax", "Positional parameters"]}, {"num": "2", "title": "Data Definition & Schema Design", "sections": ["CREATE TABLE, constraints", "Foreign keys, check constraints", "Schemas & search path"]}, {"num": "3", "title": "Data Manipulation (DML)", "sections": ["INSERT, UPDATE, DELETE", "RETURNING clause", "Upsert: ON CONFLICT DO UPDATE"]}, {"num": "4", "title": "Queries & Relational Algebra", "sections": ["SELECT, table expressions", "JOIN types: INNER, LEFT, FULL, CROSS", "Subqueries, CTEs (WITH)"]}, {"num": "5", "title": "Data Types Architecture", "sections": ["Numeric, character, boolean", "Date/Time, intervals", "JSON and JSONB indexing", "Arrays and composites"]}, {"num": "6", "title": "Functions & Operators", "sections": ["String functions, pattern matching", "Aggregate functions", "Window functions & OVER() partition"]}, {"num": "7", "title": "Indexes: Types & Internals", "sections": ["B-tree indexes", "Hash indexes", "GiST and SP-GiST", "GIN (Inverted indexes)", "BRIN (Block range)"]}, {"num": "8", "title": "Concurrency Control & MVCC", "sections": ["Multi-Version Concurrency", "Transaction isolation levels", "Table-level & row-level locks", "Advisory locks"]}, {"num": "9", "title": "Performance Optimization & Planner", "sections": ["EXPLAIN and EXPLAIN ANALYZE", "Planner statistics & cost estimation", "Join algorithms: Nested loop, Hash, Merge"]}, {"num": "10", "title": "Server Configuration (postgresql.conf)", "sections": ["shared_buffers, work_mem", "maintenance_work_mem, checkpoint_completion_target", "WAL sizing"]}, {"num": "11", "title": "Client Authentication & Security", "sections": ["pg_hba.conf rules", "SCRAM-SHA-256", "SSL certificates, role-level security (RLS)"]}, {"num": "12", "title": "Database Maintenance: VACUUM & ANALYZE", "sections": ["Dead tuples, bloat", "Autovacuum worker daemon", "Transaction ID wraparound prevention"]}, {"num": "13", "title": "Backup, Point-in-Time Recovery & WAL", "sections": ["Logical backups: pg_dump", "Physical base backups: pg_basebackup", "Continuous WAL archiving and PITR"]}, {"num": "14", "title": "Replication: High Availability", "sections": ["Streaming physical replication", "Logical replication & publications/subscriptions", "Failover strategies"]}, {"num": "15", "title": "Server-Side Programming: PL/pgSQL", "sections": ["PL/pgSQL syntax, variables", "Triggers: BEFORE/AFTER/INSTEAD OF", "Stored procedures and transactions"]}]}, {"id": "b-eth", "title": "Mastering Ethereum", "author": "Andreas M. Antonopoulos, Gavin Wood", "category": "08-Blockchain-and-Solidity", "url": "08-Blockchain-and-Solidity/Mastering-Ethereum-Syllabus.html", "chapters": [{"num": "1", "title": "What Is Ethereum? (P2P Networks, Cryptography, Blockchain, EVM, Smart Contracts, Ether)", "sections": []}, {"num": "2", "title": "Ethereum Basics (Ether Units, Wallets, Transactions, Gas, World Computer)", "sections": []}, {"num": "3", "title": "Ethereum Clients (Geth, Parity/OpenEthereum, JSON-RPC Interface)", "sections": []}, {"num": "4", "title": "Cryptography (Private/Public Keys, Elliptic Curve secp256k1, Keccak-256 Hashes, Addresses)", "sections": []}, {"num": "5", "title": "Wallets (Deterministic vs Non-deterministic, Mnemonic Seeds BIP-39, HD Wallets BIP-32/44)", "sections": []}, {"num": "6", "title": "Transactions (Nonce, Gas Price, Gas Limit, Recipient, Value, Payload, ECDSA Signatures)", "sections": []}, {"num": "7", "title": "Smart Contracts & Solidity (Solidity Compilation, ABI, Data Types, Modifiers, Events)", "sections": []}, {"num": "8", "title": "Smart Contract Security (Reentrancy, Arithmetic Overflow, Access Controls, Auditing)", "sections": []}, {"num": "9", "title": "Tokens (ERC-20 Fungible Tokens, ERC-721 Non-Fungible Tokens, ERC-777, ERC-1155)", "sections": []}, {"num": "10", "title": "Oracles (Decentralized Oracles, Chainlink, TLSNotary, Oracle Security)", "sections": []}, {"num": "11", "title": "Decentralized Applications (DApps) (Frontend Frameworks, Web3.js, Ethers.js, IPFS, Swarm)", "sections": []}, {"num": "12", "title": "Decentralized Autonomous Organizations (DAOs) (Governance, Voting, The DAO Hack History)", "sections": []}, {"num": "13", "title": "The Ethereum Virtual Machine (EVM) (Architecture, ROM Code, RAM Memory, Storage Tree, Gas Accounting)", "sections": []}, {"num": "14", "title": "Consensus (Proof-of-Work to Proof-of-Stake, Casper, Finality, Sharding)", "sections": []}]}, {"id": "b-sol-spec", "title": "Solidity Language Specification", "author": "Ethereum Foundation", "category": "08-Blockchain-and-Solidity", "url": "08-Blockchain-and-Solidity/Solidity-Documentation.pdf", "chapters": [{"num": "Section 1", "title": "Introduction to Smart Contracts (Subcurrency Example, Blockchain Basics, EVM Overview)", "sections": []}, {"num": "Section 2", "title": "Solidity by Example (Voting, Blind Auction, Safe Remote Purchase, Micropayment Channel)", "sections": []}, {"num": "Section 3", "title": "Solidity in Depth (Source Layout, Contract Structure, Types, Units & Global Variables, Expressions & Control Structures, Contracts: Inheritance, Abstract, Interfaces, Libraries)", "sections": []}, {"num": "Section 4", "title": "Inline Assembly & Yul (Yul Object Structure, EVM Opcodes, Memory Allocation in Assembly)", "sections": []}, {"num": "Section 5", "title": "Security Considerations (Pitfalls: Reentrancy, Call Depth, Delegatecall, Gas Limit Issues)", "sections": []}, {"num": "Section 6", "title": "Contract Application Binary Interface (ABI Specification, Function Selectors, Argument Encoding)", "sections": []}]}], "repos": [{"id": "repo-exercism", "subject": "Python", "name": "Exercism Python Track", "desc": "140+ structured coding exercises and 67 language concept modules with automated test suites.", "url": "01-Python/Practice/Exercism-Python-Track/index.html", "cmd": "cd D:\\Learning\\01-Python\\Practice\\Exercism-Python-Track"}, {"id": "repo-pagila", "subject": "SQL & Databases", "name": "Pagila Sample Database", "desc": "PostgreSQL DVD rental schema with 15+ normalized tables and Docker Compose environment.", "url": "02-SQL-and-Databases/Practice/Pagila-Sample-Database/index.html", "cmd": "cd D:\\Learning\\02-SQL-and-Databases\\Practice\\Pagila-Sample-Database"}, {"id": "repo-zoomcamp", "subject": "Data Engineering", "name": "Data Engineering Zoomcamp", "desc": "End-to-end data pipelines covering Docker, Terraform, Kestra, BigQuery, Spark, and Kafka.", "url": "03-Data-Engineering/Practice/Data-Engineering-Zoomcamp/index.html", "cmd": "cd D:\\Learning\\03-Data-Engineering\\Practice\\Data-Engineering-Zoomcamp"}, {"id": "repo-jaffle", "subject": "Data Engineering", "name": "dbt Jaffle Shop Project", "desc": "Analytics engineering demonstration illustrating staging views, dimensional marts, and tests.", "url": "03-Data-Engineering/Practice/dbt-Jaffle-Shop/index.html", "cmd": "cd D:\\Learning\\03-Data-Engineering\\Practice\\dbt-Jaffle-Shop"}, {"id": "repo-oz", "subject": "Blockchain", "name": "OpenZeppelin Contracts", "desc": "Smart contract library featuring ERC20, ERC721, AccessControl, and Hardhat test suites.", "url": "08-Blockchain-and-Solidity/Practice/OpenZeppelin-Contracts/index.html", "cmd": "cd D:\\Learning\\08-Blockchain-and-Solidity\\Practice\\OpenZeppelin-Contracts"}, {"id": "repo-type", "subject": "Web Development", "name": "TypeScript Type Challenges", "desc": "190 interactive type-level challenges across 4 difficulty tiers for mastering generic TypeScript.", "url": "10-Software-and-Web-Development/Practice/Type-Challenges-Repository/index.html", "cmd": "cd D:\\Learning\\10-Software-and-Web-Development\\Practice\\Type-Challenges-Repository"}], "guides": [{"subject": "Python", "title": "Python Documentation Hub", "url": "01-Python/Documentation-Portal.html", "desc": "16-chapter tutorial and standard library reference"}, {"subject": "Python", "title": "Python Study Guide", "url": "01-Python/Python-Study-Guide.html", "desc": "Language reference, typing, and data model notes"}, {"subject": "Python", "title": "Automate the Boring Stuff Guide", "url": "01-Python/Automate-the-Boring-Stuff.html", "desc": "Filesystem tasks, automation, and regular expressions"}, {"subject": "SQL & Databases", "title": "Pagila Database Guide", "url": "02-SQL-and-Databases/Pagila-Database-Guide.html", "desc": "Schema architecture, table relationships, and query examples"}, {"subject": "SQL & Databases", "title": "SQL Indexing & Optimization Guide", "url": "02-SQL-and-Databases/SQL-Indexing-and-Optimization.html", "desc": "B-Tree, GIN, BRIN indexes, EXPLAIN ANALYZE, and tuning"}, {"subject": "Data Engineering", "title": "Zoomcamp Guide", "url": "03-Data-Engineering/Data-Engineering-Zoomcamp-Guide.html", "desc": "Curriculum overview and environment walkthroughs"}, {"subject": "Data Engineering", "title": "dbt Jaffle Shop Guide", "url": "03-Data-Engineering/dbt-Jaffle-Shop-Guide.html", "desc": "Dimensional modeling and dbt commands"}, {"subject": "Data Engineering", "title": "Distributed Compute Guide", "url": "03-Data-Engineering/Distributed-Compute-and-Orchestration.html", "desc": "BigQuery, Spark, Kafka, and Kestra architecture"}, {"subject": "Data Engineering", "title": "MapReduce Reading Guide", "url": "03-Data-Engineering/MapReduce-Reading-Guide.html", "desc": "Google MapReduce distributed processing paper review"}, {"subject": "Cloud & Azure", "title": "Azure & Cloud Architecture Guide", "url": "04-Cloud-and-Azure/Azure-and-Cloud-Architecture-Guide.html", "desc": "Cloud patterns, Azure services, medallion lakehouses, and governance"}, {"subject": "Machine Learning & AI", "title": "Deep Learning & LLM Reading Guide", "url": "05-AI-and-Automation/Deep-Learning-and-LLM-Reading-Guide.html", "desc": "Notes on deep learning, transformers, and RAG architectures"}, {"subject": "Machine Learning & AI", "title": "AI Agents & Workflows Guide", "url": "05-AI-and-Automation/AI-Agents-and-Workflows-Guide.html", "desc": "Autonomous agents, ReAct frameworks, and tool execution"}, {"subject": "Mathematics", "title": "Mathematics Study Guide", "url": "06-Mathematics/Mathematics-Study-Guide.html", "desc": "Calculus, linear algebra, discrete math, and probability problems"}, {"subject": "Computer Systems", "title": "Operating Systems Guide", "url": "07-Computer-Science/OSTEP-Operating-Systems-Guide.html", "desc": "Virtualization, concurrency, persistence, and file systems"}, {"subject": "Computer Systems", "title": "Computer Networks Guide", "url": "07-Computer-Science/Computer-Networks-Study-Guide.html", "desc": "TCP/IP layers, routing, and network protocol architecture"}, {"subject": "Blockchain", "title": "Mastering Ethereum Syllabus", "url": "08-Blockchain-and-Solidity/Mastering-Ethereum-Syllabus.html", "desc": "EVM architecture, transaction mechanics, and smart contracts"}, {"subject": "Blockchain", "title": "OpenZeppelin Contracts Guide", "url": "08-Blockchain-and-Solidity/OpenZeppelin-Contracts-Guide.html", "desc": "Audited token standards, access control, and proxies"}, {"subject": "Blockchain", "title": "Smart Contract Security Guide", "url": "08-Blockchain-and-Solidity/Smart-Contract-Security-Guide.html", "desc": "Reentrancy, oracle attacks, and formal security audits"}, {"subject": "Physics", "title": "Physics Study Guide", "url": "09-Physics/Physics-Study-Guide.html", "desc": "Mechanics, energy conservation, oscillations, waves, and thermodynamics"}, {"subject": "Web Development", "title": "TypeScript Handbook", "url": "10-Software-and-Web-Development/TypeScript-Handbook.html", "desc": "Type primitives, generics, interfaces, and unions"}, {"subject": "Web Development", "title": "Type Challenges Guide", "url": "10-Software-and-Web-Development/Type-Challenges-Guide.html", "desc": "Walkthroughs and solutions for core TypeScript challenges"}, {"subject": "Web Development", "title": "The Missing Semester Guide", "url": "10-Software-and-Web-Development/MIT-Missing-Semester-Guide.html", "desc": "Command-line tools, shell scripting, vim, and Git internals"}]};
+    const STORAGE_KEY = 'LEARNING_FORGE_V2_CHECKED';
+
+    let currentMode = 'curriculum'; // 'curriculum' | 'books' | 'labs' | 'guides'
+    let currentSubjectIdx = 0;
+    let currentSubjectTab = 'path'; // 'path' | 'books' | 'lab' | 'guides'
+    let completedSteps = new Set(JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'));
+    let searchQuery = '';
+
+    function init() {
+      const searchInput = document.getElementById('globalSearch');
+      searchInput.addEventListener('input', (e) => {
+        searchQuery = e.target.value.trim().toLowerCase();
+        renderStage();
+      });
+
+      window.addEventListener('keydown', (e) => {
+        if (e.key === '/' && document.activeElement !== searchInput) {
+          e.preventDefault();
+          searchInput.focus();
+        } else if (e.key === 'Escape' && document.activeElement === searchInput) {
+          searchInput.value = '';
+          searchQuery = '';
+          renderStage();
+          searchInput.blur();
+        }
+      });
+
+      updateProgress();
+      renderSidebar();
+      renderStage();
+    }
+
+    function switchMode(mode) {
+      currentMode = mode;
+      searchQuery = '';
+      document.getElementById('globalSearch').value = '';
+
+      ['Curriculum', 'Books', 'Labs', 'Guides'].forEach(m => {
+        const btn = document.getElementById('mode' + m);
+        if (btn) btn.classList.remove('active');
+      });
+
+      if (mode === 'curriculum') document.getElementById('modeCurriculum').classList.add('active');
+      else if (mode === 'books') document.getElementById('modeBooks').classList.add('active');
+      else if (mode === 'labs') document.getElementById('modeLabs').classList.add('active');
+      else if (mode === 'guides') document.getElementById('modeGuides').classList.add('active');
+
+      renderSidebar();
+      renderStage();
+    }
+
+    function selectSubject(idx) {
+      currentMode = 'curriculum';
+      currentSubjectIdx = idx;
+      currentSubjectTab = 'path';
+      document.getElementById('modeCurriculum').classList.add('active');
+      ['Books', 'Labs', 'Guides'].forEach(m => document.getElementById('mode' + m).classList.remove('active'));
+
+      renderSidebar();
+      renderStage();
+      document.getElementById('stage').scrollTop = 0;
+    }
+
+    function switchSubjectTab(tab) {
+      currentSubjectTab = tab;
+      renderStage();
+    }
+
+    function toggleStep(id) {
+      if (completedSteps.has(id)) {
+        completedSteps.delete(id);
+      } else {
+        completedSteps.add(id);
+      }
+      localStorage.setItem(STORAGE_KEY, JSON.stringify([...completedSteps]));
+      updateProgress();
+      renderStage();
+    }
+
+    function updateProgress() {
+      let total = 0;
+      DATA.subjects.forEach(s => {
+        s.phases.forEach(p => total += p.steps.length);
+      });
+      const count = completedSteps.size;
+      const pct = total > 0 ? Math.round((count / total) * 100) : 0;
+
+      document.getElementById('progressFill').style.width = pct + '%';
+      document.getElementById('progressText').innerText = pct + '%';
+      document.getElementById('statsDone').innerText = count;
+    }
+
+    function resetProgress() {
+      if (confirm('Reset all completed step checkmarks?')) {
+        completedSteps.clear();
+        localStorage.removeItem(STORAGE_KEY);
+        updateProgress();
+        renderStage();
+      }
+    }
+
+    function copyText(txt) {
+      navigator.clipboard.writeText(txt).then(() => {
+        const toast = document.getElementById('toast');
+        toast.style.display = 'block';
+        setTimeout(() => toast.style.display = 'none', 2000);
+      });
+    }
+
+    function renderSidebar() {
+      const title = document.getElementById('sidebarTitle');
+      const menu = document.getElementById('sidebarMenu');
+      menu.innerHTML = '';
+
+      if (currentMode === 'curriculum') {
+        title.innerText = 'Subjects (10)';
+        DATA.subjects.forEach((s, idx) => {
+          const btn = document.createElement('button');
+          btn.className = 'subject-item' + (idx === currentSubjectIdx ? ' active' : '');
+          btn.onclick = () => selectSubject(idx);
+          btn.innerHTML = `<span>${s.name}</span>`;
+          menu.appendChild(btn);
+        });
+      } else if (currentMode === 'books') {
+        title.innerText = 'Textbooks (18)';
+        DATA.books.forEach((b, idx) => {
+          const btn = document.createElement('button');
+          btn.className = 'subject-item';
+          btn.onclick = () => {
+            currentMode = 'books';
+            renderStage();
+            const el = document.getElementById('book-' + idx);
+            if (el) el.scrollIntoView({ behavior: 'smooth' });
+          };
+          btn.innerHTML = `<span style="font-size:0.8rem;">${b.title}</span>`;
+          menu.appendChild(btn);
+        });
+      } else if (currentMode === 'labs') {
+        title.innerText = 'Practice Labs (6)';
+        DATA.repos.forEach((r, idx) => {
+          const btn = document.createElement('button');
+          btn.className = 'subject-item';
+          btn.onclick = () => {
+            currentMode = 'labs';
+            renderStage();
+            const el = document.getElementById('repo-' + idx);
+            if (el) el.scrollIntoView({ behavior: 'smooth' });
+          };
+          btn.innerHTML = `<span style="font-size:0.825rem;">${r.name}</span>`;
+          menu.appendChild(btn);
+        });
+      } else if (currentMode === 'guides') {
+        title.innerText = 'Study Guides (22)';
+        DATA.guides.forEach((g, idx) => {
+          const btn = document.createElement('button');
+          btn.className = 'subject-item';
+          btn.onclick = () => {
+            currentMode = 'guides';
+            renderStage();
+            const el = document.getElementById('guide-' + idx);
+            if (el) el.scrollIntoView({ behavior: 'smooth' });
+          };
+          btn.innerHTML = `<span style="font-size:0.8rem;">${g.title}</span>`;
+          menu.appendChild(btn);
+        });
+      }
+    }
+
+    function renderStage() {
+      const container = document.getElementById('stageContent');
+
+      if (searchQuery !== '') {
+        renderSearch(container);
+        return;
+      }
+
+      if (currentMode === 'curriculum') {
+        renderSubject(container);
+      } else if (currentMode === 'books') {
+        renderBooks(container);
+      } else if (currentMode === 'labs') {
+        renderLabs(container);
+      } else if (currentMode === 'guides') {
+        renderGuides(container);
+      }
+    }
+
+    function renderSubject(container) {
+      const s = DATA.subjects[currentSubjectIdx];
+
+      const tabsHtml = `
+        <div class="subject-tabs">
+          <button class="sub-tab-btn ${currentSubjectTab === 'path' ? 'active' : ''}" onclick="switchSubjectTab('path')">
+            Learning Path
+          </button>
+          <button class="sub-tab-btn ${currentSubjectTab === 'books' ? 'active' : ''}" onclick="switchSubjectTab('books')">
+            Textbooks (${s.books.length})
+          </button>
+          <button class="sub-tab-btn ${currentSubjectTab === 'lab' ? 'active' : ''}" onclick="switchSubjectTab('lab')">
+            Practice Lab ${s.repo ? '(1)' : '(0)'}
+          </button>
+          <button class="sub-tab-btn ${currentSubjectTab === 'guides' ? 'active' : ''}" onclick="switchSubjectTab('guides')">
+            Guides (${s.guides.length})
+          </button>
+        </div>
+      `;
+
+      let contentHtml = '';
+
+      if (currentSubjectTab === 'path') {
+        contentHtml = s.phases.map(ph => `
+          <div class="phase-block">
+            <div class="phase-heading">${ph.phase_name}</div>
+            ${ph.steps.map(step => {
+              const isDone = completedSteps.has(step.id);
+              return `
+                <div class="step-card ${isDone ? 'done' : ''}">
+                  <div class="step-header">
+                    <h3 class="step-title">${step.title}</h3>
+                    <button class="btn-check ${isDone ? 'checked' : ''}" onclick="toggleStep('${step.id}')">
+                      ${isDone ? '✓ Completed' : '○ Mark Done'}
+                    </button>
+                  </div>
+                  <p class="step-desc">${step.desc}</p>
+                  <div class="step-actions">
+                    <div class="step-links">
+                      ${step.reading_url ? `
+                        <a href="${step.reading_url}" target="_blank" class="btn-link">
+                          📖 ${step.reading_label} ↗
+                        </a>
+                      ` : ''}
+                      ${step.practice_url ? `
+                        <a href="${step.practice_url}" target="_blank" class="btn-link">
+                          🔬 ${step.practice_label} ↗
+                        </a>
+                      ` : ''}
+                    </div>
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        `).join('');
+      } else if (currentSubjectTab === 'books') {
+        const matchingBooks = DATA.books.filter(b => b.url.startsWith(s.folder));
+        if (matchingBooks.length === 0) {
+          contentHtml = `<p style="color:var(--text-muted); padding:2rem 0;">No textbook PDFs in this subject. See Study Guides tab.</p>`;
+        } else {
+          contentHtml = matchingBooks.map((b, idx) => `
+            <div class="book-card">
+              <div class="book-header">
+                <div>
+                  <h3>${b.title}</h3>
+                  <span>${b.author} &bull; ${b.chapters.length} Chapters</span>
+                </div>
+                <a href="${b.url}" target="_blank" class="btn-primary">Read Book ↗</a>
+              </div>
+              <div class="chapters-stack">
+                ${b.chapters.map(ch => `
+                  <div class="chapter-item">
+                    <span class="ch-num">${ch.num}</span>
+                    <span class="ch-title">${ch.title}</span>
+                    <span class="ch-sections">${ch.sections ? ch.sections.join(' &bull; ') : ''}</span>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          `).join('');
+        }
+      } else if (currentSubjectTab === 'lab') {
+        if (!s.repo) {
+          contentHtml = `<p style="color:var(--text-muted); padding:2rem 0;">No dedicated repository for this subject. Practice exercises are linked directly in the Learning Path.</p>`;
+        } else {
+          const r = s.repo;
+          const escapedCmd = (r.cmd || '').replace(/\\/g, '\\\\');
+          contentHtml = `
+            <div class="grid-card" style="max-width:550px;">
+              <div>
+                <h3>${r.name}</h3>
+                <p>${r.desc}</p>
+              </div>
+              <div class="grid-card-footer">
+                <button class="btn-secondary" onclick="copyText('${escapedCmd}')">📋 Copy Command</button>
+                <a href="${r.url}" target="_blank" class="btn-primary">Open Practice Portal ↗</a>
+              </div>
+            </div>
+          `;
+        }
+      } else if (currentSubjectTab === 'guides') {
+        contentHtml = `
+          <div class="items-grid">
+            ${s.guides.map(g => `
+              <div class="grid-card">
+                <div>
+                  <h3>${g.title}</h3>
+                  <p>${g.desc}</p>
+                </div>
+                <div class="grid-card-footer">
+                  <span></span>
+                  <a href="${g.url}" target="_blank" class="btn-primary">Read Guide ↗</a>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      }
+
+      container.innerHTML = `
+        <div class="subject-header">
+          <h1 class="subject-title">${s.name}</h1>
+          <p class="subject-summary">${s.summary}</p>
+        </div>
+        ${tabsHtml}
+        ${contentHtml}
+      `;
+    }
+
+    function renderBooks(container) {
+      container.innerHTML = `
+        <div style="margin-bottom:2rem;">
+          <h1 style="font-size:2rem; font-weight:800; color:#fff; margin-bottom:0.35rem;">Textbooks</h1>
+          <p style="color:var(--text-muted);">18 primary textbooks and manuals with full chapter breakdowns.</p>
+        </div>
+        ${DATA.books.map((b, idx) => `
+          <div class="book-card" id="book-${idx}">
+            <div class="book-header">
+              <div>
+                <h3>${b.title}</h3>
+                <span>${b.author} &bull; ${b.chapters.length} Chapters</span>
+              </div>
+              <a href="${b.url}" target="_blank" class="btn-primary">Read Book ↗</a>
+            </div>
+            <div class="chapters-stack">
+              ${b.chapters.map(ch => `
+                <div class="chapter-item">
+                  <span class="ch-num">${ch.num}</span>
+                  <span class="ch-title">${ch.title}</span>
+                  <span class="ch-sections">${ch.sections ? ch.sections.join(' &bull; ') : ''}</span>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `).join('')}
+      `;
+    }
+
+    function renderLabs(container) {
+      container.innerHTML = `
+        <div style="margin-bottom:2rem;">
+          <h1 style="font-size:2rem; font-weight:800; color:#fff; margin-bottom:0.35rem;">Practice Labs</h1>
+          <p style="color:var(--text-muted);">6 audited local coding environments with test suites and practice portals.</p>
+        </div>
+        <div class="items-grid">
+          ${DATA.repos.map((r, idx) => {
+            const escapedCmd = (r.cmd || '').replace(/\\/g, '\\\\');
+            return `
+              <div class="grid-card" id="repo-${idx}">
+                <div>
+                  <div style="font-size:0.75rem; color:var(--cyan); font-weight:600; margin-bottom:0.4rem;">${r.subject}</div>
+                  <h3>${r.name}</h3>
+                  <p>${r.desc}</p>
+                </div>
+                <div class="grid-card-footer">
+                  <button class="btn-secondary" onclick="copyText('${escapedCmd}')">📋 Copy Command</button>
+                  <a href="${r.url}" target="_blank" class="btn-primary">Open Portal ↗</a>
+                </div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
+    }
+
+    function renderGuides(container) {
+      container.innerHTML = `
+        <div style="margin-bottom:2rem;">
+          <h1 style="font-size:2rem; font-weight:800; color:#fff; margin-bottom:0.35rem;">Study Guides</h1>
+          <p style="color:var(--text-muted);">22 visual study guides and technical reference portals.</p>
+        </div>
+        <div class="items-grid">
+          ${DATA.guides.map((g, idx) => `
+            <div class="grid-card" id="guide-${idx}">
+              <div>
+                <div style="font-size:0.75rem; color:var(--cyan); font-weight:600; margin-bottom:0.4rem;">${g.subject}</div>
+                <h3>${g.title}</h3>
+                <p>${g.desc}</p>
+              </div>
+              <div class="grid-card-footer">
+                <span></span>
+                <a href="${g.url}" target="_blank" class="btn-primary">Read Guide ↗</a>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    function renderSearch(container) {
+      const q = searchQuery;
+      let matchedSteps = [];
+      let matchedBooks = [];
+      let matchedLabs = [];
+      let matchedGuides = [];
+
+      DATA.subjects.forEach(s => {
+        s.phases.forEach(ph => {
+          ph.steps.forEach(st => {
+            if (st.title.toLowerCase().includes(q) || st.desc.toLowerCase().includes(q)) {
+              matchedSteps.push({ ...st, subject: s.name });
+            }
+          });
+        });
+      });
+
+      DATA.books.forEach(b => {
+        if (b.title.toLowerCase().includes(q) || b.author.toLowerCase().includes(q)) {
+          matchedBooks.push(b);
+        } else {
+          const chMatch = b.chapters.filter(ch => ch.title.toLowerCase().includes(q));
+          if (chMatch.length > 0) {
+            matchedBooks.push({ ...b, chapters: chMatch });
+          }
+        }
+      });
+
+      DATA.repos.forEach(r => {
+        if (r.name.toLowerCase().includes(q) || r.desc.toLowerCase().includes(q) || r.subject.toLowerCase().includes(q)) {
+          matchedLabs.push(r);
+        }
+      });
+
+      DATA.guides.forEach(g => {
+        if (g.title.toLowerCase().includes(q) || g.desc.toLowerCase().includes(q) || g.subject.toLowerCase().includes(q)) {
+          matchedGuides.push(g);
+        }
+      });
+
+      const total = matchedSteps.length + matchedBooks.length + matchedLabs.length + matchedGuides.length;
+
+      container.innerHTML = `
+        <div style="margin-bottom:2rem;">
+          <h2 style="font-size:1.6rem; font-weight:700; color:#fff; margin-bottom:0.35rem;">
+            Search Results for "${searchQuery}"
+          </h2>
+          <p style="color:var(--text-muted);">${total} matching items found.</p>
+        </div>
+
+        ${matchedSteps.length > 0 ? `
+          <div style="font-size:0.85rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:var(--cyan); margin:1.5rem 0 0.75rem;">
+            Learning Steps (${matchedSteps.length})
+          </div>
+          ${matchedSteps.map(st => `
+            <div class="step-card" style="margin-bottom:0.75rem;">
+              <div class="step-header">
+                <div>
+                  <span style="font-size:0.75rem; color:var(--text-dim); font-weight:600;">${st.subject} &bull;</span>
+                  <strong style="color:#fff; font-size:1rem; margin-left:0.25rem;">${st.title}</strong>
+                </div>
+              </div>
+              <p class="step-desc" style="margin-bottom:0.75rem;">${st.desc}</p>
+              <div style="display:flex; gap:0.5rem;">
+                ${st.reading_url ? `<a href="${st.reading_url}" target="_blank" class="btn-link">Read Guide ↗</a>` : ''}
+                ${st.practice_url ? `<a href="${st.practice_url}" target="_blank" class="btn-link">Practice ↗</a>` : ''}
+              </div>
+            </div>
+          `).join('')}
+        ` : ''}
+
+        ${matchedBooks.length > 0 ? `
+          <div style="font-size:0.85rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:var(--cyan); margin:2rem 0 0.75rem;">
+            Textbooks (${matchedBooks.length})
+          </div>
+          <div class="items-grid">
+            ${matchedBooks.map(b => `
+              <div class="grid-card">
+                <div>
+                  <h3>${b.title}</h3>
+                  <p>${b.author} &bull; ${b.chapters.length} chapters</p>
+                </div>
+                <div class="grid-card-footer">
+                  <span></span>
+                  <a href="${b.url}" target="_blank" class="btn-primary">Read Book ↗</a>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        ` : ''}
+
+        ${matchedLabs.length > 0 ? `
+          <div style="font-size:0.85rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:var(--cyan); margin:2rem 0 0.75rem;">
+            Practice Labs (${matchedLabs.length})
+          </div>
+          <div class="items-grid">
+            ${matchedLabs.map(r => `
+              <div class="grid-card">
+                <div>
+                  <div style="font-size:0.75rem; color:var(--cyan); font-weight:600; margin-bottom:0.4rem;">${r.subject}</div>
+                  <h3>${r.name}</h3>
+                  <p>${r.desc}</p>
+                </div>
+                <div class="grid-card-footer">
+                  <span></span>
+                  <a href="${r.url}" target="_blank" class="btn-primary">Open Portal ↗</a>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        ` : ''}
+
+        ${matchedGuides.length > 0 ? `
+          <div style="font-size:0.85rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:var(--cyan); margin:2rem 0 0.75rem;">
+            Study Guides (${matchedGuides.length})
+          </div>
+          <div class="items-grid">
+            ${matchedGuides.map(g => `
+              <div class="grid-card">
+                <div>
+                  <div style="font-size:0.75rem; color:var(--cyan); font-weight:600; margin-bottom:0.4rem;">${g.subject}</div>
+                  <h3>${g.title}</h3>
+                  <p>${g.desc}</p>
+                </div>
+                <div class="grid-card-footer">
+                  <span></span>
+                  <a href="${g.url}" target="_blank" class="btn-primary">Read Guide ↗</a>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        ` : ''}
+
+        ${total === 0 ? `
+          <div style="padding:3rem 0; text-align:center; color:var(--text-muted);">
+            No results found for "${searchQuery}".
+          </div>
+        ` : ''}
+      `;
+    }
+
+    window.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>

@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Python Documentation &amp; Reference</title>
+  <style>
+    :root {
+      --bg: #070b14;
+      --sidebar-bg: #0b111e;
+      --card-bg: #111927;
+      --card-hover: #152033;
+      --border: #1e293b;
+      --border-subtle: rgba(51, 65, 85, 0.4);
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --accent: #38bdf8;
+      --accent-hover: #0ea5e9;
+      --accent-soft: rgba(56, 189, 248, 0.08);
+      --accent-border: rgba(56, 189, 248, 0.25);
+      --green: #10b981;
+      --code-bg: #030712;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding-bottom: 6rem;
+    }
+
+    /* Top Nav */
+    header.top-nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(7, 11, 20, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0.85rem 2.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .back-btn {
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.4rem 0.85rem;
+      border-radius: 6px;
+      background: rgba(56, 189, 248, 0.1);
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      transition: all 0.2s;
+    }
+
+    .back-btn:hover {
+      background: rgba(56, 189, 248, 0.2);
+    }
+
+    .nav-badge {
+      font-size: 0.75rem;
+      background: #1e293b;
+      color: var(--text-muted);
+      padding: 0.25rem 0.65rem;
+      border-radius: 9999px;
+      border: 1px solid var(--border);
+    }
+
+    .nav-actions {
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .btn-nav {
+      background: #1e293b;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 0.4rem 0.85rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: all 0.2s;
+    }
+
+    .btn-nav:hover {
+      background: #334155;
+      color: #fff;
+    }
+
+    /* Main Container */
+    .container {
+      max-width: 1250px;
+      margin: 0 auto;
+      padding: 3rem 2rem 0;
+    }
+
+    /* Hero */
+    .hero {
+      background: linear-gradient(180deg, #111927 0%, #0a101c 100%);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2.75rem;
+      margin-bottom: 3.5rem;
+    }
+
+    .hero-version {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .hero-version::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--green);
+      display: inline-block;
+    }
+
+    .hero h1 {
+      font-size: 2.4rem;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      color: #fff;
+      margin-bottom: 0.75rem;
+    }
+
+    .hero-desc {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      max-width: 900px;
+      line-height: 1.65;
+      margin-bottom: 2rem;
+    }
+
+    .search-box {
+      position: relative;
+      max-width: 650px;
+    }
+
+    .search-input {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.85rem 1rem 0.85rem 2.6rem;
+      color: #fff;
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    .search-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 0.9rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-dim);
+      font-size: 1rem;
+    }
+
+    /* Section Headings */
+    .section-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 1.75rem;
+      padding-bottom: 0.85rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-title {
+      font-size: 1.45rem;
+      font-weight: 800;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+    }
+
+    .section-sub {
+      font-size: 0.85rem;
+      color: var(--text-dim);
+    }
+
+    /* All 16 Tutorial Chapters Grid */
+    .tut-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 4rem;
+    }
+
+    .tut-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 1.25rem;
+      transition: all 0.2s;
+    }
+
+    .tut-card:hover {
+      background: var(--card-hover);
+      border-color: #334155;
+      transform: translateY(-2px);
+    }
+
+    .tut-card-header {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .tut-badge {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--accent);
+      font-family: ui-monospace, monospace;
+    }
+
+    .tut-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.35;
+    }
+
+    .tut-desc {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .btn-tut {
+      background: #1e293b;
+      border: 1px solid var(--border);
+      color: #fff;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-size: 0.825rem;
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      width: fit-content;
+      transition: all 0.15s;
+    }
+
+    .btn-tut:hover {
+      background: var(--accent);
+      color: #030712;
+      border-color: var(--accent);
+    }
+
+    /* Standard Library Tables */
+    .cat-block {
+      margin-bottom: 2.5rem;
+    }
+
+    .cat-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #e2e8f0;
+      margin-bottom: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .cat-title::before {
+      content: "";
+      width: 4px;
+      height: 16px;
+      background: var(--accent);
+      border-radius: 2px;
+      display: inline-block;
+    }
+
+    .lib-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      font-size: 0.9rem;
+    }
+
+    .lib-table th {
+      background: #0d1424;
+      padding: 0.75rem 1.25rem;
+      color: var(--text-dim);
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 0.725rem;
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+    }
+
+    .lib-table td {
+      padding: 0.85rem 1.25rem;
+      border-bottom: 1px solid rgba(51, 65, 85, 0.4);
+      color: #cbd5e1;
+    }
+
+    .lib-table tr:hover td {
+      background: rgba(56, 189, 248, 0.03);
+    }
+
+    .mod-name code {
+      font-family: ui-monospace, SFMono-Regular, monospace;
+      color: var(--accent);
+      font-weight: 700;
+      background: rgba(56, 189, 248, 0.1);
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+      font-size: 0.85rem;
+    }
+
+    .mod-desc {
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .mod-link {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      font-size: 0.825rem;
+      white-space: nowrap;
+    }
+
+    .mod-link:hover {
+      text-decoration: underline;
+    }
+
+    /* Global Specs Section */
+    .specs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 4rem;
+    }
+
+    .spec-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.75rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 1.25rem;
+    }
+
+    .spec-card h3 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 0.35rem;
+    }
+
+    .spec-card p {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      line-height: 1.55;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="top-nav">
+    <div class="nav-left">
+      <a href="../START-HERE.html" class="back-btn">&#8592; Master Curriculum</a>
+      <span class="nav-badge">Python Documentation</span>
+    </div>
+    <div class="nav-actions">
+      <a href="Documentation/index.html" class="btn-nav" target="_blank">Documentation Index ↗</a>
+      <a href="Python-Study-Guide.html" class="btn-nav">Study Guide</a>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="hero">
+      <div class="hero-version">Language & Standard Library Reference</div>
+      <h1>Python Documentation</h1>
+      <p class="hero-desc">
+        Official tutorial chapters, standard library modules, and language reference guide.
+      </p>
+
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="docSearch" class="search-input" placeholder="Search across all 16 tutorial chapters and standard library modules...">
+      </div>
+    </div>
+
+    <!-- Official Tutorial: All 16 Chapters -->
+    <div class="section-heading">
+      <h2 class="section-title">📘 The Complete Python Tutorial (16 Chapters)</h2>
+      <span class="section-sub">All chapters from the official Python documentation suite</span>
+    </div>
+    <div class="tut-grid" id="tutGrid">
+      
+  <div class="tut-card">
+    <div class="tut-card-header">
+      <span class="tut-badge">Chapter 1</span>
+      <h3 class="tut-title">Whetting Your Appetite</h3>
+    </div>
+    <p class="tut-desc">Why Python? Features, philosophy, and comparison with other scripting and compiled languages.</p>
+    <a href="Documentation/tutorial/appetite.html" class="btn-tut" target="_blank">Read Chapter &#8599;</a>
+  </div>
+
+  <div class="tut-card">
+    <div class="tut-card-header">
+      <span class="tut-badge">Chapter 2</span>
+      <h3 class="tut-title">Using the Python Interpreter</h3>
+    </div>
+    <p class="tut-desc">Invoking the interpreter, argument passing, interactive mode, script execution, and source code encodings.</p>
+    <a href="Documentation/tutorial/interpreter.html" class="btn-tut" target="_blank">Read Chapter &#8599;</a>
+  </div>
+
+  <div class="tut-card">
+    <div class="tut-card-header">
+      <span class="tut-badge">Chapter 3</span>
+      <h3 class="tut-title">An Informal Introduction to Python</h3>
+    </div>
+    <p class="tut-desc">Numbers, arithmetic, text and string operations, string indexing, slicing, and introductory list operations.</p>
+    <a href="Documentation/tutorial/introduction.html" class="btn-tut" target="_blank">Read Chapter &#8599;</a>
+  </div>
+
+  <div class="tut-card">
+    <div class="tut-card-header">
+      <span class="tut-badge">Chapter 4</span>
+      <h3 class="tut-title">More Control Flow Tools</h3>
+    </div>
+    <p class="tut-desc">if statements, for statements, range() function, break, continue, else clauses, match/case pattern matching, and function definitions.</p>
+    <a href="Documentation/tutorial/controlflow.html" class="btn-tut" target="_blank">Read Chapter &#8599;</a>
+  </div>
+
+  <div class="tut-card">
+    <div class="tut-card-header">
+      <span class="tut-badge">Chapter 5</span>
+      <h3 class="tut-title">Data Structures</h3>
+    </div>
+    <p class="tut-desc">List methods, using lists as stacks/queues, list comprehensions, nested comprehensions, the del statement, tuples, sets, and dictionaries.</p>
+    <a href="Documentation/tutorial/datastructures.html" class="btn-tut" target="_blank">Read Chapter &#8599;</a>
+  </div>
+
+  <div class="tut-card">
+    <div class="tut-card-header">
+      <span class="tut-badge">Chapter 6</span>
+      <h3 class="tut-title">Modules & Packages</h3>
+    </div>
+    <p class="tut-desc">Writing modules, importing, executing modules as scripts, the module search path, compiled files, standard modules, and package namespaces.</p>
+    <a href="Documentation/tutorial/modules.html" class="btn-tut" target="_blank">Read Chapter &#8599;</a>
+  </div>
+
+  <div class="tut-card">
+    <div class="tut-card-header">
+      <span class="tut-badge">Chapter 7</span>
+      <h3 class="tut-title">Input and Output</h3>
+    </div>
+    <p class="tut-desc">Fancier output formatting, formatted string literals (f-strings), str.format(), string interpolation, reading and writing files, and JSON persistence.</p>
+    <a href="Documentation/tutorial/inputoutput.html" class="btn-tut" target="_blank">Read Chapter &#8599;</a>
+  </div>
+
+  <div class="tut-card">
+    <div class="tut-card-header">
+      <span class="tut-badge">Chapter 8</span>
+      <h3 class="tut-title">Errors and Exceptions</h3>
+    </div>
+    <p class="tut-desc">Syntax errors vs exceptions, handling exceptions with try/except/else, raising exceptions, exception chaining, user-defined exceptions, and finally clean-up.</p>
+    <a href="Documentation/tutorial/errors.html" class="btn-tut" target="_blank">Read Chapter &#8599;</a>
+  </div>
+
+  <div class="tut-card">
+    <div class="tut-card-header">
+      <span class="tut-badge">Chapter 9</span>
+      <h3 class="tut-title">Classes & Object-Oriented Design</h3>
+    </div>
+    <p class="tut-desc">Scopes, namespaces, class syntax, class objects, instance objects, method objects, inheritance, multiple inheritance, private variables, iterators, and generators.</p>
+    <a href="Documentation/tutorial/classes.html" class="btn-tut" target="_blank">Read Chapter &#8599;</a>
+  </div>
+
+  <div class="tut-card">
+    <div class="tut-card-header">
+      <span class="tut-badge">Chapter 10</span>
+      <h3 class="tut-title">Brief Tour of the Standard Library</h3>
+    </div>
+    <p class="tut-desc">Operating system interface (os), file wildcards (glob), command line arguments (sys), regex (re), mathematics (math), internet access (urllib), and dates (datetime).</p>
+    <a href="Documentation/tutorial/stdlib.html" class="btn-tut" target="_blank">Read Chapter &#8599;</a>
+  </div>
+
+  <div class="tut-card">
+    <div class="tut-card-header">
+      <span class="tut-badge">Chapter 11</span>
+      <h3 class="tut-title">Brief Tour of the Standard Library — Part II</h3>
+    </div>
+    <p class="tut-desc">Output formatting (reprlib, pprint), templating, working with binary data (struct), multi-threading (threading), logging, weak references, and array lists.</p>
+    <a href="Documentation/tutorial/stdlib2.html" class="btn-tut" target="_blank">Read Chapter &#8599;</a>
+  </div>
+
+  <div class="tut-card">
+    <div class="tut-card-header">
+      <span class="tut-badge">Chapter 12</span>
+      <h3 class="tut-title">Virtual Environments and Packages</h3>
+    </div>
+    <p class="tut-desc">Why virtual environments matter, creating venvs with python -m venv, activating venvs, managing packages with pip, and requirements.txt.</p>
+    <a href="Documentation/tutorial/venv.html" class="btn-tut" target="_blank">Read Chapter &#8599;</a>
+  </div>
+
+  <div class="tut-card">
+    <div class="tut-card-header">
+      <span class="tut-badge">Chapter 13</span>
+      <h3 class="tut-title">What Now?</h3>
+    </div>
+    <p class="tut-desc">Where to go from here: official documentation, Python Package Index (PyPI), standard library index, and community resources.</p>
+    <a href="Documentation/tutorial/whatnow.html" class="btn-tut" target="_blank">Read Chapter &#8599;</a>
+  </div>
+
+  <div class="tut-card">
+    <div class="tut-card-header">
+      <span class="tut-badge">Chapter 14</span>
+      <h3 class="tut-title">Interactive Input Editing & History</h3>
+    </div>
+    <p class="tut-desc">Tab completion, history editing with readline, key bindings, and interactive startup scripts.</p>
+    <a href="Documentation/tutorial/interactive.html" class="btn-tut" target="_blank">Read Chapter &#8599;</a>
+  </div>
+
+  <div class="tut-card">
+    <div class="tut-card-header">
+      <span class="tut-badge">Chapter 15</span>
+      <h3 class="tut-title">Floating Point Arithmetic: Issues & Limits</h3>
+    </div>
+    <p class="tut-desc">Representation error, IEEE-754 standard, rounding issues, decimal module comparison, and exact arithmetic.</p>
+    <a href="Documentation/tutorial/floatingpoint.html" class="btn-tut" target="_blank">Read Chapter &#8599;</a>
+  </div>
+
+  <div class="tut-card">
+    <div class="tut-card-header">
+      <span class="tut-badge">Chapter 16</span>
+      <h3 class="tut-title">Appendix</h3>
+    </div>
+    <p class="tut-desc">Interactive mode customization, startup scripts, executable Python scripts on Unix/Windows, and character encodings.</p>
+    <a href="Documentation/tutorial/appendix.html" class="btn-tut" target="_blank">Read Chapter &#8599;</a>
+  </div>
+
+    </div>
+
+    <!-- Categorized Standard Library Modules -->
+    <div class="section-heading">
+      <h2 class="section-title">⚙️ Categorized Standard Library Reference</h2>
+      <span class="section-sub">High-yield standard library modules organized by computational domain</span>
+    </div>
+    <div id="stdlibContainer">
+      
+      <div class="cat-block">
+        <h3 class="cat-title">Text & Pattern Processing</h3>
+        <table class="lib-table">
+          <thead>
+            <tr>
+              <th style="width: 140px;">Module</th>
+              <th>Description</th>
+              <th style="width: 150px;">Direct Link</th>
+            </tr>
+          </thead>
+          <tbody>
+      <tr>
+        <td class="mod-name"><code>string</code></td>
+        <td class="mod-desc">Common string operations, constants, and Formatter class.</td>
+        <td class="mod-action"><a href="Documentation/library/string.html" class="mod-link" target="_blank">Documentation &#8599;</a></td>
+      </tr>
+    
+      <tr>
+        <td class="mod-name"><code>re</code></td>
+        <td class="mod-desc">Regular expression operations and regex compiler engine.</td>
+        <td class="mod-action"><a href="Documentation/library/re.html" class="mod-link" target="_blank">Documentation &#8599;</a></td>
+      </tr>
+    
+      <tr>
+        <td class="mod-name"><code>unicodedata</code></td>
+        <td class="mod-desc">Unicode character database lookups and normalization.</td>
+        <td class="mod-action"><a href="Documentation/library/unicodedata.html" class="mod-link" target="_blank">Documentation &#8599;</a></td>
+      </tr>
+    
+      <tr>
+        <td class="mod-name"><code>textwrap</code></td>
+        <td class="mod-desc">Text wrapping, indentation, and paragraph filling.</td>
+        <td class="mod-action"><a href="Documentation/library/textwrap.html" class="mod-link" target="_blank">Documentation &#8599;</a></td>
+      </tr>
+    </tbody>
+        </table>
+      </div>
+    
+      <div class="cat-block">
+        <h3 class="cat-title">Data Types & Collections</h3>
+        <table class="lib-table">
+          <thead>
+            <tr>
+              <th style="width: 140px;">Module</th>
+              <th>Description</th>
+              <th style="width: 150px;">Direct Link</th>
+            </tr>
+          </thead>
+          <tbody>
+      <tr>
+        <td class="mod-name"><code>datetime</code></td>
+        <td class="mod-desc">Basic date and time types (date, time, datetime, timedelta, timezone).</td>
+        <td class="mod-action"><a href="Documentation/library/datetime.html" class="mod-link" target="_blank">Documentation &#8599;</a></td>
+      </tr>
+    
+      <tr>
+        <td class="mod-name"><code>zoneinfo</code></td>
+        <td class="mod-desc">IANA time zone support in the standard library.</td>
+        <td class="mod-action"><a href="Documentation/library/zoneinfo.html" class="mod-link" target="_blank">Documentation &#8599;</a></td>
+      </tr>
+    
+      <tr>
+        <td class="mod-name"><code>collections</code></td>
+        <td class="mod-desc">High-performance container datatypes (namedtuple, deque, Counter, OrderedDict, defaultdict).</td>
+        <td class="mod-action"><a href="Documentation/library/collections.html" class="mod-link" target="_blank">Documentation &#8599;</a></td>
+      </tr>
+    
+      <tr>
+        <td class="mod-name"><code>heapq</code></td>
+        <td class="mod-desc">Heap queue algorithm (priority queue implementation).</td>
+        <td class="mod-action"><a href="Documentation/library/heapq.html" class="mod-link" target="_blank">Documentation &#8599;</a></td>
+      </tr>
+    
+      <tr>
+        <td class="mod-name"><code>bisect</code></td>
+        <td class="mod-desc">Array bisection algorithm for maintaining sorted sequences.</td>
+        <td class="mod-action"><a href="Documentation/library/bisect.html" class="mod-link" target="_blank">Documentation &#8599;</a></td>
+      </tr>
+    
+      <tr>
+        <td class="mod-name"><code>dataclasses</code></td>
+        <td class="mod-desc">Data classes decorator and code generation helper.</td>
+        <td class="mod-action"><a href="Documentation/library/dataclasses.html" class="mod-link" target="_blank">Documentation &#8599;</a></td>
+      </tr>
+    
+      <tr>
+        <td class="mod-name"><code>enum</code></td>
+        <td class="mod-desc">Support for enumerations and flag constants.</td>
+        <td class="mod-action"><a href="Documentation/library/enum.html" class="mod-link" target="_blank">Documentation &#8599;</a></td>
+      </tr>
+    </tbody>
+        </table>
+      </div>
+    
+      <div class="cat-block">
+        <h3 class="cat-title">Functional & Mathematical</h3>
+        <table class="lib-table">
+          <thead>
+            <tr>
+              <th style="width: 140px;">Module</th>
+              <th>Description</th>
+              <th style="width: 150px;">Direct Link</th>
+            </tr>
+          </thead>
+          <tbody>
+      <tr>
+        <td class="mod-name"><code>itertools</code></td>
+        <td class="mod-desc">Functions creating iterators for efficient looping (combinations, permutations, cycle, chain, groupby).</td>
+        <td class="mod-action"><a href="Documentation/library/itertools.html" class="mod-link" target="_blank">Documentation &#8599;</a></td>
+      </tr>
+    
+      <tr>
+        <td class="mod-name"><code>functools</code></td>
+        <td class="mod-desc">Higher-order functions and operations on callable objects (lru_cache, partial, reduce, wraps).</td>
+        <td class="mod-action"><a href="Documentation/library/functools.html" class="mod-link" target="_blank">Documentation &#8599;</a></td>
+      </tr>
+    
+      <tr>
+        <td class="mod-name"><code>operator</code></td>
+        <td class="mod-desc">Standard operators as functions (itemgetter, attrgetter, methodcaller).</td>
+        <td class="mod-action"><a href="Documentation/library/operator.html" class="mod-link" target="_blank">Documentation &#8599;</a></td>
+      </tr>
+    
+      <tr>
+        <td class="mod-name"><code>math</code></td>
+        <td class="mod-desc">Mathematical functions (trigonometric, logarithmic, gamma, factorial).</td>
+        <td class="mod-action"><a href="Documentation/library/math.html" class="mod-link" target="_blank">Documentation &#8599;</a></td>
+      </tr>
+    
+      <tr>
+        <td class="mod-name"><code>statistics</code></td>
+        <td class="mod-desc">Mathematical statistics functions (mean, median, stdev, normal_dist).</td>
+        <td class="mod-action"><a href="Documentation/library/statistics.html" class="mod-link" target="_blank">Documentation &#8599;</a></td>
+      </tr>
+    
+      <tr>
+        <td class="mod-name"><code>random</code></td>
+        <td class="mod-desc">Generate pseudo-random numbers and shuffle sequences.</td>
+        <td class="mod-action"><a href="Documentation/library/random.html" class="mod-link" target="_blank">Documentation &#8599;</a></td>
+      </tr>
+    </tbody>
+        </table>
+      </div>
+    
+      <div class="cat-block">
+        <h3 class="cat-title">Filesystem, OS & Persistence</h3>
+        <table class="lib-table">
+          <thead>
+            <tr>
+              <th style="width: 140px;">Module</th>
+              <th>Description</th>
+              <th style="width: 150px;">Direct Link</th>
+            </tr>
+          </thead>
+          <tbody>
+      <tr>
+        <td class="mod-name"><code>pathlib</code></td>
+        <td class="mod-desc">Object-oriented filesystem paths with intuitive path arithmetic.</td>
+        <td class="mod-action"><a href="Documentation/library/pathlib.html" class="mod-link" target="_blank">Documentation &#8599;</a></td>
+      </tr>
+    
+      <tr>
+        <td class="mod-name"><code>os</code></td>
+        <td class="mod-desc">Miscellaneous operating system interfaces (environ, getcwd, system).</td>
+        <td class="mod-action"><a href="Documentation/library/os.html" class="mod-link" target="_blank">Documentation &#8599;</a></td>
+      </tr>
+    
+      <tr>
+        <td class="mod-name"><code>shutil</code></td>
+        <td class="mod-desc">High-level file operations (copy, move, rmtree, make_archive).</td>
+        <td class="mod-action"><a href="Documentation/library/shutil.html" class="mod-link" target="_blank">Documentation &#8599;</a></td>
+      </tr>
+    
+      <tr>
+        <td class="mod-name"><code>json</code></td>
+        <td class="mod-desc">JSON encoder and decoder with custom object serialization.</td>
+        <td class="mod-action"><a href="Documentation/library/json.html" class="mod-link" target="_blank">Documentation &#8599;</a></td>
+      </tr>
+    
+      <tr>
+        <td class="mod-name"><code>sqlite3</code></td>
+        <td class="mod-desc">DB-API 2.0 interface for SQLite relational databases.</td>
+        <td class="mod-action"><a href="Documentation/library/sqlite3.html" class="mod-link" target="_blank">Documentation &#8599;</a></td>
+      </tr>
+    
+      <tr>
+        <td class="mod-name"><code>csv</code></td>
+        <td class="mod-desc">CSV file reading and writing with custom dialects.</td>
+        <td class="mod-action"><a href="Documentation/library/csv.html" class="mod-link" target="_blank">Documentation &#8599;</a></td>
+      </tr>
+    
+      <tr>
+        <td class="mod-name"><code>tomllib</code></td>
+        <td class="mod-desc">Parse TOML configuration files natively.</td>
+        <td class="mod-action"><a href="Documentation/library/tomllib.html" class="mod-link" target="_blank">Documentation &#8599;</a></td>
+      </tr>
+    </tbody>
+        </table>
+      </div>
+    
+      <div class="cat-block">
+        <h3 class="cat-title">Concurrency & Asynchronous Systems</h3>
+        <table class="lib-table">
+          <thead>
+            <tr>
+              <th style="width: 140px;">Module</th>
+              <th>Description</th>
+              <th style="width: 150px;">Direct Link</th>
+            </tr>
+          </thead>
+          <tbody>
+      <tr>
+        <td class="mod-name"><code>asyncio</code></td>
+        <td class="mod-desc">Asynchronous I/O, event loop, coroutines, and task orchestration.</td>
+        <td class="mod-action"><a href="Documentation/library/asyncio.html" class="mod-link" target="_blank">Documentation &#8599;</a></td>
+      </tr>
+    
+      <tr>
+        <td class="mod-name"><code>threading</code></td>
+        <td class="mod-desc">Thread-based parallelism with Mutex locks and Condition variables.</td>
+        <td class="mod-action"><a href="Documentation/library/threading.html" class="mod-link" target="_blank">Documentation &#8599;</a></td>
+      </tr>
+    
+      <tr>
+        <td class="mod-name"><code>multiprocessing</code></td>
+        <td class="mod-desc">Process-based parallelism bypassing GIL with IPC queues.</td>
+        <td class="mod-action"><a href="Documentation/library/multiprocessing.html" class="mod-link" target="_blank">Documentation &#8599;</a></td>
+      </tr>
+    
+      <tr>
+        <td class="mod-name"><code>concurrent.futures</code></td>
+        <td class="mod-desc">High-level thread and process executor pools.</td>
+        <td class="mod-action"><a href="Documentation/library/concurrent.futures.html" class="mod-link" target="_blank">Documentation &#8599;</a></td>
+      </tr>
+    
+      <tr>
+        <td class="mod-name"><code>subprocess</code></td>
+        <td class="mod-desc">Subprocess management, pipes, and output capture.</td>
+        <td class="mod-action"><a href="Documentation/library/subprocess.html" class="mod-link" target="_blank">Documentation &#8599;</a></td>
+      </tr>
+    </tbody>
+        </table>
+      </div>
+    
+      <div class="cat-block">
+        <h3 class="cat-title">Typing, Inspection & Testing</h3>
+        <table class="lib-table">
+          <thead>
+            <tr>
+              <th style="width: 140px;">Module</th>
+              <th>Description</th>
+              <th style="width: 150px;">Direct Link</th>
+            </tr>
+          </thead>
+          <tbody>
+      <tr>
+        <td class="mod-name"><code>typing</code></td>
+        <td class="mod-desc">Type hint support (Union, Optional, Protocol, Generic, Callable, TypeVar).</td>
+        <td class="mod-action"><a href="Documentation/library/typing.html" class="mod-link" target="_blank">Documentation &#8599;</a></td>
+      </tr>
+    
+      <tr>
+        <td class="mod-name"><code>unittest</code></td>
+        <td class="mod-desc">Unit testing framework inspired by JUnit with test fixtures.</td>
+        <td class="mod-action"><a href="Documentation/library/unittest.html" class="mod-link" target="_blank">Documentation &#8599;</a></td>
+      </tr>
+    
+      <tr>
+        <td class="mod-name"><code>inspect</code></td>
+        <td class="mod-desc">Inspect live objects, frames, and inspect signatures.</td>
+        <td class="mod-action"><a href="Documentation/library/inspect.html" class="mod-link" target="_blank">Documentation &#8599;</a></td>
+      </tr>
+    
+      <tr>
+        <td class="mod-name"><code>sys</code></td>
+        <td class="mod-desc">System-specific parameters and functions (argv, path, exit).</td>
+        <td class="mod-action"><a href="Documentation/library/sys.html" class="mod-link" target="_blank">Documentation &#8599;</a></td>
+      </tr>
+    </tbody>
+        </table>
+      </div>
+    
+    </div>
+
+    <!-- Language Specifications -->
+    <div class="section-heading">
+      <h2 class="section-title">🔬 Language Reference Specifications</h2>
+      <span class="section-sub">Formal language data models, execution environments, and global indices</span>
+    </div>
+    <div class="specs-grid">
+      <div class="spec-card">
+        <div>
+          <span class="tut-badge">Language Reference</span>
+          <h3>Section 3: The Python Data Model</h3>
+          <p>Complete formal specification of objects, values, types, and special dunder methods (__getitem__, __iter__, __enter__, __exit__, __repr__).</p>
+        </div>
+        <a href="Documentation/reference/datamodel.html" class="btn-tut" target="_blank">Read Data Model &#8599;</a>
+      </div>
+
+      <div class="spec-card">
+        <div>
+          <span class="tut-badge">Language Reference</span>
+          <h3>Section 4: Execution Model &amp; Scopes</h3>
+          <p>Formal specification of code blocks, execution frames, namespaces, scopes, name resolution, and exception handling mechanics.</p>
+        </div>
+        <a href="Documentation/reference/executionmodel.html" class="btn-tut" target="_blank">Read Execution Model &#8599;</a>
+      </div>
+
+      <div class="spec-card">
+        <div>
+          <span class="tut-badge">Global Index</span>
+          <h3>Alphabetical Master Index</h3>
+          <p>Searchable alphabetical global index of all functions, classes, modules, exceptions, and keywords in Python 3.14.</p>
+        </div>
+        <a href="Documentation/genindex.html" class="btn-tut" target="_blank">Open Global Index &#8599;</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const searchInput = document.getElementById('docSearch');
+    const tutCards = document.querySelectorAll('.tut-card');
+    const tableRows = document.querySelectorAll('.lib-table tbody tr');
+
+    searchInput.addEventListener('input', (e) => {
+      const q = e.target.value.toLowerCase().trim();
+
+      tutCards.forEach(c => {
+        const text = c.innerText.toLowerCase();
+        c.style.display = (!q || text.includes(q)) ? 'flex' : 'none';
+      });
+
+      tableRows.forEach(r => {
+        const text = r.innerText.toLowerCase();
+        r.style.display = (!q || text.includes(q)) ? '' : 'none';
+      });
+    });
+  </script>
+</body>
+</html>

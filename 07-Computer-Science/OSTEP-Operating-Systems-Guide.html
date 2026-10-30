@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Operating Systems: Three Easy Pieces Study Guide — Learning Library</title>
+  <style>
+    :root {
+      --bg: #0b1120;
+      --card-bg: #1e293b;
+      --border: #334155;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-hover: #0ea5e9;
+      --code-bg: #020617;
+      --toc-bg: #131d31;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      padding: 0;
+    }
+    header.top-nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(11, 17, 32, 0.9);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+      padding: 0.85rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .back-btn {
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.35rem 0.75rem;
+      border-radius: 0.375rem;
+      background: rgba(56, 189, 248, 0.1);
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      transition: all 0.2s;
+    }
+    .back-btn:hover {
+      background: rgba(56, 189, 248, 0.2);
+    }
+    .category-badge {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      background: #1e293b;
+      padding: 0.25rem 0.6rem;
+      border-radius: 9999px;
+      border: 1px solid var(--border);
+    }
+    .nav-actions {
+      display: flex;
+      gap: 0.75rem;
+    }
+    .nav-btn {
+      background: #1e293b;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 0.35rem 0.75rem;
+      border-radius: 0.375rem;
+      font-size: 0.8rem;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: all 0.2s;
+    }
+    .nav-btn:hover {
+      background: #334155;
+      color: var(--text);
+    }
+    .layout-wrapper {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem;
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 2.5rem;
+    }
+    @media (max-width: 900px) {
+      .layout-wrapper {
+        grid-template-columns: 1fr;
+      }
+      .toc-box {
+        position: static;
+        margin-bottom: 2rem;
+      }
+    }
+    .toc-box {
+      position: sticky;
+      top: 5rem;
+      max-height: calc(100vh - 6rem);
+      overflow-y: auto;
+      background: var(--toc-bg);
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      padding: 1.25rem;
+    }
+    .toc-title {
+      font-size: 0.875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--accent);
+      margin-bottom: 0.85rem;
+    }
+    .toc-box ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    .toc-box a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: color 0.15s;
+    }
+    .toc-box a:hover {
+      color: var(--accent);
+    }
+    .toc-level-3 {
+      padding-left: 1rem;
+      font-size: 0.8rem;
+    }
+    .content-area {
+      min-width: 0;
+    }
+    h1 {
+      font-size: 2.25rem;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.75rem;
+      color: #ffffff;
+    }
+    h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-top: 2.25rem;
+      margin-bottom: 1rem;
+      color: #38bdf8;
+      border-bottom: 1px solid rgba(51, 65, 85, 0.4);
+      padding-bottom: 0.4rem;
+      position: relative;
+    }
+    h3 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin-top: 1.75rem;
+      margin-bottom: 0.75rem;
+      color: #f1f5f9;
+    }
+    h4 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-top: 1.25rem;
+      margin-bottom: 0.5rem;
+    }
+    p {
+      margin-bottom: 1rem;
+      color: #cbd5e1;
+    }
+    ul, ol {
+      margin-bottom: 1.25rem;
+      padding-left: 1.75rem;
+      color: #cbd5e1;
+    }
+    li {
+      margin-bottom: 0.4rem;
+    }
+    hr {
+      border: 0;
+      border-top: 1px solid var(--border);
+      margin: 2rem 0;
+    }
+    a {
+      color: var(--accent);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+    a:hover {
+      color: var(--accent-hover);
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.875em;
+      background: rgba(51, 65, 85, 0.6);
+      padding: 0.15em 0.4em;
+      border-radius: 0.25rem;
+      color: #38bdf8;
+    }
+    .code-wrapper {
+      margin: 1.25rem 0;
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      overflow: hidden;
+    }
+    .code-header {
+      background: #0f172a;
+      padding: 0.4rem 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-family: monospace;
+    }
+    .copy-btn {
+      background: rgba(148, 163, 184, 0.1);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      border-radius: 0.25rem;
+      padding: 0.2rem 0.5rem;
+      font-size: 0.7rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .copy-btn:hover {
+      background: var(--accent);
+      color: #0f172a;
+    }
+    pre {
+      padding: 1.25rem;
+      overflow-x: auto;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.875rem;
+      line-height: 1.6;
+    }
+    pre code {
+      background: transparent;
+      padding: 0;
+      color: #e2e8f0;
+      font-size: inherit;
+    }
+    /* Tables */
+    .table-container {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.9rem;
+    }
+    th {
+      background: #1e293b;
+      color: var(--text);
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+    td {
+      padding: 0.65rem 1rem;
+      border-bottom: 1px solid #1e293b;
+      color: #cbd5e1;
+    }
+    tr:nth-child(even) {
+      background: rgba(30, 41, 59, 0.4);
+    }
+    /* Callouts */
+    .callout {
+      margin: 1.5rem 0;
+      padding: 1rem 1.25rem;
+      border-radius: 0.5rem;
+      border-left: 4px solid var(--accent);
+      background: rgba(30, 41, 59, 0.5);
+    }
+    .callout-title {
+      font-weight: 700;
+      font-size: 0.85rem;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.35rem;
+      color: var(--accent);
+    }
+    .callout-body {
+      font-size: 0.9rem;
+      color: #cbd5e1;
+    }
+    .callout-tip { border-left-color: #10b981; }
+    .callout-tip .callout-title { color: #34d399; }
+    .callout-warning { border-left-color: #f59e0b; }
+    .callout-warning .callout-title { color: #fbbf24; }
+    .callout-caution { border-left-color: #ef4444; }
+    .callout-caution .callout-title { color: #f87171; }
+    .callout-important { border-left-color: #8b5cf6; }
+    .callout-important .callout-title { color: #a78bfa; }
+    .heading-anchor {
+      text-decoration: none;
+      color: var(--border);
+      margin-left: 0.5rem;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    h2:hover .heading-anchor, h3:hover .heading-anchor {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="top-nav">
+    <div class="nav-left">
+      <a href="../START-HERE.html" class="back-btn">&#8592; Master Dashboard</a>
+      <span class="category-badge">07-Computer-Science</span>
+    </div>
+    <div class="nav-actions">
+      <button class="nav-btn" onclick="copyCurrentPath()">&#128203; Copy Path</button>
+      <a href="OSTEP-Operating-Systems-Guide.md" class="nav-btn" target="_blank">&#128196; Raw Markdown</a>
+    </div>
+  </header>
+
+  <div class="layout-wrapper">
+    <aside>
+      
+        <nav class="toc-box">
+          <div class="toc-title">Table of Contents</div>
+          <ul><li class="toc-level-2"><a href="#1-architectural-conceptual-model">1. Architectural Conceptual Model</a></li><li class="toc-level-2"><a href="#2-chapter-syllabus-direct-reading-links">2. Chapter Syllabus &amp; Direct Reading Links</a></li><li class="toc-level-3"><a href="#introduction">Introduction</a></li><li class="toc-level-3"><a href="#piece-1-virtualization">Piece 1: Virtualization</a></li><li class="toc-level-3"><a href="#piece-2-concurrency">Piece 2: Concurrency</a></li><li class="toc-level-3"><a href="#piece-3-persistence">Piece 3: Persistence</a></li><li class="toc-level-2"><a href="#3-recommended-practical-study-plan">3. Recommended Practical Study Plan</a></li></ul>
+        </nav>
+        
+    </aside>
+    <main class="content-area">
+      <h1 id="operating-systems-three-easy-pieces-ostep-curriculum-reading-guide">Operating Systems: Three Easy Pieces (OSTEP) — Curriculum &amp; Reading Guide<a href="#operating-systems-three-easy-pieces-ostep-curriculum-reading-guide" class="heading-anchor">#</a></h1>
+<div class="callout callout-note"><div class="callout-title">NOTE</div><div class="callout-body"><strong>Authors:</strong> Remzi H. Arpaci-Dusseau and Andrea C. Arpaci-Dusseau (University of Wisconsin-Madison)<br><strong>Official Web Platform:</strong> <a href="https://pages.cs.wisc.edu/~remzi/OSTEP/">pages.cs.wisc.edu/~remzi/OSTEP/</a><br><strong>Homework &amp; Code Simulations:</strong> <a href="https://github.com/remzi-arpacidusseau/ostep-homework">github.com/remzi-arpacidusseau/ostep-homework</a><br><strong>Lab Projects Repository:</strong> <a href="https://github.com/remzi-arpacidusseau/ostep-projects">github.com/remzi-arpacidusseau/ostep-projects</a><br><strong>Acquisition Policy &amp; Licensing:</strong> The authors provide free, authorized PDF downloads for every individual chapter on their website for student self-study. To respect the authors&#x27; explicit copyright policy and protect their commercial print edition, this library maintains this structured study syllabus linking directly to the canonical chapter PDFs rather than generating an unauthorized combined PDF.</div></div>
+<hr>
+<h2 id="1-architectural-conceptual-model">1. Architectural Conceptual Model<a href="#1-architectural-conceptual-model" class="heading-anchor">#</a></h2>
+<p>The text organizes the vast domain of modern operating systems around three fundamental conceptual abstractions—the &quot;Three Easy Pieces&quot;:</p>
+<div class="code-wrapper"><div class="code-header"><span class="code-lang">code</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code>+------------------------------------------------------------------------+
+|                          1. VIRTUALIZATION                             |
+|  CPU Virtualization: Processes, Scheduling, Direct Execution           |
+|  Memory Virtualization: Address Spaces, Paging, TLBs, Swapping         |
++------------------------------------------------------------------------+
+|                           2. CONCURRENCY                               |
+|  Threads, Mutex Locks, Condition Variables, Semaphores, Deadlocks      |
++------------------------------------------------------------------------+
+|                           3. PERSISTENCE                               |
+|  I/O Hardware, Disks &amp; SSDs, File Systems, Crash Consistency, RAID     |
++------------------------------------------------------------------------+</code></pre></div>
+<hr>
+<h2 id="2-chapter-syllabus-direct-reading-links">2. Chapter Syllabus &amp; Direct Reading Links<a href="#2-chapter-syllabus-direct-reading-links" class="heading-anchor">#</a></h2>
+<h3 id="introduction">Introduction<a href="#introduction" class="heading-anchor">#</a></h3>
+<ul>
+<li><a href="https://pages.cs.wisc.edu/~remzi/OSTEP/intro.pdf">Chapter 2: Introduction to Operating Systems</a> — Virtualizing the CPU and memory, concurrency, persistence, and OS design goals.</li>
+</ul>
+<hr>
+<h3 id="piece-1-virtualization">Piece 1: Virtualization<a href="#piece-1-virtualization" class="heading-anchor">#</a></h3>
+<h4 id="part-i-cpu-virtualization">Part I: CPU Virtualization<a href="#part-i-cpu-virtualization" class="heading-anchor">#</a></h4>
+<div class="table-container"><table>
+<thead><tr><th>Chapter</th><th>Topic &amp; Concepts</th><th>Canonical Link</th></tr></thead>
+<tbody>
+<tr><td><strong>Ch. 4</strong></td><td>The Abstraction: The Process</td><td><a href="https://pages.cs.wisc.edu/~remzi/OSTEP/cpu-intro.pdf">cpu-intro.pdf</a></td></tr>
+<tr><td><strong>Ch. 5</strong></td><td>Interlude: Process API (<code>fork</code>, <code>exec</code>, <code>wait</code>)</td><td><a href="https://pages.cs.wisc.edu/~remzi/OSTEP/cpu-api.pdf">cpu-api.pdf</a></td></tr>
+<tr><td><strong>Ch. 6</strong></td><td>Mechanism: Limited Direct Execution (User/Kernel modes, syscalls)</td><td><a href="https://pages.cs.wisc.edu/~remzi/OSTEP/cpu-mechanisms.pdf">cpu-mechanisms.pdf</a></td></tr>
+<tr><td><strong>Ch. 7</strong></td><td>Scheduling: Introduction (FIFO, SJF, STCF, Round Robin)</td><td><a href="https://pages.cs.wisc.edu/~remzi/OSTEP/cpu-sched.pdf">cpu-sched.pdf</a></td></tr>
+<tr><td><strong>Ch. 8</strong></td><td>Scheduling: Multi-Level Feedback Queue (MLFQ)</td><td><a href="https://pages.cs.wisc.edu/~remzi/OSTEP/cpu-sched-mlfq.pdf">cpu-sched-mlfq.pdf</a></td></tr>
+<tr><td><strong>Ch. 9</strong></td><td>Scheduling: Proportional Share (Lottery &amp; Stride Scheduling)</td><td><a href="https://pages.cs.wisc.edu/~remzi/OSTEP/cpu-sched-lottery.pdf">cpu-sched-lottery.pdf</a></td></tr>
+<tr><td><strong>Ch. 10</strong></td><td>Multiprocessor Scheduling (Cache affinity, SQMS vs. MQMS)</td><td><a href="https://pages.cs.wisc.edu/~remzi/OSTEP/cpu-sched-multi.pdf">cpu-sched-multi.pdf</a></td></tr>
+</tbody></table></div>
+<h4 id="part-ii-memory-virtualization">Part II: Memory Virtualization<a href="#part-ii-memory-virtualization" class="heading-anchor">#</a></h4>
+<div class="table-container"><table>
+<thead><tr><th>Chapter</th><th>Topic &amp; Concepts</th><th>Canonical Link</th></tr></thead>
+<tbody>
+<tr><td><strong>Ch. 13</strong></td><td>The Abstraction: Address Spaces</td><td><a href="https://pages.cs.wisc.edu/~remzi/OSTEP/vm-intro.pdf">vm-intro.pdf</a></td></tr>
+<tr><td><strong>Ch. 14</strong></td><td>Interlude: Memory API (<code>malloc</code>, <code>free</code>, memory leaks, segfaults)</td><td><a href="https://pages.cs.wisc.edu/~remzi/OSTEP/vm-api.pdf">vm-api.pdf</a></td></tr>
+<tr><td><strong>Ch. 15</strong></td><td>Mechanism: Address Translation (Base and Bounds registers)</td><td><a href="https://pages.cs.wisc.edu/~remzi/OSTEP/vm-mechanism.pdf">vm-mechanism.pdf</a></td></tr>
+<tr><td><strong>Ch. 16</strong></td><td>Segmentation (Internal vs. external fragmentation)</td><td><a href="https://pages.cs.wisc.edu/~remzi/OSTEP/vm-segmentation.pdf">vm-segmentation.pdf</a></td></tr>
+<tr><td><strong>Ch. 17</strong></td><td>Free-Space Management (Splitting, coalescing, best-fit, first-fit)</td><td><a href="https://pages.cs.wisc.edu/~remzi/OSTEP/vm-freespace.pdf">vm-freespace.pdf</a></td></tr>
+<tr><td><strong>Ch. 18</strong></td><td>Paging: Introduction (Page tables, VPN to PFN translation)</td><td><a href="https://pages.cs.wisc.edu/~remzi/OSTEP/vm-paging.pdf">vm-paging.pdf</a></td></tr>
+<tr><td><strong>Ch. 19</strong></td><td>Paging: Faster Translations (TLBs, hit rates, hardware vs. OS refill)</td><td><a href="https://pages.cs.wisc.edu/~remzi/OSTEP/vm-tlbs.pdf">vm-tlbs.pdf</a></td></tr>
+<tr><td><strong>Ch. 20</strong></td><td>Paging: Smaller Tables (Multi-level page tables, inverted tables)</td><td><a href="https://pages.cs.wisc.edu/~remzi/OSTEP/vm-smalltables.pdf">vm-smalltables.pdf</a></td></tr>
+<tr><td><strong>Ch. 21</strong></td><td>Beyond Physical Memory: Mechanisms (Swap space, page faults)</td><td><a href="https://pages.cs.wisc.edu/~remzi/OSTEP/vm-beyondphys.pdf">vm-beyondphys.pdf</a></td></tr>
+<tr><td><strong>Ch. 22</strong></td><td>Beyond Physical Memory: Policies (FIFO, Random, LRU, Clock algorithm)</td><td><a href="https://pages.cs.wisc.edu/~remzi/OSTEP/vm-beyondphys-policy.pdf">vm-beyondphys-policy.pdf</a></td></tr>
+<tr><td><strong>Ch. 23</strong></td><td>Complete Virtual Memory Systems (VAX/VMS and Linux VM)</td><td><a href="https://pages.cs.wisc.edu/~remzi/OSTEP/vm-complete.pdf">vm-complete.pdf</a></td></tr>
+</tbody></table></div>
+<hr>
+<h3 id="piece-2-concurrency">Piece 2: Concurrency<a href="#piece-2-concurrency" class="heading-anchor">#</a></h3>
+<div class="table-container"><table>
+<thead><tr><th>Chapter</th><th>Topic &amp; Concepts</th><th>Canonical Link</th></tr></thead>
+<tbody>
+<tr><td><strong>Ch. 26</strong></td><td>Concurrency: An Introduction (Shared state, race conditions)</td><td><a href="https://pages.cs.wisc.edu/~remzi/OSTEP/threads-intro.pdf">threads-intro.pdf</a></td></tr>
+<tr><td><strong>Ch. 27</strong></td><td>Interlude: Thread API (<code>pthread_create</code>, <code>pthread_join</code>)</td><td><a href="https://pages.cs.wisc.edu/~remzi/OSTEP/threads-api.pdf">threads-api.pdf</a></td></tr>
+<tr><td><strong>Ch. 28</strong></td><td>Locks (Test-and-set, compare-and-swap, spinlocks, ticket locks)</td><td><a href="https://pages.cs.wisc.edu/~remzi/OSTEP/threads-locks.pdf">threads-locks.pdf</a></td></tr>
+<tr><td><strong>Ch. 29</strong></td><td>Locked Data Structures (Concurrent counters, linked lists, queues, hash tables)</td><td><a href="https://pages.cs.wisc.edu/~remzi/OSTEP/threads-locks-usage.pdf">threads-locks-usage.pdf</a></td></tr>
+<tr><td><strong>Ch. 30</strong></td><td>Condition Variables (<code>wait</code>, <code>signal</code>, producer/consumer queue)</td><td><a href="https://pages.cs.wisc.edu/~remzi/OSTEP/threads-cv.pdf">threads-cv.pdf</a></td></tr>
+<tr><td><strong>Ch. 31</strong></td><td>Semaphores (Binary semaphores, counting semaphores, reader-writer lock)</td><td><a href="https://pages.cs.wisc.edu/~remzi/OSTEP/threads-sema.pdf">threads-sema.pdf</a></td></tr>
+<tr><td><strong>Ch. 32</strong></td><td>Common Concurrency Bugs (Non-deadlock bugs, deadlock conditions &amp; prevention)</td><td><a href="https://pages.cs.wisc.edu/~remzi/OSTEP/threads-bugs.pdf">threads-bugs.pdf</a></td></tr>
+<tr><td><strong>Ch. 33</strong></td><td>Event-based Concurrency (<code>select</code>, <code>epoll</code>, asynchronous I/O)</td><td><a href="https://pages.cs.wisc.edu/~remzi/OSTEP/threads-events.pdf">threads-events.pdf</a></td></tr>
+</tbody></table></div>
+<hr>
+<h3 id="piece-3-persistence">Piece 3: Persistence<a href="#piece-3-persistence" class="heading-anchor">#</a></h3>
+<div class="table-container"><table>
+<thead><tr><th>Chapter</th><th>Topic &amp; Concepts</th><th>Canonical Link</th></tr></thead>
+<tbody>
+<tr><td><strong>Ch. 36</strong></td><td>I/O Devices (Canonical device interface, polling vs. interrupts, DMA)</td><td><a href="https://pages.cs.wisc.edu/~remzi/OSTEP/file-devices.pdf">file-devices.pdf</a></td></tr>
+<tr><td><strong>Ch. 37</strong></td><td>Hard Disk Drives (Seek time, rotational latency, track skew)</td><td><a href="https://pages.cs.wisc.edu/~remzi/OSTEP/file-disks.pdf">file-disks.pdf</a></td></tr>
+<tr><td><strong>Ch. 38</strong></td><td>Redundant Arrays of Inexpensive Disks (RAID 0, 1, 4, 5 parity)</td><td><a href="https://pages.cs.wisc.edu/~remzi/OSTEP/file-raid.pdf">file-raid.pdf</a></td></tr>
+<tr><td><strong>Ch. 39</strong></td><td>Interlude: Files and Directories (<code>open</code>, <code>read</code>, <code>write</code>, <code>fsync</code>, <code>stat</code>)</td><td><a href="https://pages.cs.wisc.edu/~remzi/OSTEP/file-intro.pdf">file-intro.pdf</a></td></tr>
+<tr><td><strong>Ch. 40</strong></td><td>File System Implementation (Inodes, data blocks, indirect pointers)</td><td><a href="https://pages.cs.wisc.edu/~remzi/OSTEP/file-implementation.pdf">file-implementation.pdf</a></td></tr>
+<tr><td><strong>Ch. 41</strong></td><td>Locality and The Fast File System (FFS cylinder groups)</td><td><a href="https://pages.cs.wisc.edu/~remzi/OSTEP/file-ffs.pdf">file-ffs.pdf</a></td></tr>
+<tr><td><strong>Ch. 42</strong></td><td>Crash Consistency: FSCK and Journaling (Write-ahead logging)</td><td><a href="https://pages.cs.wisc.edu/~remzi/OSTEP/file-journaling.pdf">file-journaling.pdf</a></td></tr>
+<tr><td><strong>Ch. 43</strong></td><td>Log-Structured File Systems (LFS garbage collection and checkpoints)</td><td><a href="https://pages.cs.wisc.edu/~remzi/OSTEP/file-lfs.pdf">file-lfs.pdf</a></td></tr>
+<tr><td><strong>Ch. 44</strong></td><td>Flash-based SSDs (Flash translation layer FTL, wear leveling)</td><td><a href="https://pages.cs.wisc.edu/~remzi/OSTEP/file-ssd.pdf">file-ssd.pdf</a></td></tr>
+<tr><td><strong>Ch. 48</strong></td><td>Distributed Systems (RPC, failure models, network file system NFS)</td><td><a href="https://pages.cs.wisc.edu/~remzi/OSTEP/dist-intro.pdf">dist-intro.pdf</a></td></tr>
+</tbody></table></div>
+<hr>
+<h2 id="3-recommended-practical-study-plan">3. Recommended Practical Study Plan<a href="#3-recommended-practical-study-plan" class="heading-anchor">#</a></h2>
+<ol>
+<li><strong>Virtualization Deep Dive (Weeks 1–3):</strong> Complete Chapters 4–8 (Processes and scheduling) and Chapters 13–20 (Address spaces and multi-level paging). Run the Python simulator scripts in the <code>ostep-homework</code> repository to observe TLB miss costs and page replacement behavior.</li>
+<li><strong>Concurrency Mastery (Weeks 4–6):</strong> Read Chapters 26–32. Implement synchronization primitives in C using POSIX pthreads. Build a bounded buffer producer-consumer queue using condition variables and semaphores.</li>
+<li><strong>Storage &amp; Systems (Weeks 7–8):</strong> Read Chapters 38–43. Study journaling mechanisms and write-ahead logs, directly connecting to the durability guarantees ($D$ in ACID) covered in <code>D:\Learning\Databases\PostgreSQL\PDFs\PostgreSQL-16-Documentation.pdf</code>.</li>
+</ol>
+    </main>
+  </div>
+
+  <script>
+    function copyCode(btn) {
+      const pre = btn.parentElement.nextElementSibling;
+      const code = pre.querySelector('code').innerText;
+      navigator.clipboard.writeText(code).then(() => {
+        const old = btn.innerText;
+        btn.innerText = 'Copied!';
+        setTimeout(() => btn.innerText = old, 1500);
+      });
+    }
+    function copyCurrentPath() {
+      navigator.clipboard.writeText(window.location.href).then(() => {
+        alert('File URL copied to clipboard!');
+      });
+    }
+  </script>
+</body>
+</html>

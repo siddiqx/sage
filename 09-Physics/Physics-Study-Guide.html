@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>University Physics &amp; Feynman Lectures Study Guide — Learning Library</title>
+  <style>
+    :root {
+      --bg: #0b1120;
+      --card-bg: #1e293b;
+      --border: #334155;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-hover: #0ea5e9;
+      --code-bg: #020617;
+      --toc-bg: #131d31;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      padding: 0;
+    }
+    header.top-nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(11, 17, 32, 0.9);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+      padding: 0.85rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .back-btn {
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.35rem 0.75rem;
+      border-radius: 0.375rem;
+      background: rgba(56, 189, 248, 0.1);
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      transition: all 0.2s;
+    }
+    .back-btn:hover {
+      background: rgba(56, 189, 248, 0.2);
+    }
+    .category-badge {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      background: #1e293b;
+      padding: 0.25rem 0.6rem;
+      border-radius: 9999px;
+      border: 1px solid var(--border);
+    }
+    .nav-actions {
+      display: flex;
+      gap: 0.75rem;
+    }
+    .nav-btn {
+      background: #1e293b;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 0.35rem 0.75rem;
+      border-radius: 0.375rem;
+      font-size: 0.8rem;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: all 0.2s;
+    }
+    .nav-btn:hover {
+      background: #334155;
+      color: var(--text);
+    }
+    .layout-wrapper {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem;
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 2.5rem;
+    }
+    @media (max-width: 900px) {
+      .layout-wrapper {
+        grid-template-columns: 1fr;
+      }
+      .toc-box {
+        position: static;
+        margin-bottom: 2rem;
+      }
+    }
+    .toc-box {
+      position: sticky;
+      top: 5rem;
+      max-height: calc(100vh - 6rem);
+      overflow-y: auto;
+      background: var(--toc-bg);
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      padding: 1.25rem;
+    }
+    .toc-title {
+      font-size: 0.875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--accent);
+      margin-bottom: 0.85rem;
+    }
+    .toc-box ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    .toc-box a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: color 0.15s;
+    }
+    .toc-box a:hover {
+      color: var(--accent);
+    }
+    .toc-level-3 {
+      padding-left: 1rem;
+      font-size: 0.8rem;
+    }
+    .content-area {
+      min-width: 0;
+    }
+    h1 {
+      font-size: 2.25rem;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.75rem;
+      color: #ffffff;
+    }
+    h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-top: 2.25rem;
+      margin-bottom: 1rem;
+      color: #38bdf8;
+      border-bottom: 1px solid rgba(51, 65, 85, 0.4);
+      padding-bottom: 0.4rem;
+      position: relative;
+    }
+    h3 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin-top: 1.75rem;
+      margin-bottom: 0.75rem;
+      color: #f1f5f9;
+    }
+    h4 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-top: 1.25rem;
+      margin-bottom: 0.5rem;
+    }
+    p {
+      margin-bottom: 1rem;
+      color: #cbd5e1;
+    }
+    ul, ol {
+      margin-bottom: 1.25rem;
+      padding-left: 1.75rem;
+      color: #cbd5e1;
+    }
+    li {
+      margin-bottom: 0.4rem;
+    }
+    hr {
+      border: 0;
+      border-top: 1px solid var(--border);
+      margin: 2rem 0;
+    }
+    a {
+      color: var(--accent);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+    a:hover {
+      color: var(--accent-hover);
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.875em;
+      background: rgba(51, 65, 85, 0.6);
+      padding: 0.15em 0.4em;
+      border-radius: 0.25rem;
+      color: #38bdf8;
+    }
+    .code-wrapper {
+      margin: 1.25rem 0;
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      overflow: hidden;
+    }
+    .code-header {
+      background: #0f172a;
+      padding: 0.4rem 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-family: monospace;
+    }
+    .copy-btn {
+      background: rgba(148, 163, 184, 0.1);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      border-radius: 0.25rem;
+      padding: 0.2rem 0.5rem;
+      font-size: 0.7rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .copy-btn:hover {
+      background: var(--accent);
+      color: #0f172a;
+    }
+    pre {
+      padding: 1.25rem;
+      overflow-x: auto;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.875rem;
+      line-height: 1.6;
+    }
+    pre code {
+      background: transparent;
+      padding: 0;
+      color: #e2e8f0;
+      font-size: inherit;
+    }
+    /* Tables */
+    .table-container {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.9rem;
+    }
+    th {
+      background: #1e293b;
+      color: var(--text);
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+    td {
+      padding: 0.65rem 1rem;
+      border-bottom: 1px solid #1e293b;
+      color: #cbd5e1;
+    }
+    tr:nth-child(even) {
+      background: rgba(30, 41, 59, 0.4);
+    }
+    /* Callouts */
+    .callout {
+      margin: 1.5rem 0;
+      padding: 1rem 1.25rem;
+      border-radius: 0.5rem;
+      border-left: 4px solid var(--accent);
+      background: rgba(30, 41, 59, 0.5);
+    }
+    .callout-title {
+      font-weight: 700;
+      font-size: 0.85rem;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.35rem;
+      color: var(--accent);
+    }
+    .callout-body {
+      font-size: 0.9rem;
+      color: #cbd5e1;
+    }
+    .callout-tip { border-left-color: #10b981; }
+    .callout-tip .callout-title { color: #34d399; }
+    .callout-warning { border-left-color: #f59e0b; }
+    .callout-warning .callout-title { color: #fbbf24; }
+    .callout-caution { border-left-color: #ef4444; }
+    .callout-caution .callout-title { color: #f87171; }
+    .callout-important { border-left-color: #8b5cf6; }
+    .callout-important .callout-title { color: #a78bfa; }
+    .heading-anchor {
+      text-decoration: none;
+      color: var(--border);
+      margin-left: 0.5rem;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    h2:hover .heading-anchor, h3:hover .heading-anchor {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="top-nav">
+    <div class="nav-left">
+      <a href="../START-HERE.html" class="back-btn">&#8592; Master Dashboard</a>
+      <span class="category-badge">09-Physics</span>
+    </div>
+    <div class="nav-actions">
+      <button class="nav-btn" onclick="copyCurrentPath()">&#128203; Copy Path</button>
+      <a href="Physics-Study-Guide.md" class="nav-btn" target="_blank">&#128196; Raw Markdown</a>
+    </div>
+  </header>
+
+  <div class="layout-wrapper">
+    <aside>
+      
+        <nav class="toc-box">
+          <div class="toc-title">Table of Contents</div>
+          <ul><li class="toc-level-2"><a href="#1-primary-textbooks-available-locally">1. Primary Textbooks Available Locally</a></li><li class="toc-level-2"><a href="#2-integrated-study-tracks">2. Integrated Study Tracks</a></li><li class="toc-level-2"><a href="#3-high-yield-topic-progression">3. High-Yield Topic Progression</a></li><li class="toc-level-3"><a href="#a-classical-mechanics-symmetries">A. Classical Mechanics &amp; Symmetries</a></li><li class="toc-level-3"><a href="#b-thermodynamics-statistical-mechanics">B. Thermodynamics &amp; Statistical Mechanics</a></li><li class="toc-level-3"><a href="#c-electromagnetism-maxwell-s-equations">C. Electromagnetism &amp; Maxwell&#x27;s Equations</a></li><li class="toc-level-2"><a href="#4-mathematics-cross-references">4. Mathematics Cross-References</a></li></ul>
+        </nav>
+        
+    </aside>
+    <main class="content-area">
+      <h1 id="physics-study-guide-calculus-foundations-feynman-conceptual-roadmap">Physics Study Guide: Calculus Foundations &amp; Feynman Conceptual Roadmap<a href="#physics-study-guide-calculus-foundations-feynman-conceptual-roadmap" class="heading-anchor">#</a></h1>
+<p>This guide pairs the rigorous mathematical derivations of <em>OpenStax University Physics</em> with the conceptual insights of <em>The Feynman Lectures on Physics</em>.</p>
+<hr>
+<h2 id="1-primary-textbooks-available-locally">1. Primary Textbooks Available Locally<a href="#1-primary-textbooks-available-locally" class="heading-anchor">#</a></h2>
+<ol>
+<li><a href="University-Physics-Volume-1.pdf"><code>University-Physics-Volume-1.pdf</code></a> — Mechanics, Waves, and Acoustics (Samuel J. Ling et al. / OpenStax).</li>
+<li><a href="University-Physics-Volume-2.pdf"><code>University-Physics-Volume-2.pdf</code></a> — Thermodynamics, Electricity, and Magnetism (Samuel J. Ling et al. / OpenStax).</li>
+<li><strong>The Feynman Lectures on Physics (Caltech Online Edition):</strong></li>
+<ul>
+<li>Volume I (Mechanics, Radiation, Heat): <a href="https://www.feynmanlectures.caltech.edu/I_toc.html">feynmanlectures.caltech.edu/I_toc.html</a></li>
+<li>Volume II (Electromagnetism &amp; Matter): <a href="https://www.feynmanlectures.caltech.edu/II_toc.html">feynmanlectures.caltech.edu/II_toc.html</a></li>
+<li>Volume III (Quantum Mechanics): <a href="https://www.feynmanlectures.caltech.edu/III_toc.html">feynmanlectures.caltech.edu/III_toc.html</a></li>
+</ul>
+</ol>
+<hr>
+<h2 id="2-integrated-study-tracks">2. Integrated Study Tracks<a href="#2-integrated-study-tracks" class="heading-anchor">#</a></h2>
+<div class="code-wrapper"><div class="code-header"><span class="code-lang">code</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code>+--------------------------------------------------------------------------------+
+|                             TRACK 1: CLASSICAL MECHANICS                       |
+| Math &amp; Problems: OpenStax Vol 1 (Ch 2–11) &lt;---&gt; Concept: Feynman Vol I (Ch 1–20) |
++--------------------------------------------------------------------------------+
+                                       │
+                                       ▼
++--------------------------------------------------------------------------------+
+|                             TRACK 2: THERMODYNAMICS                            |
+| Math &amp; Problems: OpenStax Vol 2 (Ch 1–4)  &lt;---&gt; Concept: Feynman Vol I (Ch 39–46)|
++--------------------------------------------------------------------------------+
+                                       │
+                                       ▼
++--------------------------------------------------------------------------------+
+|                         TRACK 3: ELECTROMAGNETISM &amp; LIGHT                      |
+| Math &amp; Problems: OpenStax Vol 2 (Ch 5–16) &lt;---&gt; Concept: Feynman Vol II (Ch 1–21)|
++--------------------------------------------------------------------------------+</code></pre></div>
+<hr>
+<h2 id="3-high-yield-topic-progression">3. High-Yield Topic Progression<a href="#3-high-yield-topic-progression" class="heading-anchor">#</a></h2>
+<h3 id="a-classical-mechanics-symmetries">A. Classical Mechanics &amp; Symmetries<a href="#a-classical-mechanics-symmetries" class="heading-anchor">#</a></h3>
+<ul>
+<li><strong>Kinematics &amp; Newton&#x27;s Laws (OpenStax Vol 1, Ch 2–6):</strong> Derivatives of position vectors ($v = dr/dt, a = dv/dt$), free-body diagrams, circular motion.</li>
+<li><strong>Work, Energy &amp; Momentum (OpenStax Vol 1, Ch 7–9):</strong> Line integrals of force ($W = \int F \cdot dr$), conservation of mechanical energy, impulse, center of mass.</li>
+<li><strong>Feynman Conceptual Pairings:</strong></li>
+<ul>
+<li>Vol I, Ch. 1: <em>Atoms in Motion</em> (The atomic hypothesis and physical scale).</li>
+<li>Vol I, Ch. 4: <em>Conservation of Energy</em> (The blocks of Dennis the Menace).</li>
+<li>Vol I, Ch. 15: <em>Special Relativity</em> (Spacetime geometry and Lorentz transformations).</li>
+</ul>
+</ul>
+<h3 id="b-thermodynamics-statistical-mechanics">B. Thermodynamics &amp; Statistical Mechanics<a href="#b-thermodynamics-statistical-mechanics" class="heading-anchor">#</a></h3>
+<ul>
+<li><strong>Heat, Work &amp; Entropy (OpenStax Vol 2, Ch 1–4):</strong> First Law ($\Delta E_{\text{int}} = Q - W$), Carnot cycle efficiency, entropy calculation ($dS = dQ/T$).</li>
+<li><strong>Feynman Conceptual Pairing:</strong></li>
+<ul>
+<li>Vol I, Ch. 46: <em>Ratchet and Pawl</em> (The Second Law of Thermodynamics, reversibility, and the arrow of time).</li>
+</ul>
+</ul>
+<h3 id="c-electromagnetism-maxwell-s-equations">C. Electromagnetism &amp; Maxwell&#x27;s Equations<a href="#c-electromagnetism-maxwell-s-equations" class="heading-anchor">#</a></h3>
+<ul>
+<li><strong>Electrostatics &amp; Gauss&#x27;s Law (OpenStax Vol 2, Ch 5–8):</strong> Electric flux ($\Phi_E = \oint E \cdot dA = q_{\text{enc}}/\epsilon_0$), potential difference ($V = -\int E \cdot dr$), capacitance.</li>
+<li><strong>Magnetism &amp; Ampère&#x27;s Law (OpenStax Vol 2, Ch 11–12):</strong> Lorentz force ($F = q(E + v \times B)$), Biot-Savart law, Ampère&#x27;s circuital law.</li>
+<li><strong>Induction &amp; Maxwell&#x27;s Equations (OpenStax Vol 2, Ch 13–16):</strong> Faraday&#x27;s Law ($\mathcal{E} = -d\Phi_B/dt$), displacement current, and electromagnetic wave propagation.</li>
+<li><strong>Feynman Conceptual Pairings:</strong></li>
+<ul>
+<li>Vol II, Ch. 15: <em>The Vector Potential</em> (Physical reality of the Aharonov-Bohm effect).</li>
+<li>Vol II, Ch. 20: <em>Maxwell&#x27;s Equations in Free Space</em> (The unification of electricity, magnetism, and optics).</li>
+</ul>
+</ul>
+<hr>
+<h2 id="4-mathematics-cross-references">4. Mathematics Cross-References<a href="#4-mathematics-cross-references" class="heading-anchor">#</a></h2>
+<ul>
+<li>Pair Track 3 (Electromagnetism) directly with multivariable vector calculus in <a href="../06-Mathematics/Calculus-Volume-3.pdf"><code>../06-Mathematics/Calculus-Volume-3.pdf</code></a> (Green&#x27;s, Stokes&#x27;, and Divergence Theorems).</li>
+</ul>
+    </main>
+  </div>
+
+  <script>
+    function copyCode(btn) {
+      const pre = btn.parentElement.nextElementSibling;
+      const code = pre.querySelector('code').innerText;
+      navigator.clipboard.writeText(code).then(() => {
+        const old = btn.innerText;
+        btn.innerText = 'Copied!';
+        setTimeout(() => btn.innerText = old, 1500);
+      });
+    }
+    function copyCurrentPath() {
+      navigator.clipboard.writeText(window.location.href).then(() => {
+        alert('File URL copied to clipboard!');
+      });
+    }
+  </script>
+</body>
+</html>

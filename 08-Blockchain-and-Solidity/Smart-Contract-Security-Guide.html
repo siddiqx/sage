@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Contract Security &amp; Vulnerability Analysis — Learning Library</title>
+  <style>
+    :root {
+      --bg: #0b1120;
+      --card-bg: #1e293b;
+      --border: #334155;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-hover: #0ea5e9;
+      --code-bg: #020617;
+      --toc-bg: #131d31;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      padding: 0;
+    }
+    header.top-nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(11, 17, 32, 0.9);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+      padding: 0.85rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .back-btn {
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.35rem 0.75rem;
+      border-radius: 0.375rem;
+      background: rgba(56, 189, 248, 0.1);
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      transition: all 0.2s;
+    }
+    .back-btn:hover {
+      background: rgba(56, 189, 248, 0.2);
+    }
+    .category-badge {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      background: #1e293b;
+      padding: 0.25rem 0.6rem;
+      border-radius: 9999px;
+      border: 1px solid var(--border);
+    }
+    .nav-actions {
+      display: flex;
+      gap: 0.75rem;
+    }
+    .nav-btn {
+      background: #1e293b;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 0.35rem 0.75rem;
+      border-radius: 0.375rem;
+      font-size: 0.8rem;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: all 0.2s;
+    }
+    .nav-btn:hover {
+      background: #334155;
+      color: var(--text);
+    }
+    .layout-wrapper {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem;
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 2.5rem;
+    }
+    @media (max-width: 900px) {
+      .layout-wrapper {
+        grid-template-columns: 1fr;
+      }
+      .toc-box {
+        position: static;
+        margin-bottom: 2rem;
+      }
+    }
+    .toc-box {
+      position: sticky;
+      top: 5rem;
+      max-height: calc(100vh - 6rem);
+      overflow-y: auto;
+      background: var(--toc-bg);
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      padding: 1.25rem;
+    }
+    .toc-title {
+      font-size: 0.875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--accent);
+      margin-bottom: 0.85rem;
+    }
+    .toc-box ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    .toc-box a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: color 0.15s;
+    }
+    .toc-box a:hover {
+      color: var(--accent);
+    }
+    .toc-level-3 {
+      padding-left: 1rem;
+      font-size: 0.8rem;
+    }
+    .content-area {
+      min-width: 0;
+    }
+    h1 {
+      font-size: 2.25rem;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.75rem;
+      color: #ffffff;
+    }
+    h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-top: 2.25rem;
+      margin-bottom: 1rem;
+      color: #38bdf8;
+      border-bottom: 1px solid rgba(51, 65, 85, 0.4);
+      padding-bottom: 0.4rem;
+      position: relative;
+    }
+    h3 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin-top: 1.75rem;
+      margin-bottom: 0.75rem;
+      color: #f1f5f9;
+    }
+    h4 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-top: 1.25rem;
+      margin-bottom: 0.5rem;
+    }
+    p {
+      margin-bottom: 1rem;
+      color: #cbd5e1;
+    }
+    ul, ol {
+      margin-bottom: 1.25rem;
+      padding-left: 1.75rem;
+      color: #cbd5e1;
+    }
+    li {
+      margin-bottom: 0.4rem;
+    }
+    hr {
+      border: 0;
+      border-top: 1px solid var(--border);
+      margin: 2rem 0;
+    }
+    a {
+      color: var(--accent);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+    a:hover {
+      color: var(--accent-hover);
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.875em;
+      background: rgba(51, 65, 85, 0.6);
+      padding: 0.15em 0.4em;
+      border-radius: 0.25rem;
+      color: #38bdf8;
+    }
+    .code-wrapper {
+      margin: 1.25rem 0;
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      overflow: hidden;
+    }
+    .code-header {
+      background: #0f172a;
+      padding: 0.4rem 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-family: monospace;
+    }
+    .copy-btn {
+      background: rgba(148, 163, 184, 0.1);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      border-radius: 0.25rem;
+      padding: 0.2rem 0.5rem;
+      font-size: 0.7rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .copy-btn:hover {
+      background: var(--accent);
+      color: #0f172a;
+    }
+    pre {
+      padding: 1.25rem;
+      overflow-x: auto;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.875rem;
+      line-height: 1.6;
+    }
+    pre code {
+      background: transparent;
+      padding: 0;
+      color: #e2e8f0;
+      font-size: inherit;
+    }
+    /* Tables */
+    .table-container {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.9rem;
+    }
+    th {
+      background: #1e293b;
+      color: var(--text);
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+    td {
+      padding: 0.65rem 1rem;
+      border-bottom: 1px solid #1e293b;
+      color: #cbd5e1;
+    }
+    tr:nth-child(even) {
+      background: rgba(30, 41, 59, 0.4);
+    }
+    /* Callouts */
+    .callout {
+      margin: 1.5rem 0;
+      padding: 1rem 1.25rem;
+      border-radius: 0.5rem;
+      border-left: 4px solid var(--accent);
+      background: rgba(30, 41, 59, 0.5);
+    }
+    .callout-title {
+      font-weight: 700;
+      font-size: 0.85rem;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.35rem;
+      color: var(--accent);
+    }
+    .callout-body {
+      font-size: 0.9rem;
+      color: #cbd5e1;
+    }
+    .callout-tip { border-left-color: #10b981; }
+    .callout-tip .callout-title { color: #34d399; }
+    .callout-warning { border-left-color: #f59e0b; }
+    .callout-warning .callout-title { color: #fbbf24; }
+    .callout-caution { border-left-color: #ef4444; }
+    .callout-caution .callout-title { color: #f87171; }
+    .callout-important { border-left-color: #8b5cf6; }
+    .callout-important .callout-title { color: #a78bfa; }
+    .heading-anchor {
+      text-decoration: none;
+      color: var(--border);
+      margin-left: 0.5rem;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    h2:hover .heading-anchor, h3:hover .heading-anchor {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="top-nav">
+    <div class="nav-left">
+      <a href="../START-HERE.html" class="back-btn">&#8592; Master Dashboard</a>
+      <span class="category-badge">08-Blockchain-and-Solidity</span>
+    </div>
+    <div class="nav-actions">
+      <button class="nav-btn" onclick="copyCurrentPath()">&#128203; Copy Path</button>
+      <a href="Smart-Contract-Security-Guide.md" class="nav-btn" target="_blank">&#128196; Raw Markdown</a>
+    </div>
+  </header>
+
+  <div class="layout-wrapper">
+    <aside>
+      
+        <nav class="toc-box">
+          <div class="toc-title">Table of Contents</div>
+          <ul><li class="toc-level-2"><a href="#1-threat-model-execution-invariants">1. Threat Model &amp; Execution Invariants</a></li><li class="toc-level-2"><a href="#2-vulnerability-catalog-defensive-patterns">2. Vulnerability Catalog &amp; Defensive Patterns</a></li><li class="toc-level-3"><a href="#2-1-reentrancy">2.1 Reentrancy</a></li><li class="toc-level-3"><a href="#2-2-arithmetic-safety-precision">2.2 Arithmetic Safety &amp; Precision</a></li><li class="toc-level-3"><a href="#2-3-access-control-authorization">2.3 Access Control &amp; Authorization</a></li><li class="toc-level-3"><a href="#2-4-oracle-manipulation-flash-loan-exploits">2.4 Oracle Manipulation &amp; Flash Loan Exploits</a></li><li class="toc-level-3"><a href="#2-5-denial-of-service-dos">2.5 Denial of Service (DoS)</a></li><li class="toc-level-3"><a href="#2-6-front-running-and-mev-mitigation">2.6 Front-Running and MEV Mitigation</a></li><li class="toc-level-2"><a href="#3-smart-contract-verification-checklist">3. Smart Contract Verification Checklist</a></li></ul>
+        </nav>
+        
+    </aside>
+    <main class="content-area">
+      <h1 id="smart-contract-security-practices-attack-vector-catalog">Smart Contract Security Practices &amp; Attack Vector Catalog<a href="#smart-contract-security-practices-attack-vector-catalog" class="heading-anchor">#</a></h1>
+<div class="callout callout-note"><div class="callout-title">NOTE</div><div class="callout-body"><strong>Reference Standard:</strong> ConsenSys Smart Contract Best Practices &amp; OpenZeppelin Security Guidelines<br><strong>Target Environment:</strong> Ethereum Virtual Machine (EVM) | Solidity 0.8.x+<br><strong>Security Baseline:</strong> In smart contract systems, code is immutable, transactions are irreversible, and the execution environment is completely adversarial. Defenses must be mathematical and structural.</div></div>
+<hr>
+<h2 id="1-threat-model-execution-invariants">1. Threat Model &amp; Execution Invariants<a href="#1-threat-model-execution-invariants" class="heading-anchor">#</a></h2>
+<ol>
+<li><strong>Permissionless Execution:</strong> Anyone can call any public or external function with arbitrary calldata and gas allocations.</li>
+<li><strong>Transparent State &amp; Mempool:</strong> All contract storage, internal variables, and pending unconfirmed transactions in the public mempool are visible to observers and MEV (Maximal Extractable Value) searchers.</li>
+<li><strong>Control Handover on External Calls:</strong> Any call that transfers Ether (<code>call{value: ...}(&quot;&quot;)</code>) or invokes an external contract transfers control to the recipient, allowing malicious contract code to execute before the initial transaction concludes.</li>
+<li><strong>Atomicity:</strong> An entire transaction succeeds or fails atomically. However, within a transaction, intermediate states can be observed and exploited by sub-calls.</li>
+</ol>
+<hr>
+<h2 id="2-vulnerability-catalog-defensive-patterns">2. Vulnerability Catalog &amp; Defensive Patterns<a href="#2-vulnerability-catalog-defensive-patterns" class="heading-anchor">#</a></h2>
+<h3 id="2-1-reentrancy">2.1 Reentrancy<a href="#2-1-reentrancy" class="heading-anchor">#</a></h3>
+<h4 id="mechanism">Mechanism<a href="#mechanism" class="heading-anchor">#</a></h4>
+<p>Reentrancy occurs when an external call to an untrusted contract allows the recipient to recursively call back into the calling contract (or a related contract sharing state) before the calling contract has updated its internal state.</p>
+<div class="code-wrapper"><div class="code-header"><span class="code-lang">code</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code>VULNERABLE FLOW:
+User -&gt; withdraw() -&gt; [Checks balance] -&gt; [Sends ETH via call] -&gt; Attacker fallback() -&gt; withdraw() ...</code></pre></div>
+<h4 id="variants">Variants<a href="#variants" class="heading-anchor">#</a></h4>
+<ul>
+<li><strong>Single-Function Reentrancy:</strong> Recursive call into the same function that initiated the transfer.</li>
+<li><strong>Cross-Function Reentrancy:</strong> Recursive call into a different function that relies on the same shared state (e.g., calling <code>transfer()</code> while inside <code>withdraw()</code>).</li>
+<li><strong>Read-Only / Cross-Contract Reentrancy:</strong> The external call occurs during a state modification in Contract A. The callback queries Contract A&#x27;s temporarily distorted view from Contract B (e.g., an AMM LP share calculation before reserves are updated).</li>
+</ul>
+<h4 id="defensive-patterns">Defensive Patterns<a href="#defensive-patterns" class="heading-anchor">#</a></h4>
+<ol>
+<li><strong>Checks-Effects-Interactions (CEI) Pattern:</strong></li>
+</ol>
+<p>Always perform state modifications (Effects) <em>before</em> external interactions.</p>
+<div class="code-wrapper"><div class="code-header"><span class="code-lang">solidity</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code>   // CORRECT IMPLEMENTATION:
+   function withdraw(uint256 amount) external {
+       // 1. Checks
+       if (balances[msg.sender] &lt; amount) revert InsufficientBalance();
+
+       // 2. Effects (Update state BEFORE external interaction)
+       balances[msg.sender] -= amount;
+
+       // 3. Interactions
+       (bool success, ) = msg.sender.call{value: amount}(&quot;&quot;);
+       if (!success) revert TransferFailed();
+   }</code></pre></div>
+<ol>
+<li><strong>Reentrancy Mutex:</strong></li>
+</ol>
+<p>Use OpenZeppelin&#x27;s <code>ReentrancyGuard</code> to enforce a reentrancy lock:</p>
+<div class="code-wrapper"><div class="code-header"><span class="code-lang">solidity</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code>   import &quot;@openzeppelin/contracts/utils/ReentrancyGuard.sol&quot;;
+
+   contract SecureVault is ReentrancyGuard {
+       function withdraw() external nonReentrant {
+           // Safe against recursive reentrancy
+       }
+   }</code></pre></div>
+<p><em>Note on modern EVM:</em> EIP-1153 introduces transient storage (<code>TSTORE</code> / <code>TLOAD</code>), which reduces the gas cost of reentrancy locks compared to persistent <code>SSTORE</code> locks.</p>
+<hr>
+<h3 id="2-2-arithmetic-safety-precision">2.2 Arithmetic Safety &amp; Precision<a href="#2-2-arithmetic-safety-precision" class="heading-anchor">#</a></h3>
+<h4 id="built-in-checked-arithmetic-solidity-0-8-0">Built-in Checked Arithmetic (Solidity &gt;= 0.8.0)<a href="#built-in-checked-arithmetic-solidity-0-8-0" class="heading-anchor">#</a></h4>
+<p>Solidity 0.8.0 introduced automatic overflow and underflow checks that revert with a <code>Panic(0x11)</code> code.</p>
+<ul>
+<li>Explicit <code>SafeMath</code> libraries are obsolete in &gt;= 0.8.0.</li>
+<li>Use <code>unchecked { ... }</code> blocks strictly when an operation is mathematically provable never to overflow (e.g., array index increment <code>for (uint256 i = 0; i &lt; len; unchecked { ++i })</code>).</li>
+</ul>
+<h4 id="integer-division-precision-loss">Integer Division Precision Loss<a href="#integer-division-precision-loss" class="heading-anchor">#</a></h4>
+<p>Solidity does not support floating-point numbers. Integer division truncates towards zero:</p>
+<p>$$\frac{a \times b}{c} \quad \text{vs.} \quad \frac{a}{c} \times b$$</p>
+<ul>
+<li><strong>Rule:</strong> Always multiply before dividing to preserve maximum precision:</li>
+</ul>
+<div class="code-wrapper"><div class="code-header"><span class="code-lang">solidity</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code>  // WRONG: Truncates to 0 if amount &lt; 10000
+  uint256 fee = (amount / 10000) * feeBps;
+
+  // CORRECT: Multiplies first, then truncates once
+  uint256 fee = (amount * feeBps) / 10000;</code></pre></div>
+<hr>
+<h3 id="2-3-access-control-authorization">2.3 Access Control &amp; Authorization<a href="#2-3-access-control-authorization" class="heading-anchor">#</a></h3>
+<h4 id="tx-origin-phishing-vulnerability"><code>tx.origin</code> Phishing Vulnerability<a href="#tx-origin-phishing-vulnerability" class="heading-anchor">#</a></h4>
+<ul>
+<li>Never use <code>tx.origin</code> for authorization. <code>tx.origin</code> returns the address that signed the original transaction, not the immediate caller (<code>msg.sender</code>).</li>
+<li>An attacker can trick a privileged user into calling a malicious contract, which then forwards the call to the vulnerable contract where <code>tx.origin == owner</code> evaluates to true.</li>
+<li><strong>Rule:</strong> Use <code>msg.sender</code> for authorization checks.</li>
+</ul>
+<h4 id="two-step-ownership-transfers">Two-Step Ownership Transfers<a href="#two-step-ownership-transfers" class="heading-anchor">#</a></h4>
+<ul>
+<li>Transferring contract ownership directly to an incorrect address permanently locks protocol governance.</li>
+<li><strong>Rule:</strong> Use OpenZeppelin&#x27;s <code>Ownable2Step</code> pattern where the pending owner must explicitly call <code>acceptOwnership()</code> to finalize the transfer.</li>
+</ul>
+<h4 id="unprotected-initializers-in-upgradeable-proxies">Unprotected Initializers in Upgradeable Proxies<a href="#unprotected-initializers-in-upgradeable-proxies" class="heading-anchor">#</a></h4>
+<ul>
+<li>In proxy patterns (ERC-1967, UUPS), constructor logic does not run in the proxy storage context.</li>
+<li>Unprotected <code>initialize()</code> functions allow malicious actors to front-run deployment and claim ownership of proxy or logic contracts.</li>
+<li><strong>Rule:</strong> Lock logic contracts using <code>_disableInitializers()</code> in the constructor.</li>
+</ul>
+<hr>
+<h3 id="2-4-oracle-manipulation-flash-loan-exploits">2.4 Oracle Manipulation &amp; Flash Loan Exploits<a href="#2-4-oracle-manipulation-flash-loan-exploits" class="heading-anchor">#</a></h3>
+<h4 id="mechanism">Mechanism<a href="#mechanism" class="heading-anchor">#</a></h4>
+<p>Flash loans permit borrowing millions in uncollateralized capital within a single transaction, provided the funds are returned before the transaction completes. Attackers use this temporary capital to radically distort automated market maker (AMM) spot prices.</p>
+<h4 id="flawed-pattern">Flawed Pattern<a href="#flawed-pattern" class="heading-anchor">#</a></h4>
+<div class="code-wrapper"><div class="code-header"><span class="code-lang">solidity</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code>// VULNERABLE: Direct spot price check via AMM reserves
+uint256 price = pair.getReserves(); // Trivially manipulated via flash swap</code></pre></div>
+<h4 id="defenses">Defenses<a href="#defenses" class="heading-anchor">#</a></h4>
+<ol>
+<li><strong>Decentralized Off-Chain Oracles:</strong> Use Chainlink price feeds with staleness checks:</li>
+</ol>
+<div class="code-wrapper"><div class="code-header"><span class="code-lang">solidity</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code>   (, int256 price, , uint256 updatedAt, ) = priceFeed.latestRoundData();
+   if (price &lt;= 0) revert InvalidPrice();
+   if (block.timestamp - updatedAt &gt; HEARTBEAT_THRESHOLD) revert StalePrice();</code></pre></div>
+<ol>
+<li><strong>Time-Weighted Average Price (TWAP):</strong> Use multi-block or multi-period TWAP (e.g., Uniswap v3 TWAP) to make single-block price manipulation economically unviable.</li>
+</ol>
+<hr>
+<h3 id="2-5-denial-of-service-dos">2.5 Denial of Service (DoS)<a href="#2-5-denial-of-service-dos" class="heading-anchor">#</a></h3>
+<h4 id="unbounded-loops-block-gas-limits">Unbounded Loops &amp; Block Gas Limits<a href="#unbounded-loops-block-gas-limits" class="heading-anchor">#</a></h4>
+<ul>
+<li>Iterating over dynamic, user-expandable arrays can exceed the Ethereum block gas limit (30,000,000 gas), freezing the contract.</li>
+<li><strong>Rule:</strong> Bound array lengths or replace iterations with off-chain indexing and pagination.</li>
+</ul>
+<h4 id="push-vs-pull-payments">Push vs. Pull Payments<a href="#push-vs-pull-payments" class="heading-anchor">#</a></h4>
+<ul>
+<li>Pushing Ether or ERC-20 tokens to user addresses in a loop fails completely if even one recipient is a contract that rejects payments (<code>revert()</code>).</li>
+<li><strong>Rule:</strong> Implement the <strong>Pull over Push</strong> pattern: record withdrawable balances in a mapping and require users to pull their own funds individually.</li>
+</ul>
+<hr>
+<h3 id="2-6-front-running-and-mev-mitigation">2.6 Front-Running and MEV Mitigation<a href="#2-6-front-running-and-mev-mitigation" class="heading-anchor">#</a></h3>
+<ul>
+<li>Transactions in the public mempool can be front-run, back-run, or sandwich-attacked.</li>
+<li><strong>Defenses:</strong></li>
+<ul>
+<li>Slippage protection: Enforce explicit minimum output amounts (<code>minAmountOut</code>) on swaps.</li>
+<li>Transaction deadlines: Require transactions to execute before a specified block timestamp (<code>deadline</code>).</li>
+<li>Commit-Reveal Schemes: Submit a hash of the action first, followed by revealing the preimage in a subsequent block.</li>
+<li>Private Transaction Routing: Submit critical transactions through builder endpoints (e.g., MEV-Share, Flashbots Protect) rather than public gossip nodes.</li>
+</ul>
+</ul>
+<hr>
+<h2 id="3-smart-contract-verification-checklist">3. Smart Contract Verification Checklist<a href="#3-smart-contract-verification-checklist" class="heading-anchor">#</a></h2>
+<div class="table-container"><table>
+<thead><tr><th>Phase</th><th>Tool / Practice</th><th>Objective</th></tr></thead>
+<tbody>
+<tr><td><strong>Static Analysis</strong></td><td>Slither (<code>slither .</code>)</td><td>Identify AST patterns, reentrancies, dead code, and uninitialized variables</td></tr>
+<tr><td><strong>Linting</strong></td><td>Solhint</td><td>Enforce Solidity style guidelines and security rules</td></tr>
+<tr><td><strong>Unit Testing</strong></td><td>Foundry / Hardhat</td><td>Validate function inputs, outputs, and edge cases</td></tr>
+<tr><td><strong>Fuzz Testing</strong></td><td>Foundry (<code>testFuzz</code>)</td><td>Feed millions of randomized inputs to identify unexpected invariant violations</td></tr>
+<tr><td><strong>Invariant Testing</strong></td><td>Foundry (<code>invariant_</code>)</td><td>Test multi-call sequences ensuring system conservation laws always hold</td></tr>
+<tr><td><strong>Formal Verification</strong></td><td>Certora / SMTChecker</td><td>Mathematically prove contract specifications against all possible execution paths</td></tr>
+<tr><td><strong>Pre-deployment</strong></td><td>Multi-sig Deployment</td><td>Enforce governance via Safe multisig with timelocks on privileged actions</td></tr>
+</tbody></table></div>
+    </main>
+  </div>
+
+  <script>
+    function copyCode(btn) {
+      const pre = btn.parentElement.nextElementSibling;
+      const code = pre.querySelector('code').innerText;
+      navigator.clipboard.writeText(code).then(() => {
+        const old = btn.innerText;
+        btn.innerText = 'Copied!';
+        setTimeout(() => btn.innerText = old, 1500);
+      });
+    }
+    function copyCurrentPath() {
+      navigator.clipboard.writeText(window.location.href).then(() => {
+        alert('File URL copied to clipboard!');
+      });
+    }
+  </script>
+</body>
+</html>

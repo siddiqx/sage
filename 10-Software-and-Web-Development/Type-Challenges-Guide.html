@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TypeScript Type Challenges Progression Guide — Learning Library</title>
+  <style>
+    :root {
+      --bg: #0b1120;
+      --card-bg: #1e293b;
+      --border: #334155;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-hover: #0ea5e9;
+      --code-bg: #020617;
+      --toc-bg: #131d31;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      padding: 0;
+    }
+    header.top-nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(11, 17, 32, 0.9);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+      padding: 0.85rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .back-btn {
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.35rem 0.75rem;
+      border-radius: 0.375rem;
+      background: rgba(56, 189, 248, 0.1);
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      transition: all 0.2s;
+    }
+    .back-btn:hover {
+      background: rgba(56, 189, 248, 0.2);
+    }
+    .category-badge {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      background: #1e293b;
+      padding: 0.25rem 0.6rem;
+      border-radius: 9999px;
+      border: 1px solid var(--border);
+    }
+    .nav-actions {
+      display: flex;
+      gap: 0.75rem;
+    }
+    .nav-btn {
+      background: #1e293b;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 0.35rem 0.75rem;
+      border-radius: 0.375rem;
+      font-size: 0.8rem;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: all 0.2s;
+    }
+    .nav-btn:hover {
+      background: #334155;
+      color: var(--text);
+    }
+    .layout-wrapper {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem;
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 2.5rem;
+    }
+    @media (max-width: 900px) {
+      .layout-wrapper {
+        grid-template-columns: 1fr;
+      }
+      .toc-box {
+        position: static;
+        margin-bottom: 2rem;
+      }
+    }
+    .toc-box {
+      position: sticky;
+      top: 5rem;
+      max-height: calc(100vh - 6rem);
+      overflow-y: auto;
+      background: var(--toc-bg);
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      padding: 1.25rem;
+    }
+    .toc-title {
+      font-size: 0.875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--accent);
+      margin-bottom: 0.85rem;
+    }
+    .toc-box ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    .toc-box a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: color 0.15s;
+    }
+    .toc-box a:hover {
+      color: var(--accent);
+    }
+    .toc-level-3 {
+      padding-left: 1rem;
+      font-size: 0.8rem;
+    }
+    .content-area {
+      min-width: 0;
+    }
+    h1 {
+      font-size: 2.25rem;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.75rem;
+      color: #ffffff;
+    }
+    h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-top: 2.25rem;
+      margin-bottom: 1rem;
+      color: #38bdf8;
+      border-bottom: 1px solid rgba(51, 65, 85, 0.4);
+      padding-bottom: 0.4rem;
+      position: relative;
+    }
+    h3 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin-top: 1.75rem;
+      margin-bottom: 0.75rem;
+      color: #f1f5f9;
+    }
+    h4 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-top: 1.25rem;
+      margin-bottom: 0.5rem;
+    }
+    p {
+      margin-bottom: 1rem;
+      color: #cbd5e1;
+    }
+    ul, ol {
+      margin-bottom: 1.25rem;
+      padding-left: 1.75rem;
+      color: #cbd5e1;
+    }
+    li {
+      margin-bottom: 0.4rem;
+    }
+    hr {
+      border: 0;
+      border-top: 1px solid var(--border);
+      margin: 2rem 0;
+    }
+    a {
+      color: var(--accent);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+    a:hover {
+      color: var(--accent-hover);
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.875em;
+      background: rgba(51, 65, 85, 0.6);
+      padding: 0.15em 0.4em;
+      border-radius: 0.25rem;
+      color: #38bdf8;
+    }
+    .code-wrapper {
+      margin: 1.25rem 0;
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      overflow: hidden;
+    }
+    .code-header {
+      background: #0f172a;
+      padding: 0.4rem 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-family: monospace;
+    }
+    .copy-btn {
+      background: rgba(148, 163, 184, 0.1);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      border-radius: 0.25rem;
+      padding: 0.2rem 0.5rem;
+      font-size: 0.7rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .copy-btn:hover {
+      background: var(--accent);
+      color: #0f172a;
+    }
+    pre {
+      padding: 1.25rem;
+      overflow-x: auto;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.875rem;
+      line-height: 1.6;
+    }
+    pre code {
+      background: transparent;
+      padding: 0;
+      color: #e2e8f0;
+      font-size: inherit;
+    }
+    /* Tables */
+    .table-container {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.9rem;
+    }
+    th {
+      background: #1e293b;
+      color: var(--text);
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+    td {
+      padding: 0.65rem 1rem;
+      border-bottom: 1px solid #1e293b;
+      color: #cbd5e1;
+    }
+    tr:nth-child(even) {
+      background: rgba(30, 41, 59, 0.4);
+    }
+    /* Callouts */
+    .callout {
+      margin: 1.5rem 0;
+      padding: 1rem 1.25rem;
+      border-radius: 0.5rem;
+      border-left: 4px solid var(--accent);
+      background: rgba(30, 41, 59, 0.5);
+    }
+    .callout-title {
+      font-weight: 700;
+      font-size: 0.85rem;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.35rem;
+      color: var(--accent);
+    }
+    .callout-body {
+      font-size: 0.9rem;
+      color: #cbd5e1;
+    }
+    .callout-tip { border-left-color: #10b981; }
+    .callout-tip .callout-title { color: #34d399; }
+    .callout-warning { border-left-color: #f59e0b; }
+    .callout-warning .callout-title { color: #fbbf24; }
+    .callout-caution { border-left-color: #ef4444; }
+    .callout-caution .callout-title { color: #f87171; }
+    .callout-important { border-left-color: #8b5cf6; }
+    .callout-important .callout-title { color: #a78bfa; }
+    .heading-anchor {
+      text-decoration: none;
+      color: var(--border);
+      margin-left: 0.5rem;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    h2:hover .heading-anchor, h3:hover .heading-anchor {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="top-nav">
+    <div class="nav-left">
+      <a href="../START-HERE.html" class="back-btn">&#8592; Master Dashboard</a>
+      <span class="category-badge">10-Software-and-Web-Development</span>
+    </div>
+    <div class="nav-actions">
+      <button class="nav-btn" onclick="copyCurrentPath()">&#128203; Copy Path</button>
+      <a href="Type-Challenges-Guide.md" class="nav-btn" target="_blank">&#128196; Raw Markdown</a>
+    </div>
+  </header>
+
+  <div class="layout-wrapper">
+    <aside>
+      
+        <nav class="toc-box">
+          <div class="toc-title">Table of Contents</div>
+          <ul><li class="toc-level-2"><a href="#1-purpose">1. Purpose</a></li><li class="toc-level-2"><a href="#2-prerequisites">2. Prerequisites</a></li><li class="toc-level-2"><a href="#3-what-you-will-learn">3. What You Will Learn</a></li><li class="toc-level-2"><a href="#4-repository-structure-where-to-start-what-to-ignore">4. Repository Structure: Where to Start &amp; What to Ignore</a></li><li class="toc-level-3"><a href="#files-beginners-can-initially-ignore">Files Beginners Can Initially Ignore</a></li><li class="toc-level-2"><a href="#5-anatomy-of-a-type-challenge">5. Anatomy of a Type Challenge</a></li><li class="toc-level-2"><a href="#6-recommended-learning-sequence">6. Recommended Learning Sequence</a></li><li class="toc-level-3"><a href="#tier-1-warm-up-easy-foundations">Tier 1: Warm-up &amp; Easy Foundations</a></li><li class="toc-level-3"><a href="#tier-2-medium-challenges-advanced-type-manipulation">Tier 2: Medium Challenges (Advanced Type Manipulation)</a></li><li class="toc-level-2"><a href="#7-common-pitfalls-for-beginners">7. Common Pitfalls for Beginners</a></li><li class="toc-level-2"><a href="#8-companion-materials-in-this-library">8. Companion Materials in this Library</a></li></ul>
+        </nav>
+        
+    </aside>
+    <main class="content-area">
+      <h1 id="typescript-type-challenges-practice-mastery-guide">TypeScript Type Challenges: Practice &amp; Mastery Guide<a href="#typescript-type-challenges-practice-mastery-guide" class="heading-anchor">#</a></h1>
+<h2 id="1-purpose">1. Purpose<a href="#1-purpose" class="heading-anchor">#</a></h2>
+<p>The TypeScript Type Challenges repository is an open-source collection of type-level programming puzzles. It allows you to build deep intuition for TypeScript&#x27;s structural type system, generic constraints, conditional types, and mapped types without writing runtime JavaScript code.</p>
+<ul>
+<li><strong>Repository Location:</strong> <a href="file:///D:/Learning/Programming/JavaScript-TypeScript/Programs/Type-Challenges-Repository/"><code>D:\Learning\Programming\JavaScript-TypeScript\Programs\Type-Challenges-Repository\</code></a></li>
+<li><strong>License:</strong> MIT License</li>
+</ul>
+<hr>
+<h2 id="2-prerequisites">2. Prerequisites<a href="#2-prerequisites" class="heading-anchor">#</a></h2>
+<ul>
+<li><strong>TypeScript Basics:</strong> Type aliases (<code>type</code>), interfaces, primitive types, union types (<code>A | B</code>), and intersections (<code>A &amp; B</code>).</li>
+<li><strong>Basic Generics:</strong> Understanding type parameters like <code>function identity&lt;T&gt;(arg: T): T</code>.</li>
+</ul>
+<hr>
+<h2 id="3-what-you-will-learn">3. What You Will Learn<a href="#3-what-you-will-learn" class="heading-anchor">#</a></h2>
+<ul>
+<li>Reimplementing TypeScript&#x27;s built-in utility types (<code>Pick</code>, <code>Readonly</code>, <code>Omit</code>, <code>Exclude</code>, <code>Parameters</code>, <code>ReturnType</code>, <code>Awaited</code>).</li>
+<li>Pattern matching within types using the <code>infer</code> keyword.</li>
+<li>Advanced recursive types for deep object mutation and tuple processing.</li>
+<li>Metaprogramming with Template Literal Types and Mapped Type key remapping (<code>as</code>).</li>
+</ul>
+<hr>
+<h2 id="4-repository-structure-where-to-start-what-to-ignore">4. Repository Structure: Where to Start &amp; What to Ignore<a href="#4-repository-structure-where-to-start-what-to-ignore" class="heading-anchor">#</a></h2>
+<div class="code-wrapper"><div class="code-header"><span class="code-lang">code</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code>Type-Challenges-Repository/
+├── questions/                 &lt;-- ESSENTIAL: The core challenge directory
+│   ├── 00013-warm-hello-world/
+│   │   ├── README.md          (Challenge explanation and instructions)
+│   │   ├── template.ts        (The file you edit: write your type definition here)
+│   │   └── test-cases.ts      (Type-level unit tests: red squiggly underlines disappear when correct!)
+│   ├── 00004-easy-pick/
+│   ├── 00007-easy-readonly/
+│   ├── 00002-medium-return-type/
+│   └── ...
+├── scripts/                   &lt;-- IGNORE: Upstream challenge submission scripts
+├── .github/                   &lt;-- IGNORE: Upstream issue templates and bot automation
+└── packages/                  &lt;-- IGNORE: Monorepo test utilities</code></pre></div>
+<h3 id="files-beginners-can-initially-ignore">Files Beginners Can Initially Ignore<a href="#files-beginners-can-initially-ignore" class="heading-anchor">#</a></h3>
+<ul>
+<li><code>scripts/</code>: Python and JavaScript automation bots used to sync challenges with GitHub issues.</li>
+<li><code>packages/</code>: Internal packaging tools for the web playground.</li>
+</ul>
+<hr>
+<h2 id="5-anatomy-of-a-type-challenge">5. Anatomy of a Type Challenge<a href="#5-anatomy-of-a-type-challenge" class="heading-anchor">#</a></h2>
+<p>Every challenge in <code>questions/</code> consists of three files:</p>
+<ol>
+<li><strong><code>README.md</code>:</strong> Explains the desired behavior with input/output examples.</li>
+<li><strong><code>test-cases.ts</code>:</strong> Uses <code>@type-challenges/utils</code> to perform compile-time assertions:</li>
+</ol>
+<div class="code-wrapper"><div class="code-header"><span class="code-lang">typescript</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code>   import type { Equal, Expect } from &#x27;@type-challenges/utils&#x27;
+
+   type cases = [
+     Expect&lt;Equal&lt;MyPick&lt;Todo, &#x27;title&#x27;&gt;, { title: string }&gt;&gt;,
+     Expect&lt;Equal&lt;MyPick&lt;Todo, &#x27;title&#x27; | &#x27;completed&#x27;&gt;, { title: string; completed: boolean }&gt;&gt;,
+   ]</code></pre></div>
+<ol>
+<li><strong><code>template.ts</code>:</strong> Contains the starting code stub:</li>
+</ol>
+<div class="code-wrapper"><div class="code-header"><span class="code-lang">typescript</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code>   // Starting stub:
+   type MyPick&lt;T, K&gt; = any</code></pre></div>
+<p>When your type solution is correct, all TypeScript type errors inside <code>test-cases.ts</code> disappear immediately in your editor!</p>
+<hr>
+<h2 id="6-recommended-learning-sequence">6. Recommended Learning Sequence<a href="#6-recommended-learning-sequence" class="heading-anchor">#</a></h2>
+<h3 id="tier-1-warm-up-easy-foundations">Tier 1: Warm-up &amp; Easy Foundations<a href="#tier-1-warm-up-easy-foundations" class="heading-anchor">#</a></h3>
+<p>Start here to master generic constraints and mapped types:</p>
+<ol>
+<li><strong><code>00013-warm-hello-world</code>:</strong> Warm-up type alias.</li>
+<li><strong><code>00004-easy-pick</code>:</strong> Implement <code>Pick&lt;T, K&gt;</code>.</li>
+<ul>
+<li><em>Key Concept:</em> Generic constraint <code>K extends keyof T</code> and mapped type <code>[P in K]: T[P]</code>.</li>
+</ul>
+<li><strong><code>00007-easy-readonly</code>:</strong> Implement <code>Readonly&lt;T&gt;</code>.</li>
+<ul>
+<li><em>Key Concept:</em> Applying <code>readonly [P in keyof T]: T[P]</code>.</li>
+</ul>
+<li><strong><code>00011-easy-tuple-to-object</code>:</strong> Convert tuple <code>[&#x27;tesla&#x27;, &#x27;model 3&#x27;]</code> to <code>{ tesla: &#x27;tesla&#x27;, &#x27;model 3&#x27;: &#x27;model 3&#x27; }</code>.</li>
+<ul>
+<li><em>Key Concept:</em> Tuple indexing <code>[P in T[number]]: P</code>.</li>
+</ul>
+<li><strong><code>00014-easy-first</code>:</strong> Extract the first element of a tuple.</li>
+<ul>
+<li><em>Key Concept:</em> Checking for empty tuple <code>T extends [] ? never : T[0]</code>.</li>
+</ul>
+<li><strong><code>00043-easy-exclude</code>:</strong> Implement <code>Exclude&lt;T, U&gt;</code>.</li>
+<ul>
+<li><em>Key Concept:</em> Distributive conditional types <code>T extends U ? never : T</code>.</li>
+</ul>
+<li><strong><code>00189-easy-awaited</code>:</strong> Unwrap <code>Promise&lt;T&gt;</code> recursively.</li>
+<ul>
+<li><em>Key Concept:</em> Pattern matching with <code>infer</code>.</li>
+</ul>
+</ol>
+<h3 id="tier-2-medium-challenges-advanced-type-manipulation">Tier 2: Medium Challenges (Advanced Type Manipulation)<a href="#tier-2-medium-challenges-advanced-type-manipulation" class="heading-anchor">#</a></h3>
+<ol>
+<li><strong><code>00002-medium-return-type</code>:</strong> Implement <code>ReturnType&lt;T&gt;</code>.</li>
+<ul>
+<li><em>Pattern:</em> <code>T extends (...args: any[]) =&gt; infer R ? R : never</code>.</li>
+</ul>
+<li><strong><code>00003-medium-omit</code>:</strong> Implement <code>Omit&lt;T, K&gt;</code>.</li>
+<ul>
+<li><em>Pattern:</em> Combining <code>Exclude</code> with mapped types, or using <code>as Exclude&lt;P, K&gt;</code>.</li>
+</ul>
+<li><strong><code>00009-medium-deep-readonly</code>:</strong> Recursively make all nested object properties readonly.</li>
+<ul>
+<li><em>Pattern:</em> Recursive conditional types checking for <code>keyof T extends never</code>.</li>
+</ul>
+<li><strong><code>00010-medium-tuple-to-union</code>:</strong> Convert tuple to union of its element types (<code>T[number]</code>).</li>
+</ol>
+<hr>
+<h2 id="7-common-pitfalls-for-beginners">7. Common Pitfalls for Beginners<a href="#7-common-pitfalls-for-beginners" class="heading-anchor">#</a></h2>
+<ul>
+<li><strong>Confusing Type-Level vs. Runtime JavaScript:</strong> You cannot use <code>if</code>, <code>else</code>, <code>for</code>, or <code>typeof</code> (in the JS sense) inside a type definition. Conditionals must be expressed via <code>T extends U ? TrueCase : FalseCase</code>. Loops must be expressed via Mapped Types or Recursion.</li>
+<li><strong>Forgetting Generic Constraints:</strong> Writing <code>type GetProperty&lt;T, K&gt; = T[K]</code> causes a compiler error because TypeScript does not know if <code>K</code> exists on <code>T</code>. Always constrain: <code>K extends keyof T</code>.</li>
+</ul>
+<hr>
+<h2 id="8-companion-materials-in-this-library">8. Companion Materials in this Library<a href="#8-companion-materials-in-this-library" class="heading-anchor">#</a></h2>
+<ul>
+<li><a href="file:///D:/Learning/Programming/JavaScript-TypeScript/Resources/TypeScript-Handbook.html"><code>TypeScript-Handbook.md</code></a> — Comprehensive structural typing reference.</li>
+<li><a href="file:///D:/Learning/Programming/JavaScript-TypeScript/PDFs/Eloquent-JavaScript-4th-Edition.pdf"><code>Eloquent-JavaScript-4th-Edition.pdf</code></a> — JavaScript fundamentals textbook.</li>
+</ul>
+    </main>
+  </div>
+
+  <script>
+    function copyCode(btn) {
+      const pre = btn.parentElement.nextElementSibling;
+      const code = pre.querySelector('code').innerText;
+      navigator.clipboard.writeText(code).then(() => {
+        const old = btn.innerText;
+        btn.innerText = 'Copied!';
+        setTimeout(() => btn.innerText = old, 1500);
+      });
+    }
+    function copyCurrentPath() {
+      navigator.clipboard.writeText(window.location.href).then(() => {
+        alert('File URL copied to clipboard!');
+      });
+    }
+  </script>
+</body>
+</html>

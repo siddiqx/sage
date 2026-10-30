@@ -1,0 +1,18 @@
+[submodule "01-Python/Practice/Exercism-Python-Track"]
+	path = 01-Python/Practice/Exercism-Python-Track
+	url = https://github.com/exercism/python.git
+[submodule "02-SQL-and-Databases/Practice/Pagila-Sample-Database"]
+	path = 02-SQL-and-Databases/Practice/Pagila-Sample-Database
+	url = https://github.com/devrimgunduz/pagila.git
+[submodule "03-Data-Engineering/Practice/Data-Engineering-Zoomcamp"]
+	path = 03-Data-Engineering/Practice/Data-Engineering-Zoomcamp
+	url = https://github.com/DataTalksClub/data-engineering-zoomcamp.git
+[submodule "03-Data-Engineering/Practice/dbt-Jaffle-Shop"]
+	path = 03-Data-Engineering/Practice/dbt-Jaffle-Shop
+	url = https://github.com/dbt-labs/jaffle_shop.git
+[submodule "08-Blockchain-and-Solidity/Practice/OpenZeppelin-Contracts"]
+	path = 08-Blockchain-and-Solidity/Practice/OpenZeppelin-Contracts
+	url = https://github.com/OpenZeppelin/openzeppelin-contracts.git
+[submodule "10-Software-and-Web-Development/Practice/Type-Challenges-Repository"]
+	path = 10-Software-and-Web-Development/Practice/Type-Challenges-Repository
+	url = https://github.com/type-challenges/type-challenges.git

@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Automate the Boring Stuff with Python — Study Guide — Learning Library</title>
+  <style>
+    :root {
+      --bg: #0b1120;
+      --card-bg: #1e293b;
+      --border: #334155;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-hover: #0ea5e9;
+      --code-bg: #020617;
+      --toc-bg: #131d31;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      padding: 0;
+    }
+    header.top-nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(11, 17, 32, 0.9);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+      padding: 0.85rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .back-btn {
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.35rem 0.75rem;
+      border-radius: 0.375rem;
+      background: rgba(56, 189, 248, 0.1);
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      transition: all 0.2s;
+    }
+    .back-btn:hover {
+      background: rgba(56, 189, 248, 0.2);
+    }
+    .category-badge {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      background: #1e293b;
+      padding: 0.25rem 0.6rem;
+      border-radius: 9999px;
+      border: 1px solid var(--border);
+    }
+    .nav-actions {
+      display: flex;
+      gap: 0.75rem;
+    }
+    .nav-btn {
+      background: #1e293b;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 0.35rem 0.75rem;
+      border-radius: 0.375rem;
+      font-size: 0.8rem;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: all 0.2s;
+    }
+    .nav-btn:hover {
+      background: #334155;
+      color: var(--text);
+    }
+    .layout-wrapper {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem;
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 2.5rem;
+    }
+    @media (max-width: 900px) {
+      .layout-wrapper {
+        grid-template-columns: 1fr;
+      }
+      .toc-box {
+        position: static;
+        margin-bottom: 2rem;
+      }
+    }
+    .toc-box {
+      position: sticky;
+      top: 5rem;
+      max-height: calc(100vh - 6rem);
+      overflow-y: auto;
+      background: var(--toc-bg);
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      padding: 1.25rem;
+    }
+    .toc-title {
+      font-size: 0.875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--accent);
+      margin-bottom: 0.85rem;
+    }
+    .toc-box ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    .toc-box a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: color 0.15s;
+    }
+    .toc-box a:hover {
+      color: var(--accent);
+    }
+    .toc-level-3 {
+      padding-left: 1rem;
+      font-size: 0.8rem;
+    }
+    .content-area {
+      min-width: 0;
+    }
+    h1 {
+      font-size: 2.25rem;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.75rem;
+      color: #ffffff;
+    }
+    h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-top: 2.25rem;
+      margin-bottom: 1rem;
+      color: #38bdf8;
+      border-bottom: 1px solid rgba(51, 65, 85, 0.4);
+      padding-bottom: 0.4rem;
+      position: relative;
+    }
+    h3 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin-top: 1.75rem;
+      margin-bottom: 0.75rem;
+      color: #f1f5f9;
+    }
+    h4 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-top: 1.25rem;
+      margin-bottom: 0.5rem;
+    }
+    p {
+      margin-bottom: 1rem;
+      color: #cbd5e1;
+    }
+    ul, ol {
+      margin-bottom: 1.25rem;
+      padding-left: 1.75rem;
+      color: #cbd5e1;
+    }
+    li {
+      margin-bottom: 0.4rem;
+    }
+    hr {
+      border: 0;
+      border-top: 1px solid var(--border);
+      margin: 2rem 0;
+    }
+    a {
+      color: var(--accent);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+    a:hover {
+      color: var(--accent-hover);
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.875em;
+      background: rgba(51, 65, 85, 0.6);
+      padding: 0.15em 0.4em;
+      border-radius: 0.25rem;
+      color: #38bdf8;
+    }
+    .code-wrapper {
+      margin: 1.25rem 0;
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      overflow: hidden;
+    }
+    .code-header {
+      background: #0f172a;
+      padding: 0.4rem 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-family: monospace;
+    }
+    .copy-btn {
+      background: rgba(148, 163, 184, 0.1);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      border-radius: 0.25rem;
+      padding: 0.2rem 0.5rem;
+      font-size: 0.7rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .copy-btn:hover {
+      background: var(--accent);
+      color: #0f172a;
+    }
+    pre {
+      padding: 1.25rem;
+      overflow-x: auto;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.875rem;
+      line-height: 1.6;
+    }
+    pre code {
+      background: transparent;
+      padding: 0;
+      color: #e2e8f0;
+      font-size: inherit;
+    }
+    /* Tables */
+    .table-container {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.9rem;
+    }
+    th {
+      background: #1e293b;
+      color: var(--text);
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+    td {
+      padding: 0.65rem 1rem;
+      border-bottom: 1px solid #1e293b;
+      color: #cbd5e1;
+    }
+    tr:nth-child(even) {
+      background: rgba(30, 41, 59, 0.4);
+    }
+    /* Callouts */
+    .callout {
+      margin: 1.5rem 0;
+      padding: 1rem 1.25rem;
+      border-radius: 0.5rem;
+      border-left: 4px solid var(--accent);
+      background: rgba(30, 41, 59, 0.5);
+    }
+    .callout-title {
+      font-weight: 700;
+      font-size: 0.85rem;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.35rem;
+      color: var(--accent);
+    }
+    .callout-body {
+      font-size: 0.9rem;
+      color: #cbd5e1;
+    }
+    .callout-tip { border-left-color: #10b981; }
+    .callout-tip .callout-title { color: #34d399; }
+    .callout-warning { border-left-color: #f59e0b; }
+    .callout-warning .callout-title { color: #fbbf24; }
+    .callout-caution { border-left-color: #ef4444; }
+    .callout-caution .callout-title { color: #f87171; }
+    .callout-important { border-left-color: #8b5cf6; }
+    .callout-important .callout-title { color: #a78bfa; }
+    .heading-anchor {
+      text-decoration: none;
+      color: var(--border);
+      margin-left: 0.5rem;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    h2:hover .heading-anchor, h3:hover .heading-anchor {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="top-nav">
+    <div class="nav-left">
+      <a href="../START-HERE.html" class="back-btn">&#8592; Master Dashboard</a>
+      <span class="category-badge">01-Python</span>
+    </div>
+    <div class="nav-actions">
+      <button class="nav-btn" onclick="copyCurrentPath()">&#128203; Copy Path</button>
+      <a href="Automate-the-Boring-Stuff.md" class="nav-btn" target="_blank">&#128196; Raw Markdown</a>
+    </div>
+  </header>
+
+  <div class="layout-wrapper">
+    <aside>
+      
+        <nav class="toc-box">
+          <div class="toc-title">Table of Contents</div>
+          <ul><li class="toc-level-2"><a href="#1-curriculum-overview-learning-philosophy">1. Curriculum Overview &amp; Learning Philosophy</a></li><li class="toc-level-3"><a href="#target-prerequisites">Target Prerequisites</a></li><li class="toc-level-2"><a href="#2-structured-learning-roadmap">2. Structured Learning Roadmap</a></li><li class="toc-level-2"><a href="#3-chapter-by-chapter-syllabus-with-canonical-links-practical-exercises">3. Chapter-by-Chapter Syllabus with Canonical Links &amp; Practical Exercises</a></li><li class="toc-level-3"><a href="#part-i-python-programming-basics">Part I: Python Programming Basics</a></li><li class="toc-level-3"><a href="#part-ii-automating-practical-tasks">Part II: Automating Practical Tasks</a></li></ul>
+        </nav>
+        
+    </aside>
+    <main class="content-area">
+      <h1 id="automate-the-boring-stuff-with-python-practical-study-guide-curriculum">Automate the Boring Stuff with Python: Practical Study Guide &amp; Curriculum<a href="#automate-the-boring-stuff-with-python-practical-study-guide-curriculum" class="heading-anchor">#</a></h1>
+<p><strong>Catalog Path:</strong> <code>D:\Learning\Programming\Python\Notes\Automate-the-Boring-Stuff-Study-Guide.md</code></p>
+<p><strong>Target Book:</strong> <em>Automate the Boring Stuff with Python</em> (2nd Edition) by Al Sweigart (No Starch Press)</p>
+<p><strong>Canonical Online Resource:</strong> <a href="https://automatetheboringstuff.com/">automatetheboringstuff.com</a></p>
+<p><strong>License Notice:</strong> The complete text is provided free for online personal reading under Creative Commons Attribution-NonCommercial-ShareAlike 3.0 (CC BY-NC-SA 3.0). To respect publisher copyright, standalone PDF downloads are not distributed; this guide provides a structured learning syllabus linking directly to the canonical web chapters.</p>
+<hr>
+<h2 id="1-curriculum-overview-learning-philosophy">1. Curriculum Overview &amp; Learning Philosophy<a href="#1-curriculum-overview-learning-philosophy" class="heading-anchor">#</a></h2>
+<p>While traditional computer science curricula emphasize abstract data structures and algorithm proofs, <em>Automate the Boring Stuff with Python</em> focuses entirely on practical utility: writing small, pragmatic scripts that eliminate repetitive digital labor.</p>
+<h3 id="target-prerequisites">Target Prerequisites<a href="#target-prerequisites" class="heading-anchor">#</a></h3>
+<ul>
+<li>Basic familiarity with using an operating system (navigating directories, opening a command terminal).</li>
+<li>No prior programming experience required.</li>
+<li>Python 3.10+ runtime installed.</li>
+</ul>
+<hr>
+<h2 id="2-structured-learning-roadmap">2. Structured Learning Roadmap<a href="#2-structured-learning-roadmap" class="heading-anchor">#</a></h2>
+<div class="code-wrapper"><div class="code-header"><span class="code-lang">code</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code>Phase 1: Language Primitives (Chapters 1–6)
+   └── Variables, Flow Control, Functions, Lists, Dictionaries, String Manipulation
+Phase 2: Text Processing &amp; Verification (Chapters 7–8)
+   └── Regular Expressions (Pattern Matching) &amp; PyInputPlus (Input Validation)
+Phase 3: System Automation &amp; File Management (Chapters 9–11)
+   └── pathlib/os Operations, zipfile Compression, shutil, Logging &amp; Assertions
+Phase 4: Document &amp; Data Extraction (Chapters 12–16)
+   └── Web Scraping (requests/bs4), Excel (openpyxl), CSV, JSON, PDF, Word
+Phase 5: Task Orchestration &amp; GUI Control (Chapters 17–20)
+   └── time/datetime Scheduling, SMTP Email Alerts, PyAutoGUI Automation</code></pre></div>
+<hr>
+<h2 id="3-chapter-by-chapter-syllabus-with-canonical-links-practical-exercises">3. Chapter-by-Chapter Syllabus with Canonical Links &amp; Practical Exercises<a href="#3-chapter-by-chapter-syllabus-with-canonical-links-practical-exercises" class="heading-anchor">#</a></h2>
+<h3 id="part-i-python-programming-basics">Part I: Python Programming Basics<a href="#part-i-python-programming-basics" class="heading-anchor">#</a></h3>
+<h4 id="chapter-1-python-basics-https-automatetheboringstuff-com-2e-chapter1"><a href="https://automatetheboringstuff.com/2e/chapter1/">Chapter 1: Python Basics</a><a href="#chapter-1-python-basics-https-automatetheboringstuff-com-2e-chapter1" class="heading-anchor">#</a></h4>
+<ul>
+<li><strong>Concepts:</strong> Expressions, integer and float arithmetic, string concatenation, variable assignment, and standard I/O (<code>print()</code>, <code>input()</code>, <code>len()</code>).</li>
+<li><strong>Practical Exercise:</strong> Write a command-line script that calculates age in days and predicts retirement countdowns based on user input.</li>
+</ul>
+<h4 id="chapter-2-flow-control-https-automatetheboringstuff-com-2e-chapter2"><a href="https://automatetheboringstuff.com/2e/chapter2/">Chapter 2: Flow Control</a><a href="#chapter-2-flow-control-https-automatetheboringstuff-com-2e-chapter2" class="heading-anchor">#</a></h4>
+<ul>
+<li><strong>Concepts:</strong> Boolean operators (<code>and</code>, <code>or</code>, <code>not</code>), comparison operators, <code>if</code>/<code>elif</code>/<code>else</code> branching, <code>while</code> loops, <code>for</code> loops with <code>range()</code>, and <code>break</code>/<code>continue</code> loop controls.</li>
+<li><strong>Practical Exercise:</strong> Implement a guess-the-number game with randomized targets and attempt limits.</li>
+</ul>
+<h4 id="chapter-3-functions-https-automatetheboringstuff-com-2e-chapter3"><a href="https://automatetheboringstuff.com/2e/chapter3/">Chapter 3: Functions</a><a href="#chapter-3-functions-https-automatetheboringstuff-com-2e-chapter3" class="heading-anchor">#</a></h4>
+<ul>
+<li><strong>Concepts:</strong> Defining custom functions with <code>def</code>, return values, the <code>None</code> object, keyword arguments, local vs. global scope, and <code>try</code>/<code>except</code> exception handling.</li>
+<li><strong>Practical Exercise:</strong> Implement the Collatz Sequence generator: write a function <code>collatz(number)</code> that returns <code>number // 2</code> if even, or <code>3 * number + 1</code> if odd, iterating until the sequence reaches 1.</li>
+</ul>
+<h4 id="chapter-4-lists-https-automatetheboringstuff-com-2e-chapter4"><a href="https://automatetheboringstuff.com/2e/chapter4/">Chapter 4: Lists</a><a href="#chapter-4-lists-https-automatetheboringstuff-com-2e-chapter4" class="heading-anchor">#</a></h4>
+<ul>
+<li><strong>Concepts:</strong> Indexing, slicing, list iteration, <code>in</code>/<code>not in</code> operators, multiple assignment, augmented assignment, methods (<code>append()</code>, <code>insert()</code>, <code>sort()</code>), list references, and <code>copy.deepcopy()</code>.</li>
+<li><strong>Practical Exercise:</strong> Write a comma-separator formatter function that accepts any list of strings and formats it into a grammatically correct sentence (<code>&#x27;apples, bananas, and tofu&#x27;</code>).</li>
+</ul>
+<h4 id="chapter-5-dictionaries-and-structuring-data-https-automatetheboringstuff-com-2e-chapter5"><a href="https://automatetheboringstuff.com/2e/chapter5/">Chapter 5: Dictionaries and Structuring Data</a><a href="#chapter-5-dictionaries-and-structuring-data-https-automatetheboringstuff-com-2e-chapter5" class="heading-anchor">#</a></h4>
+<ul>
+<li><strong>Concepts:</strong> Key-value mappings, <code>keys()</code>, <code>values()</code>, <code>items()</code>, <code>get()</code> with fallback defaults, <code>setdefault()</code>, and nested data structures.</li>
+<li><strong>Practical Exercise:</strong> Build a Fantasy Game Inventory tracker with functions to display inventory summaries and update counts from loot drops.</li>
+</ul>
+<h4 id="chapter-6-manipulating-strings-https-automatetheboringstuff-com-2e-chapter6"><a href="https://automatetheboringstuff.com/2e/chapter6/">Chapter 6: Manipulating Strings</a><a href="#chapter-6-manipulating-strings-https-automatetheboringstuff-com-2e-chapter6" class="heading-anchor">#</a></h4>
+<ul>
+<li><strong>Concepts:</strong> Escape characters, raw strings (<code>r&#x27;&#x27;</code>), multiline strings (<code>&#x27;&#x27;&#x27;</code>), string methods (<code>upper()</code>, <code>lower()</code>, <code>isupper()</code>, <code>startswith()</code>, <code>join()</code>, <code>split()</code>), and string justification (<code>rjust()</code>, <code>ljust()</code>, <code>center()</code>).</li>
+<li><strong>Practical Exercise:</strong> Build a table printer that takes a list of lists of strings and displays them in a clean, column-aligned grid.</li>
+</ul>
+<hr>
+<h3 id="part-ii-automating-practical-tasks">Part II: Automating Practical Tasks<a href="#part-ii-automating-practical-tasks" class="heading-anchor">#</a></h3>
+<h4 id="chapter-7-pattern-matching-with-regular-expressions-https-automatetheboringstuff-com-2e-chapter7"><a href="https://automatetheboringstuff.com/2e/chapter7/">Chapter 7: Pattern Matching with Regular Expressions</a><a href="#chapter-7-pattern-matching-with-regular-expressions-https-automatetheboringstuff-com-2e-chapter7" class="heading-anchor">#</a></h4>
+<ul>
+<li><strong>Concepts:</strong> The <code>re</code> module, Regex syntax, character classes, shorthand codes (<code>\d</code>, <code>\w</code>, <code>\s</code>), greedy vs. non-greedy matching, <code>sub()</code> for substitution, and verbose regex mode (<code>re.VERBOSE</code>).</li>
+<li><strong>Practical Project:</strong> <strong>Clipboard Phone &amp; Email Extractor:</strong> Create a script that reads clipboard contents (<code>pyperclip</code>), identifies all phone numbers and email addresses via regex, and writes formatted matches back to the clipboard.</li>
+</ul>
+<h4 id="chapter-8-input-validation-https-automatetheboringstuff-com-2e-chapter8"><a href="https://automatetheboringstuff.com/2e/chapter8/">Chapter 8: Input Validation</a><a href="#chapter-8-input-validation-https-automatetheboringstuff-com-2e-chapter8" class="heading-anchor">#</a></h4>
+<ul>
+<li><strong>Concepts:</strong> Building resilient user interfaces with <code>PyInputPlus</code> (<code>inputNum()</code>, <code>inputStr()</code>, <code>inputYesNo()</code>), handling timeouts, retry limits, and custom regex validation.</li>
+<li><strong>Practical Project:</strong> <strong>Automated Sandwich Maker:</strong> Build an interactive ordering prompt that validates ingredients, calculates costs, and handles order confirmations without crashes.</li>
+</ul>
+<h4 id="chapter-9-reading-and-writing-files-https-automatetheboringstuff-com-2e-chapter9"><a href="https://automatetheboringstuff.com/2e/chapter9/">Chapter 9: Reading and Writing Files</a><a href="#chapter-9-reading-and-writing-files-https-automatetheboringstuff-com-2e-chapter9" class="heading-anchor">#</a></h4>
+<ul>
+<li><strong>Concepts:</strong> The modern <code>pathlib.Path</code> module, relative vs. absolute paths, creating directories (<code>Path.mkdir()</code>), file sizes (<code>os.path.getsize()</code>), reading and writing text files, and persistent variable storage via <code>shelve</code>.</li>
+<li><strong>Practical Project:</strong> <strong>Random Quiz Generator:</strong> Create a script that generates 35 distinct randomized geography quiz files and corresponding answer keys for classroom distribution.</li>
+</ul>
+<h4 id="chapter-10-organizing-files-https-automatetheboringstuff-com-2e-chapter10"><a href="https://automatetheboringstuff.com/2e/chapter10/">Chapter 10: Organizing Files</a><a href="#chapter-10-organizing-files-https-automatetheboringstuff-com-2e-chapter10" class="heading-anchor">#</a></h4>
+<ul>
+<li><strong>Concepts:</strong> The <code>shutil</code> module: copying, moving, renaming, and deleting files and trees. Safe deletion via <code>send2trash</code>. Traversing directory trees with <code>os.walk()</code>. Creating and reading ZIP archives with <code>zipfile</code>.</li>
+<li><strong>Practical Project:</strong> <strong>Selective Archiver &amp; Backup:</strong> Write a script that walks through a directory hierarchy, locates all files with a specific extension (e.g., <code>.csv</code> or <code>.pdf</code>), and packages them into a timestamped ZIP archive.</li>
+</ul>
+<h4 id="chapter-11-debugging-https-automatetheboringstuff-com-2e-chapter11"><a href="https://automatetheboringstuff.com/2e/chapter11/">Chapter 11: Debugging</a><a href="#chapter-11-debugging-https-automatetheboringstuff-com-2e-chapter11" class="heading-anchor">#</a></h4>
+<ul>
+<li><strong>Concepts:</strong> Raising custom exceptions, using <code>assert</code> statements for sanity checks, configuring the <code>logging</code> module (debug, info, warning, error, critical), and interactive breakpoint debugging.</li>
+<li><strong>Practical Exercise:</strong> Convert an existing script from print-statement debugging to a production logging configuration that logs to both a local file and console.</li>
+</ul>
+<h4 id="chapter-12-web-scraping-https-automatetheboringstuff-com-2e-chapter12"><a href="https://automatetheboringstuff.com/2e/chapter12/">Chapter 12: Web Scraping</a><a href="#chapter-12-web-scraping-https-automatetheboringstuff-com-2e-chapter12" class="heading-anchor">#</a></h4>
+<ul>
+<li><strong>Concepts:</strong> Opening browsers via <code>webbrowser</code>, fetching HTTP pages with <code>requests</code>, inspecting status codes (<code>raise_for_status()</code>), parsing HTML via <code>BeautifulSoup</code>, and browser automation via <code>selenium</code>.</li>
+<li><strong>Practical Project:</strong> <strong>Automated Documentation Downloader:</strong> Write a scraper that searches an educational index, identifies all article links, and downloads their text locally for offline reading.</li>
+</ul>
+<h4 id="chapter-13-working-with-excel-spreadsheets-https-automatetheboringstuff-com-2e-chapter13"><a href="https://automatetheboringstuff.com/2e/chapter13/">Chapter 13: Working with Excel Spreadsheets</a><a href="#chapter-13-working-with-excel-spreadsheets-https-automatetheboringstuff-com-2e-chapter13" class="heading-anchor">#</a></h4>
+<ul>
+<li><strong>Concepts:</strong> Reading <code>.xlsx</code> documents with <code>openpyxl</code>, navigating sheets, columns, and rows, cell objects, formulas, formatting styles, and generating charts.</li>
+<li><strong>Practical Project:</strong> <strong>Multiplication Table &amp; Census Data Extractor:</strong> Read a 70,000-row census spreadsheet and aggregate total populations and tract counts by county into a structured report.</li>
+</ul>
+<h4 id="chapter-14-working-with-google-sheets-https-automatetheboringstuff-com-2e-chapter14"><a href="https://automatetheboringstuff.com/2e/chapter14/">Chapter 14: Working with Google Sheets</a><a href="#chapter-14-working-with-google-sheets-https-automatetheboringstuff-com-2e-chapter14" class="heading-anchor">#</a></h4>
+<ul>
+<li><strong>Concepts:</strong> Authenticating with Google Drive and Sheets APIs via <code>ezsheets</code>, reading and writing cells, downloading sheets in CSV/PDF format.</li>
+</ul>
+<h4 id="chapter-15-working-with-pdf-and-word-documents-https-automatetheboringstuff-com-2e-chapter15"><a href="https://automatetheboringstuff.com/2e/chapter15/">Chapter 15: Working with PDF and Word Documents</a><a href="#chapter-15-working-with-pdf-and-word-documents-https-automatetheboringstuff-com-2e-chapter15" class="heading-anchor">#</a></h4>
+<ul>
+<li><strong>Concepts:</strong> Extracting text and metadata with <code>pypdf</code>, rotating pages, overlaying watermarks, encrypting/decrypting PDFs, and generating Word <code>.docx</code> documents with <code>python-docx</code>.</li>
+<li><strong>Practical Project:</strong> <strong>PDF Watermarking Tool:</strong> Combine an official cover page and transparent watermark over a collection of unformatted documents.</li>
+</ul>
+<h4 id="chapter-16-working-with-csv-files-and-json-data-https-automatetheboringstuff-com-2e-chapter16"><a href="https://automatetheboringstuff.com/2e/chapter16/">Chapter 16: Working with CSV Files and JSON Data</a><a href="#chapter-16-working-with-csv-files-and-json-data-https-automatetheboringstuff-com-2e-chapter16" class="heading-anchor">#</a></h4>
+<ul>
+<li><strong>Concepts:</strong> Reading and writing CSVs via <code>csv.reader</code> and <code>csv.writer</code>, handling delimiters and headers with <code>csv.DictReader</code>, and serializing/deserializing API responses with <code>json.loads()</code> and <code>json.dumps()</code>.</li>
+<li><strong>Practical Project:</strong> <strong>API Weather &amp; Market Fetcher:</strong> Query a public REST API, extract JSON payloads, and generate clean CSV summary tables.</li>
+</ul>
+<h4 id="chapter-17-keeping-time-scheduling-tasks-and-launching-programs-https-automatetheboringstuff-com-2e-chapter17"><a href="https://automatetheboringstuff.com/2e/chapter17/">Chapter 17: Keeping Time, Scheduling Tasks, and Launching Programs</a><a href="#chapter-17-keeping-time-scheduling-tasks-and-launching-programs-https-automatetheboringstuff-com-2e-chapter17" class="heading-anchor">#</a></h4>
+<ul>
+<li><strong>Concepts:</strong> The <code>time</code> and <code>datetime</code> modules, <code>timedelta</code> arithmetic, multi-threading with <code>threading.Thread</code>, and launching external processes via <code>subprocess.Popen</code>.</li>
+</ul>
+<h4 id="chapter-18-sending-email-and-text-messages-https-automatetheboringstuff-com-2e-chapter18"><a href="https://automatetheboringstuff.com/2e/chapter18/">Chapter 18: Sending Email and Text Messages</a><a href="#chapter-18-sending-email-and-text-messages-https-automatetheboringstuff-com-2e-chapter18" class="heading-anchor">#</a></h4>
+<ul>
+<li><strong>Concepts:</strong> Sending automated notification emails via <code>smtplib</code>, retrieving emails with <code>imapclient</code>, and SMS integration with <code>twilio</code>.</li>
+</ul>
+<h4 id="chapter-19-manipulating-images-https-automatetheboringstuff-com-2e-chapter19"><a href="https://automatetheboringstuff.com/2e/chapter19/">Chapter 19: Manipulating Images</a><a href="#chapter-19-manipulating-images-https-automatetheboringstuff-com-2e-chapter19" class="heading-anchor">#</a></h4>
+<ul>
+<li><strong>Concepts:</strong> Image processing with Pillow (<code>PIL</code>), cropping, resizing, rotating, color adjustments, and batch thumbnail generation.</li>
+</ul>
+<h4 id="chapter-20-controlling-the-keyboard-and-mouse-with-gui-automation-https-automatetheboringstuff-com-2e-chapter20"><a href="https://automatetheboringstuff.com/2e/chapter20/">Chapter 20: Controlling the Keyboard and Mouse with GUI Automation</a><a href="#chapter-20-controlling-the-keyboard-and-mouse-with-gui-automation-https-automatetheboringstuff-com-2e-chapter20" class="heading-anchor">#</a></h4>
+<ul>
+<li><strong>Concepts:</strong> Automating desktop clicks, keystrokes, and form filling using <code>pyautogui</code>, image recognition on screen, and safety failsafes (<code>pyautogui.FAILSAFE</code>).</li>
+</ul>
+    </main>
+  </div>
+
+  <script>
+    function copyCode(btn) {
+      const pre = btn.parentElement.nextElementSibling;
+      const code = pre.querySelector('code').innerText;
+      navigator.clipboard.writeText(code).then(() => {
+        const old = btn.innerText;
+        btn.innerText = 'Copied!';
+        setTimeout(() => btn.innerText = old, 1500);
+      });
+    }
+    function copyCurrentPath() {
+      navigator.clipboard.writeText(window.location.href).then(() => {
+        alert('File URL copied to clipboard!');
+      });
+    }
+  </script>
+</body>
+</html>

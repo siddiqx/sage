@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TypeScript Language &amp; Compiler Reference Guide — Learning Library</title>
+  <style>
+    :root {
+      --bg: #0b1120;
+      --card-bg: #1e293b;
+      --border: #334155;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-hover: #0ea5e9;
+      --code-bg: #020617;
+      --toc-bg: #131d31;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      padding: 0;
+    }
+    header.top-nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(11, 17, 32, 0.9);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+      padding: 0.85rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .back-btn {
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.35rem 0.75rem;
+      border-radius: 0.375rem;
+      background: rgba(56, 189, 248, 0.1);
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      transition: all 0.2s;
+    }
+    .back-btn:hover {
+      background: rgba(56, 189, 248, 0.2);
+    }
+    .category-badge {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      background: #1e293b;
+      padding: 0.25rem 0.6rem;
+      border-radius: 9999px;
+      border: 1px solid var(--border);
+    }
+    .nav-actions {
+      display: flex;
+      gap: 0.75rem;
+    }
+    .nav-btn {
+      background: #1e293b;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 0.35rem 0.75rem;
+      border-radius: 0.375rem;
+      font-size: 0.8rem;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: all 0.2s;
+    }
+    .nav-btn:hover {
+      background: #334155;
+      color: var(--text);
+    }
+    .layout-wrapper {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem;
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 2.5rem;
+    }
+    @media (max-width: 900px) {
+      .layout-wrapper {
+        grid-template-columns: 1fr;
+      }
+      .toc-box {
+        position: static;
+        margin-bottom: 2rem;
+      }
+    }
+    .toc-box {
+      position: sticky;
+      top: 5rem;
+      max-height: calc(100vh - 6rem);
+      overflow-y: auto;
+      background: var(--toc-bg);
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      padding: 1.25rem;
+    }
+    .toc-title {
+      font-size: 0.875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--accent);
+      margin-bottom: 0.85rem;
+    }
+    .toc-box ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    .toc-box a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: color 0.15s;
+    }
+    .toc-box a:hover {
+      color: var(--accent);
+    }
+    .toc-level-3 {
+      padding-left: 1rem;
+      font-size: 0.8rem;
+    }
+    .content-area {
+      min-width: 0;
+    }
+    h1 {
+      font-size: 2.25rem;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.75rem;
+      color: #ffffff;
+    }
+    h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-top: 2.25rem;
+      margin-bottom: 1rem;
+      color: #38bdf8;
+      border-bottom: 1px solid rgba(51, 65, 85, 0.4);
+      padding-bottom: 0.4rem;
+      position: relative;
+    }
+    h3 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin-top: 1.75rem;
+      margin-bottom: 0.75rem;
+      color: #f1f5f9;
+    }
+    h4 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-top: 1.25rem;
+      margin-bottom: 0.5rem;
+    }
+    p {
+      margin-bottom: 1rem;
+      color: #cbd5e1;
+    }
+    ul, ol {
+      margin-bottom: 1.25rem;
+      padding-left: 1.75rem;
+      color: #cbd5e1;
+    }
+    li {
+      margin-bottom: 0.4rem;
+    }
+    hr {
+      border: 0;
+      border-top: 1px solid var(--border);
+      margin: 2rem 0;
+    }
+    a {
+      color: var(--accent);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+    a:hover {
+      color: var(--accent-hover);
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.875em;
+      background: rgba(51, 65, 85, 0.6);
+      padding: 0.15em 0.4em;
+      border-radius: 0.25rem;
+      color: #38bdf8;
+    }
+    .code-wrapper {
+      margin: 1.25rem 0;
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      overflow: hidden;
+    }
+    .code-header {
+      background: #0f172a;
+      padding: 0.4rem 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-family: monospace;
+    }
+    .copy-btn {
+      background: rgba(148, 163, 184, 0.1);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      border-radius: 0.25rem;
+      padding: 0.2rem 0.5rem;
+      font-size: 0.7rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .copy-btn:hover {
+      background: var(--accent);
+      color: #0f172a;
+    }
+    pre {
+      padding: 1.25rem;
+      overflow-x: auto;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.875rem;
+      line-height: 1.6;
+    }
+    pre code {
+      background: transparent;
+      padding: 0;
+      color: #e2e8f0;
+      font-size: inherit;
+    }
+    /* Tables */
+    .table-container {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.9rem;
+    }
+    th {
+      background: #1e293b;
+      color: var(--text);
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+    td {
+      padding: 0.65rem 1rem;
+      border-bottom: 1px solid #1e293b;
+      color: #cbd5e1;
+    }
+    tr:nth-child(even) {
+      background: rgba(30, 41, 59, 0.4);
+    }
+    /* Callouts */
+    .callout {
+      margin: 1.5rem 0;
+      padding: 1rem 1.25rem;
+      border-radius: 0.5rem;
+      border-left: 4px solid var(--accent);
+      background: rgba(30, 41, 59, 0.5);
+    }
+    .callout-title {
+      font-weight: 700;
+      font-size: 0.85rem;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.35rem;
+      color: var(--accent);
+    }
+    .callout-body {
+      font-size: 0.9rem;
+      color: #cbd5e1;
+    }
+    .callout-tip { border-left-color: #10b981; }
+    .callout-tip .callout-title { color: #34d399; }
+    .callout-warning { border-left-color: #f59e0b; }
+    .callout-warning .callout-title { color: #fbbf24; }
+    .callout-caution { border-left-color: #ef4444; }
+    .callout-caution .callout-title { color: #f87171; }
+    .callout-important { border-left-color: #8b5cf6; }
+    .callout-important .callout-title { color: #a78bfa; }
+    .heading-anchor {
+      text-decoration: none;
+      color: var(--border);
+      margin-left: 0.5rem;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    h2:hover .heading-anchor, h3:hover .heading-anchor {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="top-nav">
+    <div class="nav-left">
+      <a href="../START-HERE.html" class="back-btn">&#8592; Master Dashboard</a>
+      <span class="category-badge">10-Software-and-Web-Development</span>
+    </div>
+    <div class="nav-actions">
+      <button class="nav-btn" onclick="copyCurrentPath()">&#128203; Copy Path</button>
+      <a href="TypeScript-Handbook.md" class="nav-btn" target="_blank">&#128196; Raw Markdown</a>
+    </div>
+  </header>
+
+  <div class="layout-wrapper">
+    <aside>
+      
+        <nav class="toc-box">
+          <div class="toc-title">Table of Contents</div>
+          <ul><li class="toc-level-2"><a href="#1-structural-type-system-philosophy">1. Structural Type System Philosophy</a></li><li class="toc-level-2"><a href="#2-core-type-primitives-special-types">2. Core Type Primitives &amp; Special Types</a></li><li class="toc-level-3"><a href="#fundamental-types">Fundamental Types</a></li><li class="toc-level-3"><a href="#top-bottom-types">Top &amp; Bottom Types</a></li><li class="toc-level-2"><a href="#3-control-flow-analysis-type-narrowing">3. Control Flow Analysis &amp; Type Narrowing</a></li><li class="toc-level-3"><a href="#narrowing-mechanisms">Narrowing Mechanisms</a></li><li class="toc-level-3"><a href="#discriminated-unions-exhaustiveness-checking">Discriminated Unions &amp; Exhaustiveness Checking</a></li><li class="toc-level-2"><a href="#4-interfaces-vs-type-aliases">4. Interfaces vs. Type Aliases</a></li><li class="toc-level-2"><a href="#5-generics-type-constraints">5. Generics &amp; Type Constraints</a></li><li class="toc-level-2"><a href="#6-advanced-metaprogramming-type-operators">6. Advanced Metaprogramming &amp; Type Operators</a></li><li class="toc-level-3"><a href="#1-conditional-types">1. Conditional Types</a></li><li class="toc-level-3"><a href="#2-type-inference-with-infer">2. Type Inference with `infer`</a></li><li class="toc-level-3"><a href="#3-mapped-types-key-remapping">3. Mapped Types &amp; Key Remapping</a></li><li class="toc-level-2"><a href="#7-built-in-utility-types">7. Built-in Utility Types</a></li><li class="toc-level-2"><a href="#8-compiler-configuration-tsconfig-json-standards">8. Compiler Configuration (`tsconfig.json`) Standards</a></li></ul>
+        </nav>
+        
+    </aside>
+    <main class="content-area">
+      <h1 id="typescript-handbook-reference-structural-typing-guide">TypeScript Handbook: Reference &amp; Structural Typing Guide<a href="#typescript-handbook-reference-structural-typing-guide" class="heading-anchor">#</a></h1>
+<div class="callout callout-note"><div class="callout-title">NOTE</div><div class="callout-body"><strong>Reference Work:</strong> <em>The Official TypeScript Handbook</em><br><strong>Maintainer:</strong> Microsoft TypeScript Team<br><strong>Canonical Documentation:</strong> <a href="https://www.typescriptlang.org/docs/handbook/">typescriptlang.org/docs/handbook/</a><br><strong>Source Repository:</strong> <a href="https://github.com/microsoft/TypeScript-Website">github.com/microsoft/TypeScript-Website</a><br><strong>License:</strong> Apache License 2.0 / Creative Commons Attribution 4.0 International<br><strong>Practical Synergy:</strong> This reference synthesizes core type theory, advanced metaprogramming, and configuration patterns. Practical exercises for every concept in this guide are located in <code>D:\Learning\Programming\JavaScript-TypeScript\Programs\Type-Challenges-Repository\</code>.</div></div>
+<hr>
+<h2 id="1-structural-type-system-philosophy">1. Structural Type System Philosophy<a href="#1-structural-type-system-philosophy" class="heading-anchor">#</a></h2>
+<p>Unlike nominal type systems (e.g., Java, C++) where type identity is determined by explicit declaration names, TypeScript operates on a <strong>structural type system</strong> (often called compile-time duck typing). Two types are compatible if they possess the same internal structure (properties and method signatures), regardless of how or where they were defined.</p>
+<div class="code-wrapper"><div class="code-header"><span class="code-lang">code</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code>       NOMINAL SYSTEM                         STRUCTURAL SYSTEM
+   (Java / C# / C++)                           (TypeScript / Go)
+
+class Point { int x; int y; }               interface Point { x: number; y: number; }
+class Vector { int x; int y; }              interface Vector { x: number; y: number; }
+
+Point p = new Vector(); // ERROR!           const p: Point = { x: 1, y: 2 }; // VALID!
+// Incompatible nominal types               // Shapes match identically</code></pre></div>
+<hr>
+<h2 id="2-core-type-primitives-special-types">2. Core Type Primitives &amp; Special Types<a href="#2-core-type-primitives-special-types" class="heading-anchor">#</a></h2>
+<h3 id="fundamental-types">Fundamental Types<a href="#fundamental-types" class="heading-anchor">#</a></h3>
+<ul>
+<li><strong>Primitives:</strong> <code>string</code>, <code>number</code>, <code>boolean</code>, <code>bigint</code>, <code>symbol</code>, <code>null</code>, <code>undefined</code>.</li>
+<li><strong>Literal Types:</strong> Specific values as types (e.g., <code>let direction: &quot;left&quot; | &quot;right&quot; | &quot;up&quot; | &quot;down&quot;</code>).</li>
+<li><strong>Arrays &amp; Tuples:</strong> <code>number[]</code> or <code>Array&lt;number&gt;</code>. Tuples have fixed length and specific types per position: <code>type KeyValuePair = readonly [string, number]</code>.</li>
+</ul>
+<h3 id="top-bottom-types">Top &amp; Bottom Types<a href="#top-bottom-types" class="heading-anchor">#</a></h3>
+<ul>
+<li><strong><code>unknown</code> (Top Type):</strong> The type-safe counterpart of <code>any</code>. Any value can be assigned to <code>unknown</code>, but no operations or property accesses are permitted without prior narrowing.</li>
+<li><strong><code>any</code>:</strong> Completely disables TypeScript&#x27;s type-checking mechanism. Avoid in robust codebases.</li>
+<li><strong><code>never</code> (Bottom Type):</strong> Represents the empty set of values. Returned by functions that never return (infinite loops or throw exceptions), and used to prove exhaustiveness in switch statements.</li>
+<li><strong><code>void</code>:</strong> Represents the return value of functions that do not return a meaningful value.</li>
+</ul>
+<hr>
+<h2 id="3-control-flow-analysis-type-narrowing">3. Control Flow Analysis &amp; Type Narrowing<a href="#3-control-flow-analysis-type-narrowing" class="heading-anchor">#</a></h2>
+<p>TypeScript inspects runtime control flow branches to narrow wide types (like unions) into specific types.</p>
+<h3 id="narrowing-mechanisms">Narrowing Mechanisms<a href="#narrowing-mechanisms" class="heading-anchor">#</a></h3>
+<ol>
+<li><strong><code>typeof</code> Guards:</strong> Narrow primitives (<code>typeof x === &quot;string&quot;</code>).</li>
+<li><strong><code>instanceof</code> Guards:</strong> Narrow prototype chains (<code>x instanceof Date</code>).</li>
+<li><strong><code>in</code> Operator:</strong> Check for property existence (<code>&quot;error&quot; in response</code>).</li>
+<li><strong>Equality Narrowing:</strong> Strict equality checks (<code>x === y</code> where <code>y: string</code>).</li>
+<li><strong>Truthiness Narrowing:</strong> Filtering out <code>null</code>, <code>undefined</code>, <code>0</code>, <code>&quot;&quot;</code>.</li>
+<li><strong>User-Defined Type Predicates:</strong></li>
+</ol>
+<div class="code-wrapper"><div class="code-header"><span class="code-lang">typescript</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code>   function isFish(pet: Fish | Bird): pet is Fish {
+       return (pet as Fish).swim !== undefined;
+   }</code></pre></div>
+<h3 id="discriminated-unions-exhaustiveness-checking">Discriminated Unions &amp; Exhaustiveness Checking<a href="#discriminated-unions-exhaustiveness-checking" class="heading-anchor">#</a></h3>
+<p>Discriminated unions combine a common literal property (the discriminant) across multiple variants. Use <code>never</code> to guarantee that all cases are handled at compile time:</p>
+<div class="code-wrapper"><div class="code-header"><span class="code-lang">typescript</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code>type Circle = { kind: &quot;circle&quot;; radius: number };
+type Square = { kind: &quot;square&quot;; sideLength: number };
+type Shape = Circle | Square;
+
+function calculateArea(s: Shape): number {
+    switch (s.kind) {
+        case &quot;circle&quot;:
+            return Math.PI * s.radius ** 2;
+        case &quot;square&quot;:
+            return s.sideLength ** 2;
+        default: {
+            // If a new variant (e.g. Triangle) is added to Shape,
+            // this assignment causes a compile-time error.
+            const _exhaustiveCheck: never = s;
+            return _exhaustiveCheck;
+        }
+    }
+}</code></pre></div>
+<hr>
+<h2 id="4-interfaces-vs-type-aliases">4. Interfaces vs. Type Aliases<a href="#4-interfaces-vs-type-aliases" class="heading-anchor">#</a></h2>
+<div class="table-container"><table>
+<thead><tr><th>Feature</th><th>Interface (<code>interface X { ... }</code>)</th><th>Type Alias (<code>type X = ...</code>)</th></tr></thead>
+<tbody>
+<tr><td><strong>Declaration Merging</strong></td><td>Yes: multiple declarations merge into one</td><td>No: duplicate identifiers cause compile errors</td></tr>
+<tr><td><strong>Union &amp; Intersection</strong></td><td>Cannot represent union directly</td><td>Supports unions (`A \</td><td>B`) and primitives</td></tr>
+<tr><td><strong>Object Extension</strong></td><td><code>interface B extends A { ... }</code></td><td><code>type B = A &amp; { ... }</code> (intersection)</td></tr>
+<tr><td><strong>Performance</strong></td><td>Faster compiler cache lookups on object shapes</td><td>Slightly slower on massive intersection chains</td></tr>
+<tr><td><strong>Convention</strong></td><td>Preferred for public library APIs and OOP models</td><td>Preferred for unions, tuples, and mapped types</td></tr>
+</tbody></table></div>
+<hr>
+<h2 id="5-generics-type-constraints">5. Generics &amp; Type Constraints<a href="#5-generics-type-constraints" class="heading-anchor">#</a></h2>
+<p>Generics parameterize types, enabling reusable components while preserving type information.</p>
+<div class="code-wrapper"><div class="code-header"><span class="code-lang">typescript</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code>// Generic function with constraints and keyof
+function getProperty&lt;T, K extends keyof T&gt;(obj: T, key: K): T[K] {
+    return obj[key];
+}
+
+// Default type parameters
+interface ApiResponse&lt;T = unknown&gt; {
+    data: T;
+    timestamp: number;
+    status: number;
+}</code></pre></div>
+<hr>
+<h2 id="6-advanced-metaprogramming-type-operators">6. Advanced Metaprogramming &amp; Type Operators<a href="#6-advanced-metaprogramming-type-operators" class="heading-anchor">#</a></h2>
+<h3 id="1-conditional-types">1. Conditional Types<a href="#1-conditional-types" class="heading-anchor">#</a></h3>
+<p>Conditional types select one of two types based on a subtyping relationship:</p>
+<div class="code-wrapper"><div class="code-header"><span class="code-lang">typescript</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code>type IsString&lt;T&gt; = T extends string ? true : false;</code></pre></div>
+<h3 id="2-type-inference-with-infer">2. Type Inference with <code>infer</code><a href="#2-type-inference-with-infer" class="heading-anchor">#</a></h3>
+<p>Extract component types from within complex generic types:</p>
+<div class="code-wrapper"><div class="code-header"><span class="code-lang">typescript</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code>// Extract return type of a function
+type MyReturnType&lt;T&gt; = T extends (...args: any[]) =&gt; infer R ? R : never;
+
+// Extract element type of an array
+type ElementOf&lt;T&gt; = T extends (infer E)[] ? E : T;
+
+// Unwrap Promise
+type MyAwaited&lt;T&gt; = T extends Promise&lt;infer U&gt; ? MyAwaited&lt;U&gt; : T;</code></pre></div>
+<h3 id="3-mapped-types-key-remapping">3. Mapped Types &amp; Key Remapping<a href="#3-mapped-types-key-remapping" class="heading-anchor">#</a></h3>
+<p>Iterate over keys to transform object structures:</p>
+<div class="code-wrapper"><div class="code-header"><span class="code-lang">typescript</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code>// Create a readonly version with optional keys
+type CustomModifier&lt;T&gt; = {
+    +readonly [K in keyof T]?: T[K];
+};
+
+// Key remapping via `as` and Template Literal Types
+type Getters&lt;T&gt; = {
+    [K in keyof T as `get${Capitalize&lt;string &amp; K&gt;}`]: () =&gt; T[K];
+};</code></pre></div>
+<hr>
+<h2 id="7-built-in-utility-types">7. Built-in Utility Types<a href="#7-built-in-utility-types" class="heading-anchor">#</a></h2>
+<div class="table-container"><table>
+<thead><tr><th>Utility Type</th><th>Definition</th><th>Common Use Case</th></tr></thead>
+<tbody>
+<tr><td><code>Partial&lt;T&gt;</code></td><td><code>{ [P in keyof T]?: T[P] }</code></td><td>Patch updates, options objects</td></tr>
+<tr><td><code>Required&lt;T&gt;</code></td><td><code>{ [P in keyof T]-?: T[P] }</code></td><td>Ensuring complete configuration</td></tr>
+<tr><td><code>Readonly&lt;T&gt;</code></td><td><code>{ readonly [P in keyof T]: T[P] }</code></td><td>Preventing object mutation</td></tr>
+<tr><td><code>Record&lt;K, T&gt;</code></td><td><code>{ [P in K]: T }</code></td><td>Dictionaries and key-value lookups</td></tr>
+<tr><td><code>Pick&lt;T, K&gt;</code></td><td>Picks a subset of keys <code>K</code> from <code>T</code></td><td>Narrowing API responses</td></tr>
+<tr><td><code>Omit&lt;T, K&gt;</code></td><td>Removes a subset of keys <code>K</code> from <code>T</code></td><td>Excluding sensitive fields (e.g., passwords)</td></tr>
+<tr><td><code>Exclude&lt;T, U&gt;</code></td><td>Excludes types in <code>U</code> from union <code>T</code></td><td>Removing specific variants from a union</td></tr>
+<tr><td><code>Extract&lt;T, U&gt;</code></td><td>Extracts types in <code>U</code> from union <code>T</code></td><td>Filtering union variants</td></tr>
+<tr><td><code>NonNullable&lt;T&gt;</code></td><td>Removes <code>null</code> and <code>undefined</code> from <code>T</code></td><td>Ensuring guaranteed values</td></tr>
+<tr><td><code>ReturnType&lt;T&gt;</code></td><td>Extracts the return type of a function</td><td>Inferring factory outputs</td></tr>
+</tbody></table></div>
+<hr>
+<h2 id="8-compiler-configuration-tsconfig-json-standards">8. Compiler Configuration (<code>tsconfig.json</code>) Standards<a href="#8-compiler-configuration-tsconfig-json-standards" class="heading-anchor">#</a></h2>
+<p>For production-grade TypeScript development, adhere to strict compiler defaults:</p>
+<div class="code-wrapper"><div class="code-header"><span class="code-lang">json</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code>{
+  &quot;compilerOptions&quot;: {
+    &quot;target&quot;: &quot;ES2022&quot;,
+    &quot;module&quot;: &quot;NodeNext&quot;,
+    &quot;moduleResolution&quot;: &quot;NodeNext&quot;,
+    &quot;lib&quot;: [&quot;ES2022&quot;],
+    &quot;strict&quot;: true,
+    &quot;noImplicitAny&quot;: true,
+    &quot;strictNullChecks&quot;: true,
+    &quot;strictFunctionTypes&quot;: true,
+    &quot;strictBindCallApply&quot;: true,
+    &quot;strictPropertyInitialization&quot;: true,
+    &quot;noImplicitThis&quot;: true,
+    &quot;useUnknownInCatchVariables&quot;: true,
+    &quot;alwaysStrict&quot;: true,
+    &quot;noUncheckedIndexedAccess&quot;: true,
+    &quot;noImplicitReturns&quot;: true,
+    &quot;noFallthroughCasesInSwitch&quot;: true,
+    &quot;isolatedModules&quot;: true,
+    &quot;skipLibCheck&quot;: true,
+    &quot;forceConsistentCasingInFileNames&quot;: true
+  }
+}</code></pre></div>
+    </main>
+  </div>
+
+  <script>
+    function copyCode(btn) {
+      const pre = btn.parentElement.nextElementSibling;
+      const code = pre.querySelector('code').innerText;
+      navigator.clipboard.writeText(code).then(() => {
+        const old = btn.innerText;
+        btn.innerText = 'Copied!';
+        setTimeout(() => btn.innerText = old, 1500);
+      });
+    }
+    function copyCurrentPath() {
+      navigator.clipboard.writeText(window.location.href).then(() => {
+        alert('File URL copied to clipboard!');
+      });
+    }
+  </script>
+</body>
+</html>

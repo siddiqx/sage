@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Deep Learning &amp; Transformer Architecture Guide — Learning Library</title>
+  <style>
+    :root {
+      --bg: #0b1120;
+      --card-bg: #1e293b;
+      --border: #334155;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-hover: #0ea5e9;
+      --code-bg: #020617;
+      --toc-bg: #131d31;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      padding: 0;
+    }
+    header.top-nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(11, 17, 32, 0.9);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+      padding: 0.85rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .back-btn {
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.35rem 0.75rem;
+      border-radius: 0.375rem;
+      background: rgba(56, 189, 248, 0.1);
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      transition: all 0.2s;
+    }
+    .back-btn:hover {
+      background: rgba(56, 189, 248, 0.2);
+    }
+    .category-badge {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      background: #1e293b;
+      padding: 0.25rem 0.6rem;
+      border-radius: 9999px;
+      border: 1px solid var(--border);
+    }
+    .nav-actions {
+      display: flex;
+      gap: 0.75rem;
+    }
+    .nav-btn {
+      background: #1e293b;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 0.35rem 0.75rem;
+      border-radius: 0.375rem;
+      font-size: 0.8rem;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: all 0.2s;
+    }
+    .nav-btn:hover {
+      background: #334155;
+      color: var(--text);
+    }
+    .layout-wrapper {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem;
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 2.5rem;
+    }
+    @media (max-width: 900px) {
+      .layout-wrapper {
+        grid-template-columns: 1fr;
+      }
+      .toc-box {
+        position: static;
+        margin-bottom: 2rem;
+      }
+    }
+    .toc-box {
+      position: sticky;
+      top: 5rem;
+      max-height: calc(100vh - 6rem);
+      overflow-y: auto;
+      background: var(--toc-bg);
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      padding: 1.25rem;
+    }
+    .toc-title {
+      font-size: 0.875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--accent);
+      margin-bottom: 0.85rem;
+    }
+    .toc-box ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    .toc-box a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: color 0.15s;
+    }
+    .toc-box a:hover {
+      color: var(--accent);
+    }
+    .toc-level-3 {
+      padding-left: 1rem;
+      font-size: 0.8rem;
+    }
+    .content-area {
+      min-width: 0;
+    }
+    h1 {
+      font-size: 2.25rem;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.75rem;
+      color: #ffffff;
+    }
+    h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-top: 2.25rem;
+      margin-bottom: 1rem;
+      color: #38bdf8;
+      border-bottom: 1px solid rgba(51, 65, 85, 0.4);
+      padding-bottom: 0.4rem;
+      position: relative;
+    }
+    h3 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin-top: 1.75rem;
+      margin-bottom: 0.75rem;
+      color: #f1f5f9;
+    }
+    h4 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-top: 1.25rem;
+      margin-bottom: 0.5rem;
+    }
+    p {
+      margin-bottom: 1rem;
+      color: #cbd5e1;
+    }
+    ul, ol {
+      margin-bottom: 1.25rem;
+      padding-left: 1.75rem;
+      color: #cbd5e1;
+    }
+    li {
+      margin-bottom: 0.4rem;
+    }
+    hr {
+      border: 0;
+      border-top: 1px solid var(--border);
+      margin: 2rem 0;
+    }
+    a {
+      color: var(--accent);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+    a:hover {
+      color: var(--accent-hover);
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.875em;
+      background: rgba(51, 65, 85, 0.6);
+      padding: 0.15em 0.4em;
+      border-radius: 0.25rem;
+      color: #38bdf8;
+    }
+    .code-wrapper {
+      margin: 1.25rem 0;
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      overflow: hidden;
+    }
+    .code-header {
+      background: #0f172a;
+      padding: 0.4rem 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-family: monospace;
+    }
+    .copy-btn {
+      background: rgba(148, 163, 184, 0.1);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      border-radius: 0.25rem;
+      padding: 0.2rem 0.5rem;
+      font-size: 0.7rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .copy-btn:hover {
+      background: var(--accent);
+      color: #0f172a;
+    }
+    pre {
+      padding: 1.25rem;
+      overflow-x: auto;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.875rem;
+      line-height: 1.6;
+    }
+    pre code {
+      background: transparent;
+      padding: 0;
+      color: #e2e8f0;
+      font-size: inherit;
+    }
+    /* Tables */
+    .table-container {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.9rem;
+    }
+    th {
+      background: #1e293b;
+      color: var(--text);
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+    td {
+      padding: 0.65rem 1rem;
+      border-bottom: 1px solid #1e293b;
+      color: #cbd5e1;
+    }
+    tr:nth-child(even) {
+      background: rgba(30, 41, 59, 0.4);
+    }
+    /* Callouts */
+    .callout {
+      margin: 1.5rem 0;
+      padding: 1rem 1.25rem;
+      border-radius: 0.5rem;
+      border-left: 4px solid var(--accent);
+      background: rgba(30, 41, 59, 0.5);
+    }
+    .callout-title {
+      font-weight: 700;
+      font-size: 0.85rem;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.35rem;
+      color: var(--accent);
+    }
+    .callout-body {
+      font-size: 0.9rem;
+      color: #cbd5e1;
+    }
+    .callout-tip { border-left-color: #10b981; }
+    .callout-tip .callout-title { color: #34d399; }
+    .callout-warning { border-left-color: #f59e0b; }
+    .callout-warning .callout-title { color: #fbbf24; }
+    .callout-caution { border-left-color: #ef4444; }
+    .callout-caution .callout-title { color: #f87171; }
+    .callout-important { border-left-color: #8b5cf6; }
+    .callout-important .callout-title { color: #a78bfa; }
+    .heading-anchor {
+      text-decoration: none;
+      color: var(--border);
+      margin-left: 0.5rem;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    h2:hover .heading-anchor, h3:hover .heading-anchor {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="top-nav">
+    <div class="nav-left">
+      <a href="../START-HERE.html" class="back-btn">&#8592; Master Dashboard</a>
+      <span class="category-badge">05-AI-and-Automation</span>
+    </div>
+    <div class="nav-actions">
+      <button class="nav-btn" onclick="copyCurrentPath()">&#128203; Copy Path</button>
+      <a href="Deep-Learning-and-LLM-Reading-Guide.md" class="nav-btn" target="_blank">&#128196; Raw Markdown</a>
+    </div>
+  </header>
+
+  <div class="layout-wrapper">
+    <aside>
+      
+        <nav class="toc-box">
+          <div class="toc-title">Table of Contents</div>
+          <ul><li class="toc-level-2"><a href="#1-the-four-foundational-texts">1. The Four Foundational Texts</a></li><li class="toc-level-2"><a href="#2-conceptual-progression-map">2. Conceptual Progression Map</a></li><li class="toc-level-2"><a href="#3-high-yield-reading-points-by-document">3. High-Yield Reading Points by Document</a></li><li class="toc-level-3"><a href="#a-mathematics-for-machine-learning-deisenroth-et-al">A. *Mathematics for Machine Learning* (Deisenroth et al.)</a></li><li class="toc-level-3"><a href="#b-understanding-deep-learning-simon-j-d-prince">B. *Understanding Deep Learning* (Simon J.D. Prince)</a></li><li class="toc-level-3"><a href="#c-attention-is-all-you-need-vaswani-et-al">C. *Attention Is All You Need* (Vaswani et al.)</a></li><li class="toc-level-3"><a href="#d-retrieval-augmented-generation-for-nlp-lewis-et-al">D. *Retrieval-Augmented Generation for NLP* (Lewis et al.)</a></li><li class="toc-level-2"><a href="#4-recommended-study-sequence">4. Recommended Study Sequence</a></li></ul>
+        </nav>
+        
+    </aside>
+    <main class="content-area">
+      <h1 id="deep-learning-transformers-llm-reading-guide">Deep Learning, Transformers &amp; LLM Reading Guide<a href="#deep-learning-transformers-llm-reading-guide" class="heading-anchor">#</a></h1>
+<p>This guide unifies the four foundational machine learning and AI texts in this folder into a single, cohesive reading curriculum.</p>
+<hr>
+<h2 id="1-the-four-foundational-texts">1. The Four Foundational Texts<a href="#1-the-four-foundational-texts" class="heading-anchor">#</a></h2>
+<ol>
+<li><a href="Mathematics-for-Machine-Learning.pdf"><code>Mathematics-for-Machine-Learning.pdf</code></a> — Deisenroth et al. (Cambridge University Press).</li>
+<li><a href="Understanding-Deep-Learning.pdf"><code>Understanding-Deep-Learning.pdf</code></a> — Simon J.D. Prince (MIT Press).</li>
+<li><a href="Attention-Is-All-You-Need.pdf"><code>Attention-Is-All-You-Need.pdf</code></a> — Vaswani et al. (NeurIPS 2017).</li>
+<li><a href="Retrieval-Augmented-Generation.pdf"><code>Retrieval-Augmented-Generation.pdf</code></a> — Patrick Lewis et al. (NeurIPS 2020).</li>
+</ol>
+<hr>
+<h2 id="2-conceptual-progression-map">2. Conceptual Progression Map<a href="#2-conceptual-progression-map" class="heading-anchor">#</a></h2>
+<div class="code-wrapper"><div class="code-header"><span class="code-lang">code</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code>Foundational Math (Deisenroth)
+   ├── Linear Algebra: Orthogonal Projections (Ch 3) &amp; SVD (Ch 4)
+   └── Multivariate Calculus: Jacobians &amp; Gradients (Ch 5)
+         │
+         ▼
+Neural Network Dynamics (Prince)
+   ├── Shallow Networks: Piecewise linear function approximation (Ch 3)
+   ├── Deep Networks &amp; Residuals: Skip connections prevent vanishing gradients (Ch 4 &amp; 11)
+   └── Optimization: Loss landscapes and Adam optimizer (Ch 6)
+         │
+         ▼
+The Transformer Architecture (Vaswani)
+   ├── Scaled Dot-Product Attention: Softmax(QK^T / √d_k) * V (Section 3.2.1)
+   ├── Multi-Head Attention: Attending to distinct subspaces simultaneously (Section 3.2.2)
+   └── Positional Encodings: Injecting sequence order into permutation-invariant models (Section 3.5)
+         │
+         ▼
+External Grounding &amp; RAG (Lewis)
+   ├── Parametric Memory (Model Weights) vs Non-Parametric Memory (Vector Index)
+   ├── Dense Passage Retrieval (DPR) &amp; Maximum Inner Product Search (MIPS)
+   └── Eliminating Hallucinations through Retrieved Ground Truth</code></pre></div>
+<hr>
+<h2 id="3-high-yield-reading-points-by-document">3. High-Yield Reading Points by Document<a href="#3-high-yield-reading-points-by-document" class="heading-anchor">#</a></h2>
+<h3 id="a-mathematics-for-machine-learning-deisenroth-et-al">A. <em>Mathematics for Machine Learning</em> (Deisenroth et al.)<a href="#a-mathematics-for-machine-learning-deisenroth-et-al" class="heading-anchor">#</a></h3>
+<ul>
+<li><strong>Focus:</strong> Chapter 3 (<em>Analytic Geometry</em>) and Chapter 4 (<em>Matrix Decompositions</em>).</li>
+<li><strong>Core Insight:</strong> Linear regression is not an ad-hoc formula; it is the orthogonal projection of an outcome vector onto the column space of the feature matrix. Singular Value Decomposition ($A = U \Sigma V^T$) reveals the fundamental geometry of data compression and PCA.</li>
+</ul>
+<h3 id="b-understanding-deep-learning-simon-j-d-prince">B. <em>Understanding Deep Learning</em> (Simon J.D. Prince)<a href="#b-understanding-deep-learning-simon-j-d-prince" class="heading-anchor">#</a></h3>
+<ul>
+<li><strong>Focus:</strong> Chapters 3, 4, 6, 7, 11, and 12.</li>
+<li><strong>Core Insight:</strong> Neural networks with ReLU activations are continuous piecewise linear function approximators. Depth is exponentially more efficient than width because $K$ layers create $O(2^K)$ linear partition regions. Residual connections ($y = F(x) + x$) provide an unhindered highway for backpropagation.</li>
+</ul>
+<h3 id="c-attention-is-all-you-need-vaswani-et-al">C. <em>Attention Is All You Need</em> (Vaswani et al.)<a href="#c-attention-is-all-you-need-vaswani-et-al" class="heading-anchor">#</a></h3>
+<ul>
+<li><strong>Focus:</strong> Section 3 (<em>Model Architecture</em>).</li>
+<li><strong>Core Insight:</strong> By eliminating recurrent loops, sequence tokens can be processed simultaneously via matrix multiplication on GPUs. Dividing dot products by $\sqrt{d_k}$ prevents the softmax function from saturating into regions with vanishing gradients.</li>
+</ul>
+<h3 id="d-retrieval-augmented-generation-for-nlp-lewis-et-al">D. <em>Retrieval-Augmented Generation for NLP</em> (Lewis et al.)<a href="#d-retrieval-augmented-generation-for-nlp-lewis-et-al" class="heading-anchor">#</a></h3>
+<ul>
+<li><strong>Focus:</strong> Section 2 (<em>Methods</em>).</li>
+<li><strong>Core Insight:</strong> Decoupling linguistic generation (the parametric model) from factual knowledge storage (the external vector index) allows updating an AI system&#x27;s facts in real time without expensive model retraining.</li>
+</ul>
+<hr>
+<h2 id="4-recommended-study-sequence">4. Recommended Study Sequence<a href="#4-recommended-study-sequence" class="heading-anchor">#</a></h2>
+<ul>
+<li><strong>Weeks 1–2:</strong> Review vector projections and matrix calculus in <em>Mathematics for Machine Learning</em>.</li>
+<li><strong>Weeks 3–4:</strong> Study Chapters 3, 4, 6, and 11 in <em>Understanding Deep Learning</em>.</li>
+<li><strong>Weeks 5–6:</strong> Read <em>Attention Is All You Need</em> alongside Chapter 12 of <em>Understanding Deep Learning</em>.</li>
+<li><strong>Weeks 7–8:</strong> Read <em>Retrieval-Augmented Generation</em> and advance to <a href="AI-Agents-and-Workflows-Guide.html"><code>AI-Agents-and-Workflows-Guide.md</code></a>.</li>
+</ul>
+    </main>
+  </div>
+
+  <script>
+    function copyCode(btn) {
+      const pre = btn.parentElement.nextElementSibling;
+      const code = pre.querySelector('code').innerText;
+      navigator.clipboard.writeText(code).then(() => {
+        const old = btn.innerText;
+        btn.innerText = 'Copied!';
+        setTimeout(() => btn.innerText = old, 1500);
+      });
+    }
+    function copyCurrentPath() {
+      navigator.clipboard.writeText(window.location.href).then(() => {
+        alert('File URL copied to clipboard!');
+      });
+    }
+  </script>
+</body>
+</html>
