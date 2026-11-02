@@ -7,6 +7,244 @@
   <meta name="description" content="Personal knowledge website and permanent technical reference system. Pure educational content, verified code examples, step-by-step explanations, and interactive practice.">
   <link rel="stylesheet" href="assets/css/main.css">
   <link rel="stylesheet" href="assets/css/components.css">
+
+  <style>
+    .page-shell {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      padding-top: 0.5rem;
+    }
+
+    .hero-panel {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 1.5rem;
+      background: linear-gradient(135deg, rgba(37,99,235,0.08), rgba(14,165,233,0.04));
+      border: 1px solid var(--border-subtle);
+      border-radius: 24px;
+      padding: 2rem;
+      box-shadow: var(--shadow-md);
+    }
+
+    .hero-copy {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .home-badge {
+      display: inline-flex;
+      align-self: flex-start;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(37, 99, 235, 0.1);
+      color: var(--accent);
+      border: 1px solid rgba(59, 130, 246, 0.2);
+      border-radius: 999px;
+      padding: 0.35rem 0.8rem;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .home-hero-title {
+      font-size: clamp(2.3rem, 4vw, 4rem);
+      line-height: 1.05;
+      letter-spacing: -0.06em;
+      color: var(--text-primary);
+      margin: 1rem 0 0.9rem;
+      max-width: 14ch;
+    }
+
+    .home-hero-lead {
+      margin: 0;
+      max-width: 60ch;
+      font-size: 1.05rem;
+      line-height: 1.75;
+      color: var(--text-secondary);
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.85rem;
+      margin-top: 1.4rem;
+    }
+
+    .primary-btn,
+    .secondary-btn {
+      appearance: none;
+      border: none;
+      border-radius: 12px;
+      padding: 0.8rem 1.2rem;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+    }
+
+    .primary-btn {
+      background: linear-gradient(135deg, var(--accent), #7c3aed);
+      color: white;
+      box-shadow: 0 12px 24px rgba(37, 99, 235, 0.2);
+    }
+
+    .secondary-btn {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-primary);
+    }
+
+    .primary-btn:hover,
+    .secondary-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .hero-visual {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 1rem;
+    }
+
+    .spotlight-card {
+      background: rgba(15, 23, 42, 0.98);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: 18px;
+      padding: 1.25rem;
+      color: white;
+      box-shadow: 0 18px 30px rgba(15, 23, 42, 0.14);
+    }
+
+    .spotlight-label {
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #93c5fd;
+      margin-bottom: 0.55rem;
+      font-weight: 700;
+    }
+
+    .spotlight-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.3;
+      margin-bottom: 0.35rem;
+    }
+
+    .spotlight-subtitle {
+      font-size: 0.88rem;
+      color: rgba(226, 232, 240, 0.8);
+    }
+
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.55rem;
+    }
+
+    .subject-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      border: 1px solid var(--border-subtle);
+      background: var(--bg-surface);
+      color: var(--text-primary);
+      border-radius: 999px;
+      padding: 0.4rem 0.7rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 1rem;
+    }
+
+    .stat-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 18px;
+      padding: 1.1rem 1rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .stat-value {
+      display: block;
+      font-size: clamp(1.5rem, 2vw, 2rem);
+      font-weight: 800;
+      color: var(--text-primary);
+      letter-spacing: -0.05em;
+      margin-bottom: 0.25rem;
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-weight: 700;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1rem;
+      margin-top: 0.5rem;
+    }
+
+    .feature-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 18px;
+      padding: 1.3rem 1.1rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .feature-icon {
+      font-size: 1.5rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .feature-card h3 {
+      margin: 0 0 0.45rem;
+      font-size: 1.05rem;
+      color: var(--text-primary);
+    }
+
+    .feature-card p {
+      margin: 0;
+      font-size: 0.92rem;
+      line-height: 1.7;
+      color: var(--text-secondary);
+    }
+
+    @media (max-width: 900px) {
+      .hero-panel {
+        grid-template-columns: 1fr;
+      }
+
+      .stats-grid,
+      .feature-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 640px) {
+      .stats-grid,
+      .feature-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-panel {
+        padding: 1.25rem;
+      }
+    }
+  </style>
 </head>
 <body>
 
@@ -21,7 +259,7 @@
     <div class="header-center">
       <button class="search-trigger-btn" aria-label="Search topics">
         <span style="display: flex; align-items: center; gap: 0.5rem;">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><path d="M21 21l-4.35-4.35"></path></svg>
           Search topics, terminology, syntax...
         </span>
         <span class="search-shortcut">Ctrl K</span>
@@ -30,7 +268,7 @@
 
     <div class="header-actions">
       <button class="btn-icon" id="bookmarks-trigger-btn" title="View Bookmarked Topics">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 13.61 14.49 15.84 21.6 12 17.6 8.16 21.6 10.39 14.49 2 9.27 8.91 8.26 12 2"></polygon></svg>
         <span class="count-badge bookmark-count-badge" style="display: none;">0</span>
       </button>
 
@@ -68,7 +306,7 @@
   <div class="modal-backdrop" id="search-modal-backdrop">
     <div class="search-modal">
       <div class="search-modal-header">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-muted);"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-muted);"><circle cx="11" cy="11" r="8"></circle><path d="M21 21l-4.35-4.35"></path></svg>
         <input type="text" id="global-search-input" class="search-input" placeholder="Search across all 11 disciplines, topics, definitions, syntax..." autocomplete="off">
         <button class="btn-icon" onclick="SAGE.Search.closeModal()" title="Close search" style="border: none;">&times;</button>
       </div>
